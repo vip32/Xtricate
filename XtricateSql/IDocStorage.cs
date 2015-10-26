@@ -3,7 +3,7 @@ using System.Data;
 
 namespace XtricateSql
 {
-    public interface IDocumentStorage<T>
+    public interface IDocStorage<T>
     {
         string ConnectionString { get; }
         string SchemaName { get; }

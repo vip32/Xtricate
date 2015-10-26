@@ -6,15 +6,15 @@ using Dapper;
 
 namespace XtricateSql
 {
-    public class DocumentContext<T> : IDocumentContext<T>
+    public class DocSet<T> : IDocSet<T>
     {
         private readonly IDbConnectionFactory _connectionFactory;
-        private readonly IDocumentContext<T> _documentIndexContext;
-        private readonly IDocumentSchema _schema;
+        private readonly IDocSet<T> _docIndexSet;
+        private readonly IDocSchema _schema;
         private readonly ISerializer _serialize;
 
-        public DocumentContext(IDocumentSchema schema, ISerializer serializer,
-            IDbConnectionFactory connectionFactory, IDocumentContext<T> documentIndexContext = null)
+        public DocSet(IDocSchema schema, ISerializer serializer,
+            IDbConnectionFactory connectionFactory, IDocSet<T> docIndexSet = null)
         {
             if (schema == null) throw new ArgumentNullException(nameof(schema));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
@@ -23,7 +23,7 @@ namespace XtricateSql
             _schema = schema;
             _serialize = serializer;
             _connectionFactory = connectionFactory;
-            _documentIndexContext = documentIndexContext;
+            _docIndexSet = docIndexSet;
         }
 
         public IEnumerable<T> Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)

@@ -2,7 +2,7 @@
 
 namespace XtricateSql
 {
-    public interface IDocumentContext<T>
+    public interface IDocSet<T>
     {
         IEnumerable<T> Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
         IEnumerable<T> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace XtricateSql
 {
-    public interface IDocumentIndexMap<T>
+    public interface IDocIndexMap<T>
     {
         string Description { get; set; }
         string Name { get; set; }

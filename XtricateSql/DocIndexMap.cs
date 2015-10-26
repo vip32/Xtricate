@@ -4,9 +4,9 @@ using System.Linq.Expressions;
 
 namespace XtricateSql
 {
-    public class DocumentIndexMap<T> : IDocumentIndexMap<T>
+    public class DocIndexMap<T> : IDocIndexMap<T>
     {
-        public DocumentIndexMap(string name, Expression<Func<T, object>> value,
+        public DocIndexMap(string name, Expression<Func<T, object>> value,
             Expression<Func<T, IEnumerable<T>>> values, string description = null)
         {
             Name = name;

@@ -4,15 +4,15 @@ using System.Data.Entity.Infrastructure;
 
 namespace XtricateSql
 {
-    public class DocumentIndexContext<T> : IDocumentContext<T>
+    public class DocIndexSet<T> : IDocSet<T>
     {
         private readonly IDbConnectionFactory _connectionFactory;
-        private readonly IEnumerable<IDocumentIndexMap<T>> _indexMap;
-        private readonly IDocumentSchema _schema;
+        private readonly IEnumerable<IDocIndexMap<T>> _indexMap;
+        private readonly IDocSchema _schema;
         private readonly ISerializer _serialize;
 
-        public DocumentIndexContext(IDocumentSchema schema, ISerializer serializer,
-            IDbConnectionFactory connectionFactory, IEnumerable<IDocumentIndexMap<T>> indexMap)
+        public DocIndexSet(IDocSchema schema, ISerializer serializer,
+            IDbConnectionFactory connectionFactory, IEnumerable<IDocIndexMap<T>> indexMap)
         {
             if (schema == null) throw new ArgumentNullException(nameof(schema));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
