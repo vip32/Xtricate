@@ -7,18 +7,15 @@ using Humanizer;
 
 namespace XtricateSql
 {
-    public class Storage<T, TKey> : IStorage<T>
+    public class Storage<T> : IStorage<T>
     {
-        private readonly Func<T, TKey> _key;
         private readonly IDbConnectionFactory _connectionFactory;
 
-        public Storage(Func<T, TKey> key, IDbConnectionFactory connectionFactory, IStorageOptions options)
+        public Storage(IDbConnectionFactory connectionFactory, IStorageOptions options)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
             if (connectionFactory == null) throw new ArgumentNullException(nameof(connectionFactory));
             if (options == null) throw new ArgumentNullException(nameof(options));
 
-            _key = key;
             _connectionFactory = connectionFactory;
             Options = options;
         }
@@ -39,13 +36,13 @@ namespace XtricateSql
             }
         }
 
-        public IDbCommand UpsertCommand(T document, IEnumerable<string> tags = null)
+        public IDbCommand UpsertCommand(object key, T document, IEnumerable<string> tags = null)
         {
             // use _key(document) to get KEY
             throw new NotImplementedException();
         }
 
-        public IDbCommand UpsertCommand(IEnumerable<T> document, IEnumerable<string> tags = null)
+        public IDbCommand UpsertCommand(IDictionary<object, T> document, IEnumerable<string> tags = null)
         {
             // use _key(document) to get KEY
             throw new NotImplementedException();

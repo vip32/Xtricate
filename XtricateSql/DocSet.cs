@@ -6,20 +6,23 @@ using Dapper;
 
 namespace XtricateSql
 {
-    public class DocSet<T> : IDocSet<T>
+    public class DocSet<T, TKey> : IDocSet<T>
     {
+        private readonly Func<T, TKey> _key;
         private readonly IDbConnectionFactory _connectionFactory;
         private readonly IDocSet<T> _docIndexSet;
         private readonly IDocSchema _schema;
         private readonly ISerializer _serialize;
 
-        public DocSet(IDocSchema schema, ISerializer serializer,
+        public DocSet(Func<T, TKey> key, IDocSchema schema, ISerializer serializer,
             IDbConnectionFactory connectionFactory, IDocSet<T> docIndexSet = null)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
             if (schema == null) throw new ArgumentNullException(nameof(schema));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
             if (connectionFactory == null) throw new ArgumentNullException(nameof(connectionFactory));
 
+            _key = key;
             _schema = schema;
             _serialize = serializer;
             _connectionFactory = connectionFactory;
@@ -75,8 +78,8 @@ namespace XtricateSql
         public T Store(T entity, IEnumerable<string> tags = null)
         {
             if (entity == null) return entity;
-
-            throw new NotImplementedException();
+            _schema.Storage<T>().UpsertCommand(_key(entity), entity, tags);
+            return entity;
         }
 
         public void Delete(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
