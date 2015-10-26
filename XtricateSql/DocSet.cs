@@ -24,6 +24,8 @@ namespace XtricateSql
             _serialize = serializer;
             _connectionFactory = connectionFactory;
             _docIndexSet = docIndexSet;
+
+            _schema.Storage<T>().InitializeSchema();
         }
 
         public IEnumerable<T> Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
@@ -37,7 +39,7 @@ namespace XtricateSql
             var storage = _schema.Storage<T>();
             var command = storage.LoadCommand(key, tags, criteria);
 
-            using (var conn = _connectionFactory.CreateConnection(_schema.Storage<T>().ConnectionString))
+            using (var conn = _connectionFactory.CreateConnection(_schema.Storage<T>().Options.ConnectionString))
             {
                 conn.Open();
 
@@ -52,7 +54,7 @@ namespace XtricateSql
             var storage = _schema.Storage<T>();
             var command = storage.LoadCommand(tags, criteria);
 
-            using (var conn = _connectionFactory.CreateConnection(_schema.Storage<T>().ConnectionString))
+            using (var conn = _connectionFactory.CreateConnection(_schema.Storage<T>().Options.ConnectionString))
             {
                 conn.Open();
 

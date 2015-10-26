@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -68,14 +68,17 @@
     <Compile Include="DocIndexMap.cs" />
     <Compile Include="DocIndexSet.cs" />
     <Compile Include="DocSet.cs" />
+    <Compile Include="IStorageOptions.cs" />
+    <Compile Include="Storage.cs" />
     <Compile Include="ICriteria.cs" />
     <Compile Include="IDocIndexMap.cs" />
     <Compile Include="IDocSchema.cs" />
-    <Compile Include="IDocStorage.cs" />
+    <Compile Include="IStorage.cs" />
     <Compile Include="ISerializer.cs" />
     <Compile Include="IDocSet.cs" />
     <Compile Include="JsonSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StorageOptions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
