@@ -9,10 +9,10 @@ namespace XtricateSql
     public class DocSet<T, TKey> : IDocSet<T>
     {
         private readonly Func<T, TKey> _key;
-        private readonly IDbConnectionFactory _connectionFactory;
-        private readonly IDocSet<T> _docIndexSet;
         private readonly IDocSchema _schema;
-        private readonly ISerializer _serialize;
+        private readonly IDbConnectionFactory _connectionFactory;
+        private readonly ISerializer _serializer;
+        private readonly IDocSet<T> _docIndexSet;
 
         public DocSet(Func<T, TKey> key, IDocSchema schema, ISerializer serializer,
             IDbConnectionFactory connectionFactory, IDocSet<T> docIndexSet = null)
@@ -24,7 +24,7 @@ namespace XtricateSql
 
             _key = key;
             _schema = schema;
-            _serialize = serializer;
+            _serializer = serializer;
             _connectionFactory = connectionFactory;
             _docIndexSet = docIndexSet;
 

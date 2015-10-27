@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace XtricateSql
+﻿namespace XtricateSql
 {
     public interface ISerializer
     {

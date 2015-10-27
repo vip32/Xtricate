@@ -1,9 +1,23 @@
+using System;
 using Humanizer;
 
 namespace XtricateSql
 {
     public class StorageOptions : IStorageOptions
     {
+        public StorageOptions(string connectionString, string schemaName = null, string tableName = null,
+            string tableNamePrefix = null, string tableNameSuffix = null, bool useTransactions = false)
+        {
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentException(nameof(connectionString));
+
+            ConnectionString = connectionString;
+            SchemaName = schemaName;
+            TableName = tableName;
+            TableNamePrefix = tableNamePrefix;
+            TableNameSuffix = tableNameSuffix;
+            UseTransactions = useTransactions;
+        }
+
         public string ConnectionString { get; set; }
 
         public string SchemaName { get; set; }
@@ -13,5 +27,26 @@ namespace XtricateSql
         public string TableNamePrefix { get; set; }
 
         public string TableNameSuffix { get; set; }
+
+        public bool UseTransactions { get; set; }
+
+        public string GetTableName<T>(string suffix = null)
+        {
+            var tableName = string.IsNullOrEmpty(TableName) ? typeof(T).Name.Pluralize() : TableName;
+            if (!string.IsNullOrEmpty(TableNamePrefix))
+                tableName = TableNamePrefix + tableName;
+            if (!string.IsNullOrEmpty(TableNameSuffix))
+                tableName = tableName + TableNameSuffix;
+            if (!string.IsNullOrEmpty(suffix))
+                tableName = tableName + suffix;
+            return !string.IsNullOrEmpty(SchemaName)
+                    ? $"[{SchemaName}].[{tableName}]"
+                    : $"[{tableName}]";
+        }
+
+        public string GetIndexTableName<T>()
+        {
+            return GetTableName<T>("_idx");
+        }
     }
 }

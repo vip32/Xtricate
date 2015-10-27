@@ -7,5 +7,8 @@ namespace XtricateSql
         string TableName { get; set; }
         string TableNamePrefix { get; set; }
         string TableNameSuffix { get; set; }
+        bool UseTransactions { get; set; }
+        string GetTableName<T>(string suffix = null);
+        string GetIndexTableName<T>();
     }
 }
