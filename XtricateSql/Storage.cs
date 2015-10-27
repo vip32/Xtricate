@@ -108,7 +108,15 @@ INSERT INTO {_options.GetDocTableName<TDoc>()}
 
         public virtual int Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
-            throw new NotImplementedException();
+            var sql = $@"
+SELECT COUNT(*) FROM {_options.GetDocTableName<TDoc>()} WHERE [id]>0";
+            tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
+
+            using (var conn = CreateConnection())
+            {
+                //conn.Open();
+                return conn.Query<int>(sql).SingleOrDefault();
+            }
         }
 
         public virtual IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)

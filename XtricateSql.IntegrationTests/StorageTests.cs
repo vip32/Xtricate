@@ -44,6 +44,7 @@ namespace XtricateSql.IntegrationTests
             var storage = new Storage<TestDocument>(connectionFactory, options, new JsonNetSerializer(), indexMap);
 
             storage.Initialize();
+            var count = storage.Count();
             //storage.Reset();
 
             var fixture = new Fixture().Customize(new MultipleCustomization());
@@ -54,6 +55,7 @@ namespace XtricateSql.IntegrationTests
             var result = storage.Upsert(doc.Id, doc, new[] {"en-US"});
 
             Assert.That(result, Is.EqualTo(StorageAction.Inserted));
+            Assert.That(storage.Count(), Is.EqualTo(count + 1));
         }
     }
 
