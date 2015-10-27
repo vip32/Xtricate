@@ -15,7 +15,6 @@ namespace XtricateSql.IntegrationTests
         {
             var options = new StorageOptions("TestDb", "SS");
             var connectionFactory = new SqlConnectionFactory();
-            var storage = new Storage<TestDocument>(connectionFactory, options);
             var indexMap = new List<IDocIndexMap<TestDocument>>
             {
                 new DocIndexMap<TestDocument>(nameof(TestDocument.Name), i => i.Name),
@@ -24,9 +23,10 @@ namespace XtricateSql.IntegrationTests
                 new DocIndexMap<TestDocument>(nameof(TestDocument.Date), i =>
                     i.Date.HasValue ? i.Date.Value.ToString("s") : null)
             };
+            var storage = new Storage<TestDocument>(connectionFactory, options, indexMap);
 
-            storage.Setup(indexMap);
-            storage.Reset(indexMap);
+            //storage.Initialize();
+            storage.Reset();
         }
 
         public void InsertTest()
@@ -35,7 +35,7 @@ namespace XtricateSql.IntegrationTests
             var connectionFactory = new SqlConnectionFactory();
             var storage = new Storage<TestDocument>(connectionFactory, options);
 
-            storage.Setup();
+            storage.Initialize();
 
             var fixture = new Fixture().Customize(new MultipleCustomization());
             fixture.Behaviors.Remove(new ThrowingRecursionBehavior());

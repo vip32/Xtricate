@@ -13,30 +13,34 @@ namespace XtricateSql
     {
         private readonly IDbConnectionFactory _connectionFactory;
         private readonly IStorageOptions _options;
+        private readonly IEnumerable<IDocIndexMap<T>> _indexMap;
 
-        public Storage(IDbConnectionFactory connectionFactory, IStorageOptions options)
+        public Storage(IDbConnectionFactory connectionFactory, IStorageOptions options, IEnumerable<IDocIndexMap<T>> indexMap = null)
         {
             if (connectionFactory == null) throw new ArgumentNullException(nameof(connectionFactory));
             if (options == null) throw new ArgumentNullException(nameof(options));
 
             _connectionFactory = connectionFactory;
             _options = options;
+            _indexMap = indexMap;
+
+            Initialize();
         }
 
         public IDbConnection CreateConnection() => _connectionFactory.CreateConnection(_options.ConnectionString);
 
-        public void Setup(IEnumerable<IDocIndexMap<T>> indexMap = null)
+        public void Initialize()
         {
             EnsureSchema(_options);
             EnsureDocTable();
-            EnsureIndexTable(indexMap);
+            EnsureIndexTable();
         }
 
-        public virtual void Reset(IEnumerable<IDocIndexMap<T>> indexMap = null)
+        public virtual void Reset()
         {
             DeleteTable(_options.GetDocTableName<T>());
             DeleteTable(_options.GetIndexTableName<T>());
-            Setup(indexMap);
+            Initialize();
         }
 
         public virtual void Execute(Action action)
@@ -154,15 +158,15 @@ CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
             }
         }
 
-        private void EnsureIndexTable(IEnumerable<IDocIndexMap<T>> indexMap)
+        private void EnsureIndexTable()
         {
-            if (indexMap == null || !indexMap.Any()) return;
+            if (_indexMap == null || !_indexMap.Any()) return;
             var tableName = _options.GetIndexTableName<T>();
             if (TableExists(tableName)) return;
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                Trace.WriteLine($"seed db table=[{conn.Database}].{tableName}, index={indexMap.NullToEmpty().Select(i => i.Name).ToString(", ")}");
+                Trace.WriteLine($"seed db table=[{conn.Database}].{tableName}, index={_indexMap.NullToEmpty().Select(i => i.Name).ToString(", ")}");
                 var sql = string.Format(@"
 CREATE TABLE {0}(
 [uid] UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY NONCLUSTERED,
@@ -177,9 +181,9 @@ CREATE INDEX [IX_key_{1}] ON {0} ([key] ASC);
 CREATE INDEX [IX_tags_{1}] ON {0} ([tags] ASC);
 CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
 {3}", tableName, new Random().Next(1000, 9999),
-                    indexMap.NullToEmpty().Select(i =>
+                    _indexMap.NullToEmpty().Select(i =>
                         string.Format(",[{0}] NVARCHAR(2048)", i.Name.ToLower())).ToString(""),
-                    indexMap.NullToEmpty().Select(i =>
+                    _indexMap.NullToEmpty().Select(i =>
                         string.Format("CREATE INDEX [ixp_{1}_{2}] ON {0} ([{1}] ASC);",
                             tableName, i.Name.ToLower(), new Random().Next(1000, 9999))).ToString(""));
                 conn.Execute(sql);

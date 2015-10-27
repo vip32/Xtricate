@@ -7,8 +7,8 @@ namespace XtricateSql
     public interface IStorage<T>
     {
         IDbConnection CreateConnection();
-        void Setup(IEnumerable<IDocIndexMap<T>> indexMap = null);
-        void Reset(IEnumerable<IDocIndexMap<T>> indexMap = null);
+        void Initialize();
+        void Reset();
         void Execute(Action action);
         IDbCommand UpsertCommand(object key, T document, IEnumerable<string> tags = null);
         IDbCommand UpsertCommand(IDictionary<object, T> document, IEnumerable<string> tags = null);

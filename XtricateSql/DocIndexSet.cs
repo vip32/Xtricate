@@ -9,14 +9,13 @@ namespace XtricateSql
         private readonly ISerializer _serializer;
         private readonly IEnumerable<IDocIndexMap<T>> _indexMap;
 
-        public DocIndexSet(Func<T, TKey> key, IStorage<T> storage, ISerializer serializer, IEnumerable<IDocIndexMap<T>> indexMap = null)
+        public DocIndexSet(Func<T, TKey> key, IStorage<T> storage, ISerializer serializer)
         {
             if (storage == null) throw new ArgumentNullException(nameof(storage));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
             _storage = storage;
             _serializer = serializer;
-            _indexMap = indexMap;
         }
 
         public IEnumerable<T> Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)

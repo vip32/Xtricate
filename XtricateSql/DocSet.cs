@@ -23,7 +23,7 @@ namespace XtricateSql
             _serializer = serializer;
             _docIndexSet = docIndexSet;
 
-            _storage.Setup();
+            _storage.Initialize();
         }
 
         public IEnumerable<T> Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
@@ -41,7 +41,7 @@ namespace XtricateSql
                 conn.Open();
 
                 //command.Connection = conn;
-                var result = conn.Query(command.CommandText);
+                var result = conn.Query<T>(command.CommandText);
                 throw new NotImplementedException();
             }
         }
@@ -54,8 +54,7 @@ namespace XtricateSql
             {
                 conn.Open();
 
-                //command.Connection = conn;
-                var result = conn.Query(command.CommandText);
+                var result = conn.Query<T>(command.CommandText);
                 throw new NotImplementedException();
             }
         }
