@@ -12,6 +12,7 @@ namespace XtricateSql
     public class Storage<T> : IStorage<T>
     {
         private readonly IDbConnectionFactory _connectionFactory;
+        private readonly IStorageOptions _options;
 
         public Storage(IDbConnectionFactory connectionFactory, IStorageOptions options)
         {
@@ -19,45 +20,24 @@ namespace XtricateSql
             if (options == null) throw new ArgumentNullException(nameof(options));
 
             _connectionFactory = connectionFactory;
-            Options = options;
+            _options = options;
         }
 
-        public IStorageOptions Options { get; }
+        public IDbConnection CreateConnection() => _connectionFactory.CreateConnection(_options.ConnectionString);
 
         public void InitializeSchema()
         {
-            if (TableExists(Options)) return;
-            using (var conn = _connectionFactory.CreateConnection(Options.ConnectionString))
-            {
-                conn.Open();
-                Trace.WriteLine($"sql seed db: {conn.Database}, table: {Options.GetTableName<T>()}");
-                // http://stackoverflow.com/questions/11938044/what-are-the-best-practices-for-using-a-guid-as-a-primary-key-specifically-rega
-                var sql = string.Format(@"
-CREATE TABLE {0}(
-[uid] UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY NONCLUSTERED,
-[id] INTEGER NOT NULL IDENTITY(1,1),
-[key] NVARCHAR(2048) NOT NULL,
-[tags] NVARCHAR(2048) NOT NULL,
-[hash] NVARCHAR(1024) NOT NULL,
-[timestamp] DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-[value] TEXT);
-
-CREATE UNIQUE CLUSTERED INDEX [IX_id_{1}] ON {0} (id)
-CREATE INDEX [IX_key_{1}] ON {0} ([key] ASC);
-CREATE INDEX [IX_tags_{1}] ON {0} ([tags] ASC);
-CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
-", Options.GetTableName<T>(), new Random().Next(1000, 9999));
-                conn.Execute(sql);
-            }
+            EnsureTable();
+            EnsureIndexTable();
         }
 
         public virtual void Execute(Action action)
         {
-            if (Options.UseTransactions)
-                using (var transaction = _connectionFactory.CreateConnection(Options.ConnectionString).BeginTransaction())
+            if (_options.UseTransactions)
+                using (var trans = CreateConnection().BeginTransaction())
                 {
                     action();
-                    transaction.Commit();
+                    trans.Commit();
                 }
             else
                 action();
@@ -100,25 +80,25 @@ CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
             throw new NotImplementedException();
         }
 
-        private bool TableExists(IStorageOptions options)
+        private bool TableExists(string tableName)
         {
-            EnsureSchema(options);
+            EnsureSchema(_options);
 
-            using (var conn = _connectionFactory.CreateConnection(options.ConnectionString))
+            using (var conn = CreateConnection())
             {
                 conn.Open();
                 return
                     conn.Query<string>(@"
 SELECT QUOTENAME(TABLE_SCHEMA) + '.' + QUOTENAME(TABLE_NAME) AS Name
 FROM INFORMATION_SCHEMA.TABLES")
-                        .Any(t => t.Equals(options.GetTableName<T>(), StringComparison.InvariantCultureIgnoreCase));
+                        .Any(t => t.Equals(tableName, StringComparison.InvariantCultureIgnoreCase));
             }
         }
 
         private void EnsureSchema(IStorageOptions options)
         {
             if (string.IsNullOrEmpty(options.SchemaName)) return;
-            using (var conn = _connectionFactory.CreateConnection(options.ConnectionString))
+            using (var conn = CreateConnection())
             {
                 conn.Open();
                 if (conn.Query<string>(@"
@@ -134,8 +114,62 @@ FROM INFORMATION_SCHEMA.TABLES")
                 }
                 catch (SqlException e)
                 {
-                    Trace.WriteLine($"create schema {e.Message}: ");
+                    Trace.WriteLine($"create schema: {e.Message}: ");
                 }
+            }
+        }
+
+        private void EnsureTable()
+        {
+            if (TableExists(_options.GetTableName<T>())) return;
+            using (var conn = CreateConnection())
+            {
+                conn.Open();
+                Trace.WriteLine($"seed db table [{conn.Database}].{_options.GetTableName<T>()}");
+                // http://stackoverflow.com/questions/11938044/what-are-the-best-practices-for-using-a-guid-as-a-primary-key-specifically-rega
+                var sql = string.Format(@"
+CREATE TABLE {0}(
+[uid] UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY NONCLUSTERED,
+[id] INTEGER NOT NULL IDENTITY(1,1),
+[key] NVARCHAR(2048) NOT NULL,
+[tags] NVARCHAR(2048) NOT NULL,
+[hash] NVARCHAR(1024) NOT NULL,
+[timestamp] DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+[value] TEXT);
+
+CREATE UNIQUE CLUSTERED INDEX [IX_id_{1}] ON {0} (id)
+CREATE INDEX [IX_key_{1}] ON {0} ([key] ASC);
+CREATE INDEX [IX_tags_{1}] ON {0} ([tags] ASC);
+CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
+", _options.GetTableName<T>(), new Random().Next(1000, 9999));
+                conn.Execute(sql);
+            }
+        }
+
+        private void EnsureIndexTable()
+        {
+            if (TableExists(_options.GetIndexTableName<T>())) return;
+            using (var conn = CreateConnection())
+            {
+                conn.Open();
+                Trace.WriteLine($"seed db table [{conn.Database}].{_options.GetIndexTableName<T>()}");
+                // http://stackoverflow.com/questions/11938044/what-are-the-best-practices-for-using-a-guid-as-a-primary-key-specifically-rega
+                var sql = string.Format(@"
+CREATE TABLE {0}(
+[uid] UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY NONCLUSTERED,
+[id] INTEGER NOT NULL IDENTITY(1,1),
+[key] NVARCHAR(2048) NOT NULL,
+[tags] NVARCHAR(2048) NOT NULL,
+[hash] NVARCHAR(1024) NOT NULL,
+[timestamp] DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+[value] TEXT);
+
+CREATE UNIQUE CLUSTERED INDEX [IX_id_{1}] ON {0} (id)
+CREATE INDEX [IX_key_{1}] ON {0} ([key] ASC);
+CREATE INDEX [IX_tags_{1}] ON {0} ([tags] ASC);
+CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
+", _options.GetIndexTableName<T>(), new Random().Next(1000, 9999));
+                conn.Execute(sql);
             }
         }
     }

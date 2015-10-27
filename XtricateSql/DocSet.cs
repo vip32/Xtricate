@@ -10,22 +10,18 @@ namespace XtricateSql
     {
         private readonly Func<T, TKey> _key;
         private readonly IDocSchema _schema;
-        private readonly IDbConnectionFactory _connectionFactory;
         private readonly ISerializer _serializer;
         private readonly IDocSet<T> _docIndexSet;
 
-        public DocSet(Func<T, TKey> key, IDocSchema schema, ISerializer serializer,
-            IDbConnectionFactory connectionFactory, IDocSet<T> docIndexSet = null)
+        public DocSet(Func<T, TKey> key, IDocSchema schema, ISerializer serializer, IDocSet<T> docIndexSet = null)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (schema == null) throw new ArgumentNullException(nameof(schema));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
-            if (connectionFactory == null) throw new ArgumentNullException(nameof(connectionFactory));
 
             _key = key;
             _schema = schema;
             _serializer = serializer;
-            _connectionFactory = connectionFactory;
             _docIndexSet = docIndexSet;
 
             _schema.Storage<T>().InitializeSchema();
@@ -42,7 +38,7 @@ namespace XtricateSql
             var storage = _schema.Storage<T>();
             var command = storage.LoadCommand(key, tags, criteria);
 
-            using (var conn = _connectionFactory.CreateConnection(_schema.Storage<T>().Options.ConnectionString))
+            using (var conn = _schema.Storage<T>().CreateConnection())
             {
                 conn.Open();
 
@@ -57,7 +53,7 @@ namespace XtricateSql
             var storage = _schema.Storage<T>();
             var command = storage.LoadCommand(tags, criteria);
 
-            using (var conn = _connectionFactory.CreateConnection(_schema.Storage<T>().Options.ConnectionString))
+            using (var conn = _schema.Storage<T>().CreateConnection())
             {
                 conn.Open();
 

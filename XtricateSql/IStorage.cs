@@ -6,7 +6,7 @@ namespace XtricateSql
 {
     public interface IStorage<T>
     {
-        IStorageOptions Options { get; }
+        IDbConnection CreateConnection();
         void InitializeSchema();
         void Execute(Action action);
         IDbCommand UpsertCommand(object key, T document, IEnumerable<string> tags = null);
