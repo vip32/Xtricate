@@ -5,73 +5,53 @@ using Dapper;
 
 namespace XtricateSql
 {
-    public class DocSet<T, TKey> : IDocSet<T>
+    public class DocSet<TDoc, TKey> : IDocSet<TDoc>
     {
-        private readonly Func<T, TKey> _key;
-        private readonly IStorage<T> _storage;
-        private readonly ISerializer _serializer;
-        private readonly IDocSet<T> _docIndexSet;
+        private readonly Func<TDoc, TKey> _key;
+        private readonly IStorage<TDoc> _storage;
+        private readonly IDocSet<TDoc> _docIndexSet;
 
-        public DocSet(Func<T, TKey> key, IStorage<T> storage, ISerializer serializer, IDocSet<T> docIndexSet = null)
+        public DocSet(Func<TDoc, TKey> key, IStorage<TDoc> storage, IDocSet<TDoc> docIndexSet = null)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (storage == null) throw new ArgumentNullException(nameof(storage));
-            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
             _key = key;
             _storage = storage;
-            _serializer = serializer;
             _docIndexSet = docIndexSet;
 
             _storage.Initialize();
         }
 
-        public IEnumerable<T> Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public IEnumerable<TDoc> Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<T> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
             if (key == null) return null;
-            var command = _storage.LoadCommand(key, tags, criteria);
-
-            using (var conn = _storage.CreateConnection())
-            {
-                conn.Open();
-
-                //command.Connection = conn;
-                var result = conn.Query<T>(command.CommandText);
-                throw new NotImplementedException();
-            }
+            return _storage.Load(key, tags, criteria);
         }
 
-        public IEnumerable<T> LoadAll(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public IEnumerable<TDoc> LoadAll(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
-            var command = _storage.LoadCommand(tags, criteria);
-
-            using (var conn = _storage.CreateConnection())
-            {
-                conn.Open();
-
-                var result = conn.Query<T>(command.CommandText);
-                throw new NotImplementedException();
-            }
+            return _storage.Load(tags, criteria);
         }
 
-        public IEnumerable<T> Store(IEnumerable<T> entities, IEnumerable<string> tags = null)
+        public IEnumerable<TDoc> Store(IEnumerable<TDoc> documents, IEnumerable<string> tags = null)
         {
-            if (entities == null || !entities.Any()) return entities;
-            foreach (var entity in entities)
+            if (documents == null || !documents.Any()) return documents;
+            foreach (var entity in documents)
                 Store(entity, tags);
-            return entities;
+            return documents;
         }
 
-        public T Store(T entity, IEnumerable<string> tags = null)
+        public TDoc Store(TDoc document, IEnumerable<string> tags = null)
         {
-            if (entity == null) return entity;
-            _storage.UpsertCommand(_key(entity), entity, tags);
-            return entity;
+            if (document == null) return document;
+            _storage.Upsert(_key(document), document, tags);
+            return document;
         }
 
         public void Delete(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
@@ -82,16 +62,16 @@ namespace XtricateSql
                 Delete(entity);
         }
 
-        public void Delete(T entity)
+        public void Delete(TDoc document)
         {
-            if (entity == null) return;
+            if (document == null) return;
             throw new NotImplementedException();
         }
 
-        public void Delete(IEnumerable<T> entities, IEnumerable<string> tags = null)
+        public void Delete(IEnumerable<TDoc> documents, IEnumerable<string> tags = null)
         {
-            if (entities == null || !entities.Any()) return;
-            foreach (var entity in entities)
+            if (documents == null || !documents.Any()) return;
+            foreach (var entity in documents)
                 Delete(entity);
         }
 

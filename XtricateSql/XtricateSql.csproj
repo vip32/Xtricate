@@ -80,6 +80,7 @@
     <Compile Include="IDocSet.cs" />
     <Compile Include="JsonSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StorageAction.cs" />
     <Compile Include="StorageOptions.cs" />
   </ItemGroup>
   <ItemGroup>

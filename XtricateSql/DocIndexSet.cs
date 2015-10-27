@@ -33,12 +33,12 @@ namespace XtricateSql
             throw new NotImplementedException();
         }
 
-        public T Store(T entity, IEnumerable<string> tags = null)
+        public T Store(T document, IEnumerable<string> tags = null)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<T> Store(IEnumerable<T> entities, IEnumerable<string> tags = null)
+        public IEnumerable<T> Store(IEnumerable<T> documents, IEnumerable<string> tags = null)
         {
             throw new NotImplementedException();
         }
@@ -48,12 +48,12 @@ namespace XtricateSql
             throw new NotImplementedException();
         }
 
-        public void Delete(T entity)
+        public void Delete(T document)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(IEnumerable<T> entities, IEnumerable<string> tags = null)
+        public void Delete(IEnumerable<T> documents, IEnumerable<string> tags = null)
         {
             throw new NotImplementedException();
         }

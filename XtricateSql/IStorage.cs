@@ -4,18 +4,19 @@ using System.Data;
 
 namespace XtricateSql
 {
-    public interface IStorage<T>
+    public interface IStorage<TDoc>
     {
         IDbConnection CreateConnection();
         void Initialize();
         void Reset();
         void Execute(Action action);
-        IDbCommand UpsertCommand(object key, T document, IEnumerable<string> tags = null);
-        IDbCommand UpsertCommand(IDictionary<object, T> document, IEnumerable<string> tags = null);
-        IDbCommand CountCommand(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
-        IDbCommand LoadCommand(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
-        IDbCommand LoadCommand(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
-        IDbCommand DeleteCommand(object key, IEnumerable<string> tags = null);
-        IDbCommand DeleteCommand(T document);
+        bool Exists(object key, IEnumerable<string> tags = null);
+        StorageAction Upsert(object key, TDoc document, IEnumerable<string> tags = null);
+        StorageAction Upsert(IDictionary<object, TDoc> document, IEnumerable<string> tags = null);
+        int Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
+        IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
+        IEnumerable<TDoc> Load(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
+        StorageAction Delete(object key, IEnumerable<string> tags = null);
+        StorageAction Delete(TDoc document);
     }
 }

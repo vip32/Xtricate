@@ -23,29 +23,37 @@ namespace XtricateSql.IntegrationTests
                 new DocIndexMap<TestDocument>(nameof(TestDocument.Date), i =>
                     i.Date.HasValue ? i.Date.Value.ToString("s") : null)
             };
-            var storage = new Storage<TestDocument>(connectionFactory, options, indexMap);
+            var storage = new Storage<TestDocument>(connectionFactory, options, new JsonNetSerializer(), indexMap);
 
-            //storage.Initialize();
+            storage.Initialize();
             storage.Reset();
         }
 
         public void InsertTest()
         {
-            var options = new StorageOptions("TestDb");
+            var options = new StorageOptions("TestDb", "SS");
             var connectionFactory = new SqlConnectionFactory();
-            var storage = new Storage<TestDocument>(connectionFactory, options);
+            var indexMap = new List<IDocIndexMap<TestDocument>>
+            {
+                new DocIndexMap<TestDocument>(nameof(TestDocument.Name), i => i.Name),
+                new DocIndexMap<TestDocument>(nameof(TestDocument.Group), i => i.Group),
+                new DocIndexMap<TestDocument>(nameof(TestSku.Sku), values: i => i.Skus.Select(s => s.Sku)),
+                new DocIndexMap<TestDocument>(nameof(TestDocument.Date), i =>
+                    i.Date.HasValue ? i.Date.Value.ToString("s") : null)
+            };
+            var storage = new Storage<TestDocument>(connectionFactory, options, new JsonNetSerializer(), indexMap);
 
             storage.Initialize();
+            //storage.Reset();
 
             var fixture = new Fixture().Customize(new MultipleCustomization());
             fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
             var doc = fixture.Create<TestDocument>();
-            var command = storage.UpsertCommand(doc.Id, doc);
+            var result = storage.Upsert(doc.Id, doc, new[] {"en-US"});
 
-            Assert.That(command, Is.Not.Null);
-            Assert.That(command, Is.Not.Empty);
+            Assert.That(result, Is.EqualTo(StorageAction.Inserted));
         }
     }
 

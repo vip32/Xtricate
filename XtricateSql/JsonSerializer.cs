@@ -9,7 +9,7 @@ namespace XtricateSql
         private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
         {
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            TypeNameHandling = TypeNameHandling.All,
+            //TypeNameHandling = TypeNameHandling.All,
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
             Converters = new JsonConverter[]
             {

@@ -9,19 +9,22 @@ using Dapper;
 
 namespace XtricateSql
 {
-    public class Storage<T> : IStorage<T>
+    public class Storage<TDoc> : IStorage<TDoc>
     {
         private readonly IDbConnectionFactory _connectionFactory;
         private readonly IStorageOptions _options;
-        private readonly IEnumerable<IDocIndexMap<T>> _indexMap;
+        private readonly IEnumerable<IDocIndexMap<TDoc>> _indexMap;
+        private readonly ISerializer _serializer;
 
-        public Storage(IDbConnectionFactory connectionFactory, IStorageOptions options, IEnumerable<IDocIndexMap<T>> indexMap = null)
+        public Storage(IDbConnectionFactory connectionFactory, IStorageOptions options, ISerializer serializer, IEnumerable<IDocIndexMap<TDoc>> indexMap = null)
         {
             if (connectionFactory == null) throw new ArgumentNullException(nameof(connectionFactory));
             if (options == null) throw new ArgumentNullException(nameof(options));
+            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
             _connectionFactory = connectionFactory;
             _options = options;
+            _serializer = serializer;
             _indexMap = indexMap;
 
             Initialize();
@@ -38,8 +41,8 @@ namespace XtricateSql
 
         public virtual void Reset()
         {
-            DeleteTable(_options.GetDocTableName<T>());
-            DeleteTable(_options.GetIndexTableName<T>());
+            DeleteTable(_options.GetDocTableName<TDoc>());
+            DeleteTable(_options.GetIndexTableName<TDoc>());
             Initialize();
         }
 
@@ -55,39 +58,81 @@ namespace XtricateSql
                 action();
         }
 
-        public virtual IDbCommand UpsertCommand(object key, T document, IEnumerable<string> tags = null)
+        public virtual bool Exists(object key, IEnumerable<string> tags = null)
+        {
+            var sql = $@"
+SELECT [id] FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
+            tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
+
+            using (var conn = CreateConnection())
+            {
+                conn.Open();
+                return conn.Query<int>(sql, new {key = key}).Any();
+            }
+        }
+
+        public virtual StorageAction Upsert(object key, TDoc document, IEnumerable<string> tags = null)
+        {
+            using (var conn = CreateConnection())
+            {
+                string sql;
+                StorageAction result;
+                conn.Open();
+                if (Exists(key, tags))
+                {
+                    sql = $@"
+UPDATE {_options.GetDocTableName<TDoc>()} SET [hash]=@hash,[timestamp]=@timestamp,[value]=@value WHERE [key]=@key";
+                    tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
+                    result = StorageAction.Updated;
+                }
+                else
+                {
+                    sql = $@"
+INSERT INTO {_options.GetDocTableName<TDoc>()}
+([key],[tags],[hash],[timestamp],[value]) VALUES(@key,@tags,@hash,@timestamp,@value);";
+                    result = StorageAction.Inserted;
+                }
+                conn.Execute(sql,
+                    new
+                    {
+                        key = key,
+                        tags = $"||{tags.NullToEmpty().ToString("||")}||",
+                        hash = "TODO",
+                        value = _serializer.ToJson(document),
+                        timestamp = DateTime.UtcNow
+                    });
+                return result;
+            }
+            // http://www.databasejournal.com/features/mssql/using-the-merge-statement-to-perform-an-upsert.html
+        }
+
+        public virtual StorageAction Upsert(IDictionary<object, TDoc> document, IEnumerable<string> tags = null)
         {
             // use _key(document) to get KEY
             throw new NotImplementedException();
         }
 
-        public virtual IDbCommand UpsertCommand(IDictionary<object, T> document, IEnumerable<string> tags = null)
-        {
-            // use _key(document) to get KEY
-            throw new NotImplementedException();
-        }
-
-        public virtual IDbCommand CountCommand(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public virtual int Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
             throw new NotImplementedException();
         }
 
-        public virtual IDbCommand LoadCommand(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public virtual IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
             throw new NotImplementedException();
         }
 
-        public virtual IDbCommand LoadCommand(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public virtual IEnumerable<TDoc> Load(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
             throw new NotImplementedException();
         }
 
-        public virtual IDbCommand DeleteCommand(object key, IEnumerable<string> tags = null)
+        public virtual StorageAction Delete(object key, IEnumerable<string> tags = null)
         {
             throw new NotImplementedException();
         }
 
-        public virtual IDbCommand DeleteCommand(T document)
+        public virtual StorageAction Delete(TDoc document)
         {
             throw new NotImplementedException();
         }
@@ -132,8 +177,8 @@ FROM INFORMATION_SCHEMA.TABLES")
 
         private void EnsureDocTable()
         {
-            if (TableExists(_options.GetDocTableName<T>())) return;
-            var tableName = _options.GetDocTableName<T>();
+            if (TableExists(_options.GetDocTableName<TDoc>())) return;
+            var tableName = _options.GetDocTableName<TDoc>();
             using (var conn = CreateConnection())
             {
                 conn.Open();
@@ -161,7 +206,7 @@ CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
         private void EnsureIndexTable()
         {
             if (_indexMap == null || !_indexMap.Any()) return;
-            var tableName = _options.GetIndexTableName<T>();
+            var tableName = _options.GetIndexTableName<TDoc>();
             if (TableExists(tableName)) return;
             using (var conn = CreateConnection())
             {

@@ -2,16 +2,16 @@
 
 namespace XtricateSql
 {
-    public interface IDocSet<T>
+    public interface IDocSet<TDoc>
     {
-        IEnumerable<T> Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
-        IEnumerable<T> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
-        IEnumerable<T> LoadAll(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
-        T Store(T entity, IEnumerable<string> tags = null);
-        IEnumerable<T> Store(IEnumerable<T> entities, IEnumerable<string> tags = null);
+        IEnumerable<TDoc> Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
+        IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
+        IEnumerable<TDoc> LoadAll(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
+        TDoc Store(TDoc document, IEnumerable<string> tags = null);
+        IEnumerable<TDoc> Store(IEnumerable<TDoc> documents, IEnumerable<string> tags = null);
         void Delete(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
-        void Delete(T entity);
-        void Delete(IEnumerable<T> entities, IEnumerable<string> tags = null);
+        void Delete(TDoc document);
+        void Delete(IEnumerable<TDoc> documents, IEnumerable<string> tags = null);
         void DeleteAll(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
     }
 }
