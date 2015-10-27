@@ -30,7 +30,7 @@ namespace XtricateSql
 
         public bool UseTransactions { get; set; }
 
-        public string GetTableName<T>(string suffix = null)
+        public string GetDocTableName<T>(string suffix = null)
         {
             var tableName = string.IsNullOrEmpty(TableName) ? typeof(T).Name.Pluralize() : TableName;
             if (!string.IsNullOrEmpty(TableNamePrefix))
@@ -46,7 +46,7 @@ namespace XtricateSql
 
         public string GetIndexTableName<T>()
         {
-            return GetTableName<T>("_idx");
+            return GetDocTableName<T>("_idx");
         }
     }
 }

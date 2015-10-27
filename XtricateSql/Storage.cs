@@ -25,10 +25,10 @@ namespace XtricateSql
 
         public IDbConnection CreateConnection() => _connectionFactory.CreateConnection(_options.ConnectionString);
 
-        public void InitializeSchema()
+        public void InitializeSchema(IEnumerable<IDocIndexMap<T>> indexMap = null)
         {
-            EnsureTable();
-            EnsureIndexTable();
+            EnsureDocTable();
+            EnsureIndexTable(indexMap);
         }
 
         public virtual void Execute(Action action)
@@ -119,13 +119,14 @@ FROM INFORMATION_SCHEMA.TABLES")
             }
         }
 
-        private void EnsureTable()
+        private void EnsureDocTable()
         {
-            if (TableExists(_options.GetTableName<T>())) return;
+            if (TableExists(_options.GetDocTableName<T>())) return;
+            var tableName = _options.GetDocTableName<T>();
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                Trace.WriteLine($"seed db table [{conn.Database}].{_options.GetTableName<T>()}");
+                Trace.WriteLine($"seed db table [{conn.Database}].{tableName}");
                 // http://stackoverflow.com/questions/11938044/what-are-the-best-practices-for-using-a-guid-as-a-primary-key-specifically-rega
                 var sql = string.Format(@"
 CREATE TABLE {0}(
@@ -141,19 +142,20 @@ CREATE UNIQUE CLUSTERED INDEX [IX_id_{1}] ON {0} (id)
 CREATE INDEX [IX_key_{1}] ON {0} ([key] ASC);
 CREATE INDEX [IX_tags_{1}] ON {0} ([tags] ASC);
 CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
-", _options.GetTableName<T>(), new Random().Next(1000, 9999));
+", tableName, new Random().Next(1000, 9999));
                 conn.Execute(sql);
             }
         }
 
-        private void EnsureIndexTable()
+        private void EnsureIndexTable(IEnumerable<IDocIndexMap<T>> indexMap)
         {
-            if (TableExists(_options.GetIndexTableName<T>())) return;
+            if (indexMap == null || !indexMap.Any()) return;
+            var tableName = _options.GetIndexTableName<T>();
+            if (TableExists(tableName)) return;
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                Trace.WriteLine($"seed db table [{conn.Database}].{_options.GetIndexTableName<T>()}");
-                // http://stackoverflow.com/questions/11938044/what-are-the-best-practices-for-using-a-guid-as-a-primary-key-specifically-rega
+                Trace.WriteLine($"seed db table=[{conn.Database}].{tableName}, index={indexMap.NullToEmpty().Select(i => i.Name).ToString(", ")}");
                 var sql = string.Format(@"
 CREATE TABLE {0}(
 [uid] UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY NONCLUSTERED,
@@ -161,14 +163,18 @@ CREATE TABLE {0}(
 [key] NVARCHAR(2048) NOT NULL,
 [tags] NVARCHAR(2048) NOT NULL,
 [hash] NVARCHAR(1024) NOT NULL,
-[timestamp] DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-[value] TEXT);
-
+[timestamp] DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
+{2});
 CREATE UNIQUE CLUSTERED INDEX [IX_id_{1}] ON {0} (id)
 CREATE INDEX [IX_key_{1}] ON {0} ([key] ASC);
 CREATE INDEX [IX_tags_{1}] ON {0} ([tags] ASC);
 CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
-", _options.GetIndexTableName<T>(), new Random().Next(1000, 9999));
+{3}", tableName, new Random().Next(1000, 9999),
+                    indexMap.NullToEmpty().Select(i =>
+                        string.Format(",[{0}] NVARCHAR(2048)", i.Name.ToLower())).ToString(""),
+                    indexMap.NullToEmpty().Select(i =>
+                        string.Format("CREATE INDEX [ixp_{1}_{2}] ON {0} ([{1}] ASC);",
+                            tableName, i.Name.ToLower(), new Random().Next(1000, 9999))).ToString(""));
                 conn.Execute(sql);
             }
         }

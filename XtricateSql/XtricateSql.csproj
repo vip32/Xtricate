@@ -21,6 +21,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -69,6 +70,7 @@
     <Compile Include="DocIndexSet.cs" />
     <Compile Include="DocSet.cs" />
     <Compile Include="IStorageOptions.cs" />
+    <Compile Include="LinqExtensions.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="ICriteria.cs" />
     <Compile Include="IDocIndexMap.cs" />

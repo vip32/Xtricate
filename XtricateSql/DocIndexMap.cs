@@ -6,8 +6,8 @@ namespace XtricateSql
 {
     public class DocIndexMap<T> : IDocIndexMap<T>
     {
-        public DocIndexMap(string name, Expression<Func<T, object>> value,
-            Expression<Func<T, IEnumerable<T>>> values, string description = null)
+        public DocIndexMap(string name, Expression<Func<T, object>> value = null,
+            Expression<Func<T, IEnumerable<object>>> values = null, string description = null)
         {
             Name = name;
             if (value != null)
@@ -18,8 +18,11 @@ namespace XtricateSql
         }
 
         public string Name { get; set; }
+
         public string Description { get; set; }
+
         public Func<T, object> Value { get; set; }
-        public Func<T, IEnumerable<T>> Values { get; set; }
+
+        public Func<T, IEnumerable<object>> Values { get; set; }
     }
 }
