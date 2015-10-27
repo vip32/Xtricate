@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using Dapper;
 
@@ -9,22 +8,22 @@ namespace XtricateSql
     public class DocSet<T, TKey> : IDocSet<T>
     {
         private readonly Func<T, TKey> _key;
-        private readonly IDocSchema _schema;
+        private readonly IStorage<T> _storage;
         private readonly ISerializer _serializer;
         private readonly IDocSet<T> _docIndexSet;
 
-        public DocSet(Func<T, TKey> key, IDocSchema schema, ISerializer serializer, IDocSet<T> docIndexSet = null)
+        public DocSet(Func<T, TKey> key, IStorage<T> storage, ISerializer serializer, IDocSet<T> docIndexSet = null)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            if (schema == null) throw new ArgumentNullException(nameof(schema));
+            if (storage == null) throw new ArgumentNullException(nameof(storage));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
             _key = key;
-            _schema = schema;
+            _storage = storage;
             _serializer = serializer;
             _docIndexSet = docIndexSet;
 
-            _schema.Storage<T>().InitializeSchema();
+            _storage.Setup();
         }
 
         public IEnumerable<T> Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
@@ -35,10 +34,9 @@ namespace XtricateSql
         public IEnumerable<T> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
             if (key == null) return null;
-            var storage = _schema.Storage<T>();
-            var command = storage.LoadCommand(key, tags, criteria);
+            var command = _storage.LoadCommand(key, tags, criteria);
 
-            using (var conn = _schema.Storage<T>().CreateConnection())
+            using (var conn = _storage.CreateConnection())
             {
                 conn.Open();
 
@@ -50,10 +48,9 @@ namespace XtricateSql
 
         public IEnumerable<T> LoadAll(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
-            var storage = _schema.Storage<T>();
-            var command = storage.LoadCommand(tags, criteria);
+            var command = _storage.LoadCommand(tags, criteria);
 
-            using (var conn = _schema.Storage<T>().CreateConnection())
+            using (var conn = _storage.CreateConnection())
             {
                 conn.Open();
 
@@ -74,7 +71,7 @@ namespace XtricateSql
         public T Store(T entity, IEnumerable<string> tags = null)
         {
             if (entity == null) return entity;
-            _schema.Storage<T>().UpsertCommand(_key(entity), entity, tags);
+            _storage.UpsertCommand(_key(entity), entity, tags);
             return entity;
         }
 

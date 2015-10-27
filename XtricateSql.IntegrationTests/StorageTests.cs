@@ -25,7 +25,8 @@ namespace XtricateSql.IntegrationTests
                     i.Date.HasValue ? i.Date.Value.ToString("s") : null)
             };
 
-            storage.InitializeSchema(indexMap);
+            storage.Setup(indexMap);
+            storage.Reset(indexMap);
         }
 
         public void InsertTest()
@@ -34,7 +35,7 @@ namespace XtricateSql.IntegrationTests
             var connectionFactory = new SqlConnectionFactory();
             var storage = new Storage<TestDocument>(connectionFactory, options);
 
-            storage.InitializeSchema();
+            storage.Setup();
 
             var fixture = new Fixture().Customize(new MultipleCustomization());
             fixture.Behaviors.Remove(new ThrowingRecursionBehavior());

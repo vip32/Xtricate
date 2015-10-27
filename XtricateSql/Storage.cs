@@ -25,10 +25,18 @@ namespace XtricateSql
 
         public IDbConnection CreateConnection() => _connectionFactory.CreateConnection(_options.ConnectionString);
 
-        public void InitializeSchema(IEnumerable<IDocIndexMap<T>> indexMap = null)
+        public void Setup(IEnumerable<IDocIndexMap<T>> indexMap = null)
         {
+            EnsureSchema(_options);
             EnsureDocTable();
             EnsureIndexTable(indexMap);
+        }
+
+        public virtual void Reset(IEnumerable<IDocIndexMap<T>> indexMap = null)
+        {
+            DeleteTable(_options.GetDocTableName<T>());
+            DeleteTable(_options.GetIndexTableName<T>());
+            Setup(indexMap);
         }
 
         public virtual void Execute(Action action)
@@ -82,7 +90,6 @@ namespace XtricateSql
 
         private bool TableExists(string tableName)
         {
-            EnsureSchema(_options);
 
             using (var conn = CreateConnection())
             {
@@ -175,6 +182,18 @@ CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
                     indexMap.NullToEmpty().Select(i =>
                         string.Format("CREATE INDEX [ixp_{1}_{2}] ON {0} ([{1}] ASC);",
                             tableName, i.Name.ToLower(), new Random().Next(1000, 9999))).ToString(""));
+                conn.Execute(sql);
+            }
+        }
+
+        private void DeleteTable(string tableName)
+        {
+            if (!TableExists(tableName)) return;
+            using (var conn = CreateConnection())
+            {
+                conn.Open();
+                Trace.WriteLine($"drop db table [{conn.Database}].{tableName}");
+                var sql = string.Format(@"DROP TABLE {0}", tableName);
                 conn.Execute(sql);
             }
         }
