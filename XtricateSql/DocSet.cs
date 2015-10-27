@@ -42,8 +42,8 @@ namespace XtricateSql
         public IEnumerable<TDoc> Store(IEnumerable<TDoc> documents, IEnumerable<string> tags = null)
         {
             if (documents == null || !documents.Any()) return documents;
-            foreach (var entity in documents)
-                Store(entity, tags);
+            foreach (var document in documents)
+                Store(document, tags);
             return documents;
         }
 

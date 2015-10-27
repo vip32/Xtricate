@@ -12,7 +12,6 @@ namespace XtricateSql
         void Execute(Action action);
         bool Exists(object key, IEnumerable<string> tags = null);
         StorageAction Upsert(object key, TDoc document, IEnumerable<string> tags = null);
-        StorageAction Upsert(IDictionary<object, TDoc> document, IEnumerable<string> tags = null);
         int Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
         IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
         IEnumerable<TDoc> Load(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);

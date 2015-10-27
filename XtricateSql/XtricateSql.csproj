@@ -69,6 +69,7 @@
     <Compile Include="DocIndexMap.cs" />
     <Compile Include="DocIndexSet.cs" />
     <Compile Include="DocSet.cs" />
+    <Compile Include="HashHelper.cs" />
     <Compile Include="IStorageOptions.cs" />
     <Compile Include="LinqExtensions.cs" />
     <Compile Include="Storage.cs" />

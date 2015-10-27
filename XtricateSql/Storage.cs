@@ -66,7 +66,7 @@ SELECT [id] FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
 
             using (var conn = CreateConnection())
             {
-                conn.Open();
+                //conn.Open();
                 return conn.Query<int>(sql, new {key = key}).Any();
             }
         }
@@ -77,7 +77,6 @@ SELECT [id] FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
             {
                 string sql;
                 StorageAction result;
-                conn.Open();
                 if (Exists(key, tags))
                 {
                     sql = $@"
@@ -92,24 +91,19 @@ INSERT INTO {_options.GetDocTableName<TDoc>()}
 ([key],[tags],[hash],[timestamp],[value]) VALUES(@key,@tags,@hash,@timestamp,@value);";
                     result = StorageAction.Inserted;
                 }
+                //conn.Open();
                 conn.Execute(sql,
                     new
                     {
                         key = key,
                         tags = $"||{tags.NullToEmpty().ToString("||")}||",
-                        hash = "TODO",
+                        hash = HashHelper.ComputeHash(document),
                         value = _serializer.ToJson(document),
                         timestamp = DateTime.UtcNow
                     });
                 return result;
             }
             // http://www.databasejournal.com/features/mssql/using-the-merge-statement-to-perform-an-upsert.html
-        }
-
-        public virtual StorageAction Upsert(IDictionary<object, TDoc> document, IEnumerable<string> tags = null)
-        {
-            // use _key(document) to get KEY
-            throw new NotImplementedException();
         }
 
         public virtual int Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
