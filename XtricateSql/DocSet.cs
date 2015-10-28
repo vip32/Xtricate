@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dapper;
 
 namespace XtricateSql
 {
     public class DocSet<TDoc, TKey> : IDocSet<TDoc>
     {
+        private readonly IDocSet<TDoc> _docIndexSet;
         private readonly Func<TDoc, TKey> _key;
         private readonly IStorage<TDoc> _storage;
-        private readonly IDocSet<TDoc> _docIndexSet;
 
         public DocSet(Func<TDoc, TKey> key, IStorage<TDoc> storage, IDocSet<TDoc> docIndexSet = null)
         {

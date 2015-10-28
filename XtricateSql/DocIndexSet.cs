@@ -5,9 +5,9 @@ namespace XtricateSql
 {
     public class DocIndexSet<T, TKey> : IDocSet<T>
     {
-        private readonly IStorage<T> _storage;
-        private readonly ISerializer _serializer;
         private readonly IEnumerable<IDocIndexMap<T>> _indexMap;
+        private readonly ISerializer _serializer;
+        private readonly IStorage<T> _storage;
 
         public DocIndexSet(Func<T, TKey> key, IStorage<T> storage, ISerializer serializer)
         {

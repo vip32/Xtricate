@@ -8,7 +8,7 @@ namespace XtricateSql
     {
         IDbConnection CreateConnection();
         void Initialize();
-        void Reset();
+        void Reset(bool indexOnly = false);
         void Execute(Action action);
         bool Exists(object key, IEnumerable<string> tags = null);
         StorageAction Upsert(object key, TDoc document, IEnumerable<string> tags = null);

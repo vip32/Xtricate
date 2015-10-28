@@ -19,20 +19,15 @@ namespace XtricateSql
         }
 
         public string ConnectionString { get; set; }
-
         public string SchemaName { get; set; }
-
         public string TableName { get; set; }
-
         public string TableNamePrefix { get; set; }
-
         public string TableNameSuffix { get; set; }
-
         public bool UseTransactions { get; set; }
 
         public string GetDocTableName<T>(string suffix = null)
         {
-            var tableName = string.IsNullOrEmpty(TableName) ? typeof(T).Name.Pluralize() : TableName;
+            var tableName = string.IsNullOrEmpty(TableName) ? typeof (T).Name.Pluralize() : TableName;
             if (!string.IsNullOrEmpty(TableNamePrefix))
                 tableName = TableNamePrefix + tableName;
             if (!string.IsNullOrEmpty(TableNameSuffix))
@@ -40,8 +35,8 @@ namespace XtricateSql
             if (!string.IsNullOrEmpty(suffix))
                 tableName = tableName + suffix;
             return !string.IsNullOrEmpty(SchemaName)
-                    ? $"[{SchemaName}].[{tableName}]"
-                    : $"[{tableName}]";
+                ? $"[{SchemaName}].[{tableName}]"
+                : $"[{tableName}]";
         }
 
         public string GetIndexTableName<T>()

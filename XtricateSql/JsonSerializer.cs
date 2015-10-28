@@ -22,7 +22,6 @@ namespace XtricateSql
         {
             if (value == null) return null;
             return JsonConvert.SerializeObject(value, _settings);
-
         }
 
         public T FromJson<T>(string value)

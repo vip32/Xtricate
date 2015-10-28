@@ -12,11 +12,12 @@ namespace XtricateSql
     public class Storage<TDoc> : IStorage<TDoc>
     {
         private readonly IDbConnectionFactory _connectionFactory;
-        private readonly IStorageOptions _options;
         private readonly IEnumerable<IDocIndexMap<TDoc>> _indexMap;
+        private readonly IStorageOptions _options;
         private readonly ISerializer _serializer;
 
-        public Storage(IDbConnectionFactory connectionFactory, IStorageOptions options, ISerializer serializer, IEnumerable<IDocIndexMap<TDoc>> indexMap = null)
+        public Storage(IDbConnectionFactory connectionFactory, IStorageOptions options,
+            ISerializer serializer, IEnumerable<IDocIndexMap<TDoc>> indexMap = null)
         {
             if (connectionFactory == null) throw new ArgumentNullException(nameof(connectionFactory));
             if (options == null) throw new ArgumentNullException(nameof(options));
@@ -39,9 +40,10 @@ namespace XtricateSql
             EnsureIndexTable();
         }
 
-        public virtual void Reset()
+        public virtual void Reset(bool indexOnly = false)
         {
-            DeleteTable(_options.GetDocTableName<TDoc>());
+            if (!indexOnly)
+                DeleteTable(_options.GetDocTableName<TDoc>());
             DeleteTable(_options.GetIndexTableName<TDoc>());
             Initialize();
         }
@@ -67,27 +69,32 @@ SELECT [id] FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
             using (var conn = CreateConnection())
             {
                 //conn.Open();
-                return conn.Query<int>(sql, new {key = key}).Any();
+                return conn.Query<int>(sql, new {key}).Any();
             }
         }
 
         public virtual StorageAction Upsert(object key, TDoc document, IEnumerable<string> tags = null)
         {
+            // http://www.databasejournal.com/features/mssql/using-the-merge-statement-to-perform-an-upsert.html
             using (var conn = CreateConnection())
             {
                 string sql;
                 StorageAction result;
                 if (Exists(key, tags))
                 {
-                    sql = $@"
-UPDATE {_options.GetDocTableName<TDoc>()} SET [hash]=@hash,[timestamp]=@timestamp,[value]=@value WHERE [key]=@key";
+                    sql =
+                        $@"
+UPDATE {_options.GetDocTableName<TDoc>()
+                            } SET [hash]=@hash,[timestamp]=@timestamp,[value]=@value WHERE [key]=@key";
                     tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
                     result = StorageAction.Updated;
                 }
                 else
                 {
-                    sql = $@"
-INSERT INTO {_options.GetDocTableName<TDoc>()}
+                    sql =
+                        $@"
+INSERT INTO {_options.GetDocTableName<TDoc>()
+                            }
 ([key],[tags],[hash],[timestamp],[value]) VALUES(@key,@tags,@hash,@timestamp,@value);";
                     result = StorageAction.Inserted;
                 }
@@ -95,7 +102,7 @@ INSERT INTO {_options.GetDocTableName<TDoc>()}
                 conn.Execute(sql,
                     new
                     {
-                        key = key,
+                        key,
                         tags = $"||{tags.NullToEmpty().ToString("||")}||",
                         hash = HashHelper.ComputeHash(document),
                         value = _serializer.ToJson(document),
@@ -103,7 +110,6 @@ INSERT INTO {_options.GetDocTableName<TDoc>()}
                     });
                 return result;
             }
-            // http://www.databasejournal.com/features/mssql/using-the-merge-statement-to-perform-an-upsert.html
         }
 
         public virtual int Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
@@ -119,7 +125,8 @@ SELECT COUNT(*) FROM {_options.GetDocTableName<TDoc>()} WHERE [id]>0";
             }
         }
 
-        public virtual IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public virtual IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null,
+            IEnumerable<Criteria> criteria = null)
         {
             throw new NotImplementedException();
         }
@@ -141,7 +148,6 @@ SELECT COUNT(*) FROM {_options.GetDocTableName<TDoc>()} WHERE [id]>0";
 
         private bool TableExists(string tableName)
         {
-
             using (var conn = CreateConnection())
             {
                 conn.Open();
@@ -213,7 +219,8 @@ CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                Trace.WriteLine($"seed db table=[{conn.Database}].{tableName}, index={_indexMap.NullToEmpty().Select(i => i.Name).ToString(", ")}");
+                Trace.WriteLine(
+                    $"seed db table=[{conn.Database}].{tableName}, index={_indexMap.NullToEmpty().Select(i => i.Name).ToString(", ")}");
                 var sql = string.Format(@"
 CREATE TABLE {0}(
 [uid] UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY NONCLUSTERED,
