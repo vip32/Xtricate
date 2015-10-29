@@ -1,2 +1,2 @@
-# XtricateSql
+# Xtricate.DocSet
 
