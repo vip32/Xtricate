@@ -65,6 +65,7 @@ namespace XtricateSql
 
         public virtual bool Exists(object key, IEnumerable<string> tags = null)
         {
+            Trace.WriteLine($"document exists: {key} ({tags?.ToString("?")})");
             var sql = $@"
 SELECT [id] FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
             tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
@@ -85,15 +86,17 @@ SELECT [id] FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
                 StorageAction result;
                 if (Exists(key, tags))
                 {
+                    Trace.WriteLine($"document update: {key} ({tags?.ToString("?")})");
                     sql =
                         $@"
-UPDATE {_options.GetDocTableName<TDoc>()} 
+UPDATE {_options.GetDocTableName<TDoc>()}
 SET [hash]=@hash,[timestamp]=@timestamp,[value]=@value WHERE [key]=@key";
                     tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
                     result = StorageAction.Updated;
                 }
                 else
                 {
+                    Trace.WriteLine($"document insert: {key} ({tags?.ToString("?")})");
                     sql =
                         $@"
 INSERT INTO {_options.GetDocTableName<TDoc>()}
@@ -198,9 +201,9 @@ FROM INFORMATION_SCHEMA.TABLES")
 CREATE TABLE {0}(
 [uid] UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY NONCLUSTERED,
 [id] INTEGER NOT NULL IDENTITY(1,1),
-[key] NVARCHAR(2048) NOT NULL,
-[tags] NVARCHAR(2048) NOT NULL,
-[hash] NVARCHAR(1024) NOT NULL,
+[key] NVARCHAR(512) NOT NULL,
+[tags] NVARCHAR(1024) NOT NULL,
+[hash] NVARCHAR(128),
 [timestamp] DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
 [value] TEXT);
 
@@ -227,9 +230,9 @@ CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
 CREATE TABLE {0}(
 [uid] UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY NONCLUSTERED,
 [id] INTEGER NOT NULL IDENTITY(1,1),
-[key] NVARCHAR(2048) NOT NULL,
-[tags] NVARCHAR(2048) NOT NULL,
-[hash] NVARCHAR(1024) NOT NULL,
+[key] NVARCHAR(512) NOT NULL,
+[tags] NVARCHAR(1024) NOT NULL,
+[hash] NVARCHAR(128),
 [timestamp] DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
 {2});
 CREATE UNIQUE CLUSTERED INDEX [IX_id_{1}] ON {0} (id)

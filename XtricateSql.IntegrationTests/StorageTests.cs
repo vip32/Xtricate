@@ -1,19 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
+using System.Diagnostics;
 using System.Linq;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
+using StackExchange.Profiling;
 
 namespace XtricateSql.IntegrationTests
 {
     [TestFixture]
     public class StorageTests
     {
-        [Test]
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            MiniProfiler.Settings.Storage = new MiniPofilerInMemoryStorage();
+            MiniProfiler.Settings.ProfilerProvider = new MiniPofilerInMemoryProvider();
+        }
+
+        [TestCase]
+        [TestCase]
         public void UpsertTest()
         {
-            var options = new StorageOptions("TestDb", "SS");
+            int count;
+            var options = new StorageOptions("TestDb", "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = new List<IDocIndexMap<TestDocument>>
             {
@@ -26,20 +37,56 @@ namespace XtricateSql.IntegrationTests
             var storage = new Storage<TestDocument>(connectionFactory, options,
                 new JsonNetSerializer(), new Hasher(), indexMap);
 
-            storage.Initialize();
-            var count = storage.Count();
+            MiniProfiler.Start();
+            var mp = MiniProfiler.Current;
 
-            var document = new Fixture().Create<TestDocument>();
-            var result = storage.Upsert(document.Id, document, new[] {"en-US"});
+            using (mp.Step("initialize"))
+            {
+                storage.Initialize();
+            }
+            using (mp.Step("initial count"))
+            {
+                count = storage.Count();
+            }
 
-            Assert.That(result, Is.EqualTo(StorageAction.Inserted));
-            Assert.That(storage.Count(), Is.EqualTo(count + 1));
+            using (mp.Step("upsert fixed key"))
+            {
+                var result = storage.Upsert("key1", new Fixture().Create<TestDocument>(), new[] { "en-US" });
+                Assert.That(result, Is.EqualTo(StorageAction.Updated));
+            }
+            using (mp.Step("upsert string"))
+            {
+                var result = storage.Upsert(Guid.NewGuid(), new Fixture().Create<TestDocument>(), new[] { "en-US" });
+                Assert.That(result, Is.EqualTo(StorageAction.Inserted));
+            }
+            using (mp.Step("upsert int"))
+            {
+                var result = storage.Upsert(DateTime.Now.Epoch() + count, new Fixture().Create<TestDocument>(), new[] { "en-US" });
+                Assert.That(result, Is.EqualTo(StorageAction.Inserted));
+            }
+            using (mp.Step("upsert string"))
+            {
+                var result = storage.Upsert(Guid.NewGuid(), new Fixture().Create<TestDocument>(), new[] { "en-US" });
+                Assert.That(result, Is.EqualTo(StorageAction.Inserted));
+            }
+            using (mp.Step("upsert int"))
+            {
+                var result = storage.Upsert(DateTime.Now.Epoch() + 1 + count, new Fixture().Create<TestDocument>(), new[] { "en-US" });
+                Assert.That(result, Is.EqualTo(StorageAction.Inserted));
+            }
+
+            using (mp.Step("post count"))
+            {
+                Assert.That(storage.Count(), Is.EqualTo(count + 4));
+            }
+            Trace.WriteLine($"trace: {mp.RenderPlainText()}");
+            MiniProfiler.Stop();
         }
 
         [Test]
         public void InitializeTest()
         {
-            var options = new StorageOptions("TestDb", "SS");
+            var options = new StorageOptions("TestDb", "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = new List<IDocIndexMap<TestDocument>>
             {
@@ -49,7 +96,7 @@ namespace XtricateSql.IntegrationTests
                 new DocIndexMap<TestDocument>(nameof(TestDocument.Date), i =>
                     i.Date.HasValue ? i.Date.Value.ToString("s") : null)
             };
-            var storage = new Storage<TestDocument>(connectionFactory, options, 
+            var storage = new Storage<TestDocument>(connectionFactory, options,
                 new JsonNetSerializer(), new Hasher(), indexMap);
 
             storage.Initialize();
