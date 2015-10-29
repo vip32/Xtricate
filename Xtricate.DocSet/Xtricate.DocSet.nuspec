@@ -21,6 +21,6 @@
     <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
     <copyright></copyright>
     <references></references>
-    <tags>nosql, data, dapper</tags>
+    <tags>nosql, data, dapper, docset</tags>
   </metadata>
 </package>
