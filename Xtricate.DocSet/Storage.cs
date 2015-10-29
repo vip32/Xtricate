@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using Dapper;
 
-namespace XtricateSql
+namespace Xtricate.DocSet
 {
     public class Storage<TDoc> : IStorage<TDoc>
     {

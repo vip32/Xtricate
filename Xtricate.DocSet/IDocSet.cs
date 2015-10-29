@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace XtricateSql
+namespace Xtricate.DocSet
 {
     public interface IDocSet<TDoc>
     {

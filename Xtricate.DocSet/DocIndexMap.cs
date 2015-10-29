@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace XtricateSql
+namespace Xtricate.DocSet
 {
     public class DocIndexMap<T> : IDocIndexMap<T>
     {

@@ -7,8 +7,8 @@
     <ProjectGuid>{22FE1723-6131-49E4-B0F7-847419650B6A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XtricateSql</RootNamespace>
-    <AssemblyName>XtricateSql</AssemblyName>
+    <RootNamespace>Xtricate.DocSet</RootNamespace>
+    <AssemblyName>Xtricate.DocSet</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -87,7 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="DocSet.nuspec" />
+    <None Include="Xtricate.DocSet.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

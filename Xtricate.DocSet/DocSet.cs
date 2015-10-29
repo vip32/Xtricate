@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace XtricateSql
+namespace Xtricate.DocSet
 {
     public class DocSet<TDoc, TKey> : IDocSet<TDoc>
     {

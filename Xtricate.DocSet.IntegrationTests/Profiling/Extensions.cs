@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using StackExchange.Profiling;
 
-namespace XtricateSql.IntegrationTests
+namespace Xtricate.DocSet.IntegrationTests.Profiling
 {
     public static partial class Extensions
     {

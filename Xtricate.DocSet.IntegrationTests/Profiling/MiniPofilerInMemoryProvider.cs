@@ -1,7 +1,7 @@
 using System;
 using StackExchange.Profiling;
 
-namespace XtricateSql.IntegrationTests
+namespace Xtricate.DocSet.IntegrationTests.Profiling
 {
     public class MiniPofilerInMemoryProvider : BaseProfilerProvider
     {

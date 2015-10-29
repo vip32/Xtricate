@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace XtricateSql
+namespace Xtricate.DocSet
 {
     public class DocIndexSet<T, TKey> : IDocSet<T>
     {

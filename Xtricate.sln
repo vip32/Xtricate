@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XtricateSql", "XtricateSql\XtricateSql.csproj", "{22FE1723-6131-49E4-B0F7-847419650B6A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.DocSet", "Xtricate.DocSet\Xtricate.DocSet.csproj", "{22FE1723-6131-49E4-B0F7-847419650B6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XtricateSql.Sqlite", "XtricateSql.Sqlite\XtricateSql.Sqlite.csproj", "{1932DB30-FCEC-43D7-ACE5-6C0F8CAFDFD0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XtricateSql.IntegrationTests", "XtricateSql.IntegrationTests\XtricateSql.IntegrationTests.csproj", "{78C91052-302D-44AD-94AA-71C8955145C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.DocSet.Sqlite", "Xtricate.DocSet.Sqlite\Xtricate.DocSet.Sqlite.csproj", "{1932DB30-FCEC-43D7-ACE5-6C0F8CAFDFD0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{FF441F94-956A-46C5-93B4-52650D4C7B4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.DocSet.IntegrationTests", "Xtricate.DocSet.IntegrationTests\Xtricate.DocSet.IntegrationTests.csproj", "{78C91052-302D-44AD-94AA-71C8955145C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

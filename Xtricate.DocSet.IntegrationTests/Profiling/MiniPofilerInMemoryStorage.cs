@@ -5,7 +5,7 @@ using System.Linq;
 using StackExchange.Profiling;
 using StackExchange.Profiling.Storage;
 
-namespace XtricateSql.IntegrationTests
+namespace Xtricate.DocSet.IntegrationTests.Profiling
 {
     public class MiniPofilerInMemoryStorage : IStorage
     {

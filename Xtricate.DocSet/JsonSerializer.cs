@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
-namespace XtricateSql
+namespace Xtricate.DocSet
 {
     public class JsonNetSerializer : ISerializer
     {

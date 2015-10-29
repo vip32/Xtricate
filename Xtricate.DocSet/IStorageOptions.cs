@@ -1,4 +1,4 @@
-namespace XtricateSql
+namespace Xtricate.DocSet
 {
     public interface IStorageOptions
     {

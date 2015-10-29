@@ -1,7 +1,7 @@
 using System;
 using Humanizer;
 
-namespace XtricateSql
+namespace Xtricate.DocSet
 {
     public class StorageOptions : IStorageOptions
     {

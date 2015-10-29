@@ -3,7 +3,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 
-namespace XtricateSql
+namespace Xtricate.DocSet
 {
     public class BsonSerializer : ISerializer
     {

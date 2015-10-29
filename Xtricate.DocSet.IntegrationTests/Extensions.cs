@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XtricateSql.IntegrationTests
+namespace Xtricate.DocSet.IntegrationTests
 {
     public static partial class Extensions
     {
