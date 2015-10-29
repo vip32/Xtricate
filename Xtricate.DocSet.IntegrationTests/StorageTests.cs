@@ -21,10 +21,9 @@ namespace Xtricate.DocSet.IntegrationTests
         }
 
         [TestCase]
-        [TestCase]
         public void UpsertTest()
         {
-            int count;
+            int preCount;
             var options = new StorageOptions("TestDb", "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = new List<IDocIndexMap<TestDocument>>
@@ -47,38 +46,45 @@ namespace Xtricate.DocSet.IntegrationTests
             }
             using (mp.Step("initial count"))
             {
-                count = storage.Count();
+                preCount = storage.Count();
+                Trace.WriteLine($"pre count: {preCount}");
             }
 
-            using (mp.Step("upsert fixed key"))
+            var id = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
+            for (var i = 1; i < 5000; i++)
             {
-                var result = storage.Upsert("key1", new Fixture().Create<TestDocument>(), new[] { "en-US" });
-                Assert.That(result, Is.EqualTo(StorageAction.Updated));
+                Trace.WriteLine($"+{i}");
+                using (mp.Step("upsert"))
+                {
+                    var result1 = storage.Upsert("key1", new Fixture().Create<TestDocument>(), new[] {"en-US"});
+                //    Assert.That(result1, Is.EqualTo(StorageAction.Updated));
+                //}
+                //using (mp.Step("upsert string"))
+                //{
+                    var result2 = storage.Upsert(Guid.NewGuid(), new Fixture().Create<TestDocument>(), new[] {"en-US"});
+                    //Assert.That(result2, Is.EqualTo(StorageAction.Inserted));
+                //}
+                //using (mp.Step("upsert int"))
+                //{
+                    var result3 = storage.Upsert(id + i, new Fixture().Create<TestDocument>(), new[] {"en-US"});
+                    Assert.That(result3, Is.EqualTo(StorageAction.Inserted));
+                }
             }
-            using (mp.Step("upsert string"))
+            using (mp.Step("load"))
             {
-                var result = storage.Upsert(Guid.NewGuid(), new Fixture().Create<TestDocument>(), new[] { "en-US" });
-                Assert.That(result, Is.EqualTo(StorageAction.Inserted));
-            }
-            using (mp.Step("upsert int"))
-            {
-                var result = storage.Upsert(DateTime.Now.Epoch() + count, new Fixture().Create<TestDocument>(), new[] { "en-US" });
-                Assert.That(result, Is.EqualTo(StorageAction.Inserted));
-            }
-            using (mp.Step("upsert string"))
-            {
-                var result = storage.Upsert(Guid.NewGuid(), new Fixture().Create<TestDocument>(), new[] { "en-US" });
-                Assert.That(result, Is.EqualTo(StorageAction.Inserted));
-            }
-            using (mp.Step("upsert int"))
-            {
-                var result = storage.Upsert(DateTime.Now.Epoch() + 1 + count, new Fixture().Create<TestDocument>(), new[] { "en-US" });
-                Assert.That(result, Is.EqualTo(StorageAction.Inserted));
+                var result = storage.Load(new[] { "en-US" });
+                Assert.That(result, Is.Not.Null);
+                Assert.That(result, Is.Not.Empty);
+                Trace.WriteLine($"loaded count: {result.Count()}");
+                //result.ForEach(r => Trace.Write(r.Id));
+                result.ForEach(r => Assert.That(r, Is.Not.Null));
             }
 
             using (mp.Step("post count"))
             {
-                Assert.That(storage.Count(), Is.EqualTo(count + 4));
+                var postCount = storage.Count(new[] { "en-US" });
+                Trace.WriteLine($"post count: {postCount}");
+                Assert.That(storage.Count(), Is.GreaterThan(preCount));
             }
             Trace.WriteLine($"trace: {mp.RenderPlainText()}");
             MiniProfiler.Stop();
@@ -110,17 +116,44 @@ namespace Xtricate.DocSet.IntegrationTests
     public class TestDocument
     {
         public int Id { get; set; }
+        public IDictionary<string, string> Identifiers { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string ShortDescription { get; set; }
+        public string LongDescription { get; set; }
         public string Group { get; set; }
+        public int Position { get; set; }
+        public IEnumerable<string> MetaKeywords { get; set; }
+        public string MetaDescription { get; set; }
         public TestEnum State { get; set; }
         public DateTime? Date { get; set; }
         public IEnumerable<TestSku> Skus { get; set; }
+        public IEnumerable<TestAttributeValue> Features { get; set; }
+        public IEnumerable<TestAttributeValue> Relations { get; set; }
+        public IEnumerable<TestAttributeValue> Includes { get; set; }
+        public IEnumerable<TestAttributeValue> Attributes { get; set; }
     }
 
     public class TestSku
     {
         public string Sku { get; set; }
+        public string Cso { get; set; }
+        public string Gtin { get; set; }
+        public string Ean { get; set; }
+        public string Upc { get; set; }
+    }
+
+    public class TestAttributeValue
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Position { get; set; }
+        public string TextValue { get; set; }
+        public int? MediaValue { get; set; }
+        public decimal? NumberValue { get; set; }
+        public bool? BooleanValue { get; set; }
+        public int? CategoryValue { get; set; }
+        public int? ProductValue { get; set; }
+        public DateTime? DateValue { get; set; }
     }
 
     public enum TestEnum

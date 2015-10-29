@@ -65,14 +65,14 @@ namespace Xtricate.DocSet
 
         public virtual bool Exists(object key, IEnumerable<string> tags = null)
         {
-            Trace.WriteLine($"document exists: {key} ({tags?.ToString("?")})");
+            Trace.WriteLine($"document exists: key={key},tags={tags?.ToString("||")}");
             var sql = $@"
-SELECT [id] FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
+    SELECT [id] FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
             tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
 
             using (var conn = CreateConnection())
             {
-                //conn.Open();
+                conn.Open();
                 return conn.Query<int>(sql, new {key}).Any();
             }
         }
@@ -86,28 +86,28 @@ SELECT [id] FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
                 StorageAction result;
                 if (Exists(key, tags))
                 {
-                    Trace.WriteLine($"document update: {key} ({tags?.ToString("?")})");
+                    Trace.WriteLine($"document update: key={key},tags={tags?.ToString("||")}");
                     sql =
                         $@"
-UPDATE {_options.GetDocTableName<TDoc>()}
-SET [hash]=@hash,[timestamp]=@timestamp,[value]=@value WHERE [key]=@key";
+    UPDATE {_options.GetDocTableName<TDoc>()}
+    SET [hash]=@hash,[timestamp]=@timestamp,[value]=@value WHERE [key]=@key";
                     tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
                     result = StorageAction.Updated;
                 }
                 else
                 {
-                    Trace.WriteLine($"document insert: {key} ({tags?.ToString("?")})");
+                    Trace.WriteLine($"document insert: key={key},tags={tags?.ToString("||")}");
                     sql =
                         $@"
-INSERT INTO {_options.GetDocTableName<TDoc>()}
-([key],[tags],[hash],[timestamp],[value]) VALUES(@key,@tags,@hash,@timestamp,@value);";
+    INSERT INTO {_options.GetDocTableName<TDoc>()}
+    ([key],[tags],[hash],[timestamp],[value]) VALUES(@key,@tags,@hash,@timestamp,@value);";
                     result = StorageAction.Inserted;
                 }
                 conn.Open();
                 conn.Execute(sql,
                     new
                     {
-                        key,
+                        key = key.ToString(),
                         tags = $"||{tags.ToString("||")}||",
                         hash = _hasher?.Compute(document),
                         value = _serializer.ToJson(document),
@@ -119,13 +119,15 @@ INSERT INTO {_options.GetDocTableName<TDoc>()}
 
         public virtual int Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
-            var sql = $@"
-SELECT COUNT(*) FROM {_options.GetDocTableName<TDoc>()} WHERE [id]>0";
-            tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
+            Trace.WriteLine($"document count: tags={tags?.ToString("||")}");
+
 
             using (var conn = CreateConnection())
             {
-                //conn.Open();
+                var sql = $@"
+    SELECT COUNT(*) FROM {_options.GetDocTableName<TDoc>()} WHERE [id]>0";
+                tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
+                conn.Open();
                 return conn.Query<int>(sql).SingleOrDefault();
             }
         }
@@ -133,12 +135,34 @@ SELECT COUNT(*) FROM {_options.GetDocTableName<TDoc>()} WHERE [id]>0";
         public virtual IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null,
             IEnumerable<Criteria> criteria = null)
         {
-            throw new NotImplementedException();
+            Trace.WriteLine($"document load: key={key},tags={tags?.ToString("||")}");
+
+            using (var conn = CreateConnection())
+            {
+                var sql = $@"
+    SELECT [value] FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
+                tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
+                conn.Open();
+                var documents = conn.Query<string>(sql, new {key}, buffered: false);
+                foreach (var document in documents)
+                    yield return _serializer.FromJson<TDoc>(document);
+            }
         }
 
         public virtual IEnumerable<TDoc> Load(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
-            throw new NotImplementedException();
+            Trace.WriteLine($"document load: ({tags?.ToString("?")})");
+
+            using (var conn = CreateConnection())
+            {
+                var sql = $@"
+SELECT [value] FROM {_options.GetDocTableName<TDoc>()} WHERE [id]>0";
+                tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
+                conn.Open();
+                var documents = conn.Query<string>(sql, buffered: false);
+                foreach (var document in documents)
+                    yield return _serializer.FromJson<TDoc>(document);
+            }
         }
 
         public virtual StorageAction Delete(object key, IEnumerable<string> tags = null)
