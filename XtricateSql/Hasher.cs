@@ -6,12 +6,12 @@ using Newtonsoft.Json.Bson;
 
 namespace XtricateSql
 {
-    public static class HashHelper
+    public class Hasher: IHasher
     {
-        public static string ComputeHash(object instance)
+        public string Compute(object value)
         {
-            if (instance == null) return null;
-            var bytes = BsonByteSerialize(instance);
+            if (value == null) return null;
+            var bytes = BsonByteSerialize(value);
 
             using (var md5 = new MD5CryptoServiceProvider())
             {
@@ -21,7 +21,7 @@ namespace XtricateSql
             }
         }
 
-        public static byte[] BsonByteSerialize<T>(T obj) where T : class
+        private static byte[] BsonByteSerialize<T>(T obj) where T : class
         {
             if (obj == null) return null;
 

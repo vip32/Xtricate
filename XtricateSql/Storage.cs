@@ -15,9 +15,11 @@ namespace XtricateSql
         private readonly IEnumerable<IDocIndexMap<TDoc>> _indexMap;
         private readonly IStorageOptions _options;
         private readonly ISerializer _serializer;
+        private readonly IHasher _hasher;
+
 
         public Storage(IDbConnectionFactory connectionFactory, IStorageOptions options,
-            ISerializer serializer, IEnumerable<IDocIndexMap<TDoc>> indexMap = null)
+            ISerializer serializer, IHasher hasher = null, IEnumerable<IDocIndexMap<TDoc>> indexMap = null)
         {
             if (connectionFactory == null) throw new ArgumentNullException(nameof(connectionFactory));
             if (options == null) throw new ArgumentNullException(nameof(options));
@@ -26,6 +28,7 @@ namespace XtricateSql
             _connectionFactory = connectionFactory;
             _options = options;
             _serializer = serializer;
+            _hasher = hasher;
             _indexMap = indexMap;
 
             Initialize();
@@ -84,8 +87,8 @@ SELECT [id] FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
                 {
                     sql =
                         $@"
-UPDATE {_options.GetDocTableName<TDoc>()
-                            } SET [hash]=@hash,[timestamp]=@timestamp,[value]=@value WHERE [key]=@key";
+UPDATE {_options.GetDocTableName<TDoc>()} 
+SET [hash]=@hash,[timestamp]=@timestamp,[value]=@value WHERE [key]=@key";
                     tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
                     result = StorageAction.Updated;
                 }
@@ -93,18 +96,17 @@ UPDATE {_options.GetDocTableName<TDoc>()
                 {
                     sql =
                         $@"
-INSERT INTO {_options.GetDocTableName<TDoc>()
-                            }
+INSERT INTO {_options.GetDocTableName<TDoc>()}
 ([key],[tags],[hash],[timestamp],[value]) VALUES(@key,@tags,@hash,@timestamp,@value);";
                     result = StorageAction.Inserted;
                 }
-                //conn.Open();
+                conn.Open();
                 conn.Execute(sql,
                     new
                     {
                         key,
-                        tags = $"||{tags.NullToEmpty().ToString("||")}||",
-                        hash = HashHelper.ComputeHash(document),
+                        tags = $"||{tags.ToString("||")}||",
+                        hash = _hasher?.Compute(document),
                         value = _serializer.ToJson(document),
                         timestamp = DateTime.UtcNow
                     });

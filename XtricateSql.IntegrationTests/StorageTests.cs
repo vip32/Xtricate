@@ -10,6 +10,7 @@ namespace XtricateSql.IntegrationTests
     [TestFixture]
     public class StorageTests
     {
+        [Test]
         public void UpsertTest()
         {
             var options = new StorageOptions("TestDb", "SS");
@@ -22,7 +23,8 @@ namespace XtricateSql.IntegrationTests
                 new DocIndexMap<TestDocument>(nameof(TestDocument.Date), i =>
                     i.Date.HasValue ? i.Date.Value.ToString("s") : null)
             };
-            var storage = new Storage<TestDocument>(connectionFactory, options, new JsonNetSerializer(), indexMap);
+            var storage = new Storage<TestDocument>(connectionFactory, options,
+                new JsonNetSerializer(), new Hasher(), indexMap);
 
             storage.Initialize();
             var count = storage.Count();
@@ -47,7 +49,8 @@ namespace XtricateSql.IntegrationTests
                 new DocIndexMap<TestDocument>(nameof(TestDocument.Date), i =>
                     i.Date.HasValue ? i.Date.Value.ToString("s") : null)
             };
-            var storage = new Storage<TestDocument>(connectionFactory, options, new JsonNetSerializer(), indexMap);
+            var storage = new Storage<TestDocument>(connectionFactory, options, 
+                new JsonNetSerializer(), new Hasher(), indexMap);
 
             storage.Initialize();
             storage.Reset();
