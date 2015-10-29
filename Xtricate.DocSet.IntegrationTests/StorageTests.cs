@@ -67,19 +67,21 @@ namespace Xtricate.DocSet.IntegrationTests
                 //using (mp.Step("upsert int"))
                 //{
                     var result3 = storage.Upsert(id + i, new Fixture().Create<TestDocument>(), new[] {"en-US"});
-                    Assert.That(result3, Is.EqualTo(StorageAction.Inserted));
+                    //Assert.That(result3, Is.EqualTo(StorageAction.Inserted));
                 }
             }
-            for (var i = 1; i <= 10; i++)
+            for (var i = 1; i <= 1; i++)
             {
                 using (mp.Step("load"))
                 {
                     var result = storage.Load(new[] {"en-US"});
-                    Assert.That(result, Is.Not.Null);
-                    Assert.That(result, Is.Not.Empty);
-                    Trace.WriteLine($"loaded count: {result.Count()}");
+                    //Assert.That(result, Is.Not.Null);
+                    //Assert.That(result, Is.Not.Empty);
+                    //Trace.WriteLine($"loaded count: {result.Count()}");
+                    //Trace.WriteLine($"first: {result.FirstOrDefault().Id}");
                     //result.ForEach(r => Trace.Write(r.Id));
-                    result.ForEach(r => Assert.That(r, Is.Not.Null));
+                    //result.ForEach(r => Assert.That(r, Is.Not.Null));
+                    result.Take(1).ForEach(r => Trace.WriteLine(r, r.Name));
                 }
             }
 
