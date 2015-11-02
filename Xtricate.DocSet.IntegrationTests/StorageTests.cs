@@ -51,7 +51,7 @@ namespace Xtricate.DocSet.IntegrationTests
             }
 
             var id = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
-            for (var i = 1; i < 0; i++)
+            for (var i = 1; i < 1; i++)
             {
                 Trace.WriteLine($"+{i}");
                 using (mp.Step("upsert"))
@@ -77,11 +77,11 @@ namespace Xtricate.DocSet.IntegrationTests
                     var result = storage.Load(new[] {"en-US"});
                     //Assert.That(result, Is.Not.Null);
                     //Assert.That(result, Is.Not.Empty);
-                    //Trace.WriteLine($"loaded count: {result.Count()}");
-                    //Trace.WriteLine($"first: {result.FirstOrDefault().Id}");
+                    Trace.WriteLine($"loaded count: {result.Count()}");
+                    Trace.WriteLine($"first: {result.FirstOrDefault().Id}");
                     //result.ForEach(r => Trace.Write(r.Id));
                     //result.ForEach(r => Assert.That(r, Is.Not.Null));
-                    result.Take(1).ForEach(r => Trace.WriteLine(r, r.Name));
+                    //result.Take(1).ForEach(r => Trace.WriteLine(r, r.Name));
                 }
             }
 
