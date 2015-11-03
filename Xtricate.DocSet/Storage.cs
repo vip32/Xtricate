@@ -17,7 +17,6 @@ namespace Xtricate.DocSet
         private readonly ISerializer _serializer;
         private readonly IHasher _hasher;
 
-
         public Storage(IDbConnectionFactory connectionFactory, IStorageOptions options,
             ISerializer serializer, IHasher hasher = null, IEnumerable<IDocIndexMap<TDoc>> indexMap = null)
         {
