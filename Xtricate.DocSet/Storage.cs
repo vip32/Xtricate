@@ -121,7 +121,6 @@ namespace Xtricate.DocSet
         {
             Trace.WriteLine($"document count: tags={tags?.ToString("||")}");
 
-
             using (var conn = CreateConnection())
             {
                 var sql = $@"
@@ -165,7 +164,7 @@ SELECT [value] FROM {_options.GetDocTableName<TDoc>()} WHERE [id]>0";
             }
         }
 
-        public virtual StorageAction Delete(object key, IEnumerable<string> tags = null)
+        public virtual StorageAction Delete(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
             throw new NotImplementedException();
         }

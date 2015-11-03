@@ -20,7 +20,7 @@ namespace Xtricate.DocSet.IntegrationTests
             MiniProfiler.Settings.ProfilerProvider = new MiniPofilerInMemoryProvider();
         }
 
-        [TestCase]
+        [Test]
         public void UpsertTest()
         {
             int preCount;
@@ -44,32 +44,33 @@ namespace Xtricate.DocSet.IntegrationTests
             {
                 storage.Initialize();
             }
-            using (mp.Step("initial count"))
+            using (mp.Step("pre count"))
             {
-                preCount = storage.Count();
+                preCount = storage.Count(new[] {"en-US"});
                 Trace.WriteLine($"pre count: {preCount}");
             }
 
             var id = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
-            for (var i = 1; i < 0; i++)
+            for (var i = 1; i < 5; i++)
             {
                 Trace.WriteLine($"+{i}");
                 using (mp.Step("upsert"))
                 {
                     var result1 = storage.Upsert("key1", new Fixture().Create<TestDocument>(), new[] {"en-US"});
-                //    Assert.That(result1, Is.EqualTo(StorageAction.Updated));
-                //}
-                //using (mp.Step("upsert string"))
-                //{
+                    //    Assert.That(result1, Is.EqualTo(StorageAction.Updated));
+                    //}
+                    //using (mp.Step("upsert string"))
+                    //{
                     var result2 = storage.Upsert(Guid.NewGuid(), new Fixture().Create<TestDocument>(), new[] {"en-US"});
                     //Assert.That(result2, Is.EqualTo(StorageAction.Inserted));
-                //}
-                //using (mp.Step("upsert int"))
-                //{
+                    //}
+                    //using (mp.Step("upsert int"))
+                    //{
                     var result3 = storage.Upsert(id + i, new Fixture().Create<TestDocument>(), new[] {"en-US"});
                     //Assert.That(result3, Is.EqualTo(StorageAction.Inserted));
                 }
             }
+
             for (var i = 1; i <= 1; i++)
             {
                 using (mp.Step("load"))
@@ -81,13 +82,13 @@ namespace Xtricate.DocSet.IntegrationTests
                     //Trace.WriteLine($"first: {result.FirstOrDefault().Id}");
                     //result.ForEach(r => Trace.Write(r.Id));
                     //result.ForEach(r => Assert.That(r, Is.Not.Null));
-                    result.Take(1).ForEach(r => Trace.WriteLine(r, r.Name));
+                    result.ForEach(r => Trace.WriteLine(r, r.Name));
                 }
             }
 
             using (mp.Step("post count"))
             {
-                var postCount = storage.Count(new[] { "en-US" });
+                var postCount = storage.Count(new[] {"en-US"});
                 Trace.WriteLine($"post count: {postCount}");
                 //Assert.That(storage.Count(), Is.GreaterThan(preCount));
             }
@@ -114,6 +115,54 @@ namespace Xtricate.DocSet.IntegrationTests
             storage.Initialize();
             storage.Reset();
 
+            Assert.That(storage.Count(), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void DeleteTest()
+        {
+            var options = new StorageOptions("TestDb", "StorageTests");
+            var connectionFactory = new SqlConnectionFactory();
+            var indexMap = new List<IDocIndexMap<TestDocument>>
+            {
+                new DocIndexMap<TestDocument>(nameof(TestDocument.Name), i => i.Name),
+                new DocIndexMap<TestDocument>(nameof(TestDocument.Group), i => i.Group),
+                new DocIndexMap<TestDocument>(nameof(TestSku.Sku), values: i => i.Skus.Select(s => s.Sku)),
+                new DocIndexMap<TestDocument>(nameof(TestDocument.Date), i =>
+                    i.Date.HasValue ? i.Date.Value.ToString("s") : null)
+            };
+            var storage = new Storage<TestDocument>(connectionFactory, options,
+                new JsonNetSerializer(), new Hasher(), indexMap);
+
+            storage.Initialize();
+            storage.Reset();
+
+            Assert.That(storage.Count(), Is.EqualTo(0));
+
+            var doc1 = new Fixture().Create<TestDocument>();
+            storage.Upsert("key1", doc1, new[] {"en-US"});
+
+            var doc2 = new Fixture().Create<TestDocument>();
+            storage.Upsert("key2", doc1, new[] {"en-US"});
+
+            var doc3 = new Fixture().Create<TestDocument>();
+            storage.Upsert("key1", doc1, new[] {"en-GB"});
+
+            Assert.That(storage.Count(), Is.EqualTo(3));
+
+            var result1 =storage.Delete("key1", new[] { "en-US" }); // removes only key1 + en-US
+
+            Assert.That(result1, Is.EqualTo(StorageAction.Deleted));
+            Assert.That(storage.Count(), Is.EqualTo(2));
+
+            var result2 = storage.Delete("key1"); // removes all with key1
+
+            Assert.That(result2, Is.EqualTo(StorageAction.Deleted));
+            Assert.That(storage.Count(), Is.EqualTo(1));
+
+            var result3 = storage.Delete("key2"); // removes all with key2
+
+            Assert.That(result3, Is.EqualTo(StorageAction.Deleted));
             Assert.That(storage.Count(), Is.EqualTo(0));
         }
     }

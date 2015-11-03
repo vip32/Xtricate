@@ -9,13 +9,15 @@ namespace Xtricate.DocSet
         private readonly ISerializer _serializer;
         private readonly IStorage<T> _storage;
 
-        public DocIndexSet(Func<T, TKey> key, IStorage<T> storage, ISerializer serializer)
+        public DocIndexSet(Func<T, TKey> key, IStorage<T> storage, ISerializer serializer,
+            IEnumerable<IDocIndexMap<T>> indexMap = null)
         {
             if (storage == null) throw new ArgumentNullException(nameof(storage));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
             _storage = storage;
             _serializer = serializer;
+            _indexMap = indexMap;
         }
 
         public IEnumerable<T> Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
@@ -28,7 +30,7 @@ namespace Xtricate.DocSet
             throw new NotImplementedException();
         }
 
-        public IEnumerable<T> LoadAll(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public IEnumerable<T> Load(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
             throw new NotImplementedException();
         }
@@ -58,7 +60,12 @@ namespace Xtricate.DocSet
             throw new NotImplementedException();
         }
 
-        public void DeleteAll(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public void Delete(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        int IDocSet<T>.Count(IEnumerable<string> tags, IEnumerable<Criteria> criteria)
         {
             throw new NotImplementedException();
         }

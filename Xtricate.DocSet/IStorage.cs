@@ -15,7 +15,7 @@ namespace Xtricate.DocSet
         int Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
         IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
         IEnumerable<TDoc> Load(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
-        StorageAction Delete(object key, IEnumerable<string> tags = null);
+        StorageAction Delete(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
         StorageAction Delete(TDoc document);
     }
 }
