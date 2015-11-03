@@ -150,12 +150,12 @@ namespace Xtricate.DocSet
 
         public virtual IEnumerable<TDoc> Load(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
-            Trace.WriteLine($"document load: ({tags?.ToString("?")})");
+            Trace.WriteLine($"document load: tags={tags?.ToString("||")}");
 
             using (var conn = CreateConnection())
             {
                 var sql = $@"
-SELECT [value] FROM {_options.GetDocTableName<TDoc>()} WHERE [id]>0";
+    SELECT [value] FROM {_options.GetDocTableName<TDoc>()} WHERE [id]>0";
                 tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
                 conn.Open();
                 var documents = conn.Query<string>(sql, buffered: false);
@@ -166,12 +166,16 @@ SELECT [value] FROM {_options.GetDocTableName<TDoc>()} WHERE [id]>0";
 
         public virtual StorageAction Delete(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
-            throw new NotImplementedException();
-        }
-
-        public virtual StorageAction Delete(TDoc document)
-        {
-            throw new NotImplementedException();
+            Trace.WriteLine($"document delete: key={key},tags={tags?.ToString("||")}");
+            using (var conn = CreateConnection())
+            {
+                var sql = $@"
+    DELETE FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
+                tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
+                conn.Open();
+                var num = conn.Execute(sql, new { key });
+                return num > 0 ? StorageAction.Deleted : StorageAction.None;
+            }
         }
 
         private bool TableExists(string tableName)
@@ -181,8 +185,8 @@ SELECT [value] FROM {_options.GetDocTableName<TDoc>()} WHERE [id]>0";
                 conn.Open();
                 return
                     conn.Query<string>(@"
-SELECT QUOTENAME(TABLE_SCHEMA) + '.' + QUOTENAME(TABLE_NAME) AS Name
-FROM INFORMATION_SCHEMA.TABLES")
+    SELECT QUOTENAME(TABLE_SCHEMA) + '.' + QUOTENAME(TABLE_NAME) AS Name
+    FROM INFORMATION_SCHEMA.TABLES")
                         .Any(t => t.Equals(tableName, StringComparison.InvariantCultureIgnoreCase));
             }
         }
@@ -194,8 +198,8 @@ FROM INFORMATION_SCHEMA.TABLES")
             {
                 conn.Open();
                 if (conn.Query<string>(@"
-SELECT QUOTENAME(TABLE_SCHEMA) AS Name
-FROM INFORMATION_SCHEMA.TABLES")
+    SELECT QUOTENAME(TABLE_SCHEMA) AS Name
+    FROM INFORMATION_SCHEMA.TABLES")
                     .Any(t =>
                         t.Equals($"[{options.SchemaName}]",
                             StringComparison.InvariantCultureIgnoreCase)))
@@ -221,20 +225,20 @@ FROM INFORMATION_SCHEMA.TABLES")
                 Trace.WriteLine($"seed db table [{conn.Database}].{tableName}");
                 // http://stackoverflow.com/questions/11938044/what-are-the-best-practices-for-using-a-guid-as-a-primary-key-specifically-rega
                 var sql = string.Format(@"
-CREATE TABLE {0}(
-[uid] UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY NONCLUSTERED,
-[id] INTEGER NOT NULL IDENTITY(1,1),
-[key] NVARCHAR(512) NOT NULL,
-[tags] NVARCHAR(1024) NOT NULL,
-[hash] NVARCHAR(128),
-[timestamp] DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-[value] TEXT);
+    CREATE TABLE {0}(
+    [uid] UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY NONCLUSTERED,
+    [id] INTEGER NOT NULL IDENTITY(1,1),
+    [key] NVARCHAR(512) NOT NULL,
+    [tags] NVARCHAR(1024) NOT NULL,
+    [hash] NVARCHAR(128),
+    [timestamp] DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    [value] TEXT);
 
-CREATE UNIQUE CLUSTERED INDEX [IX_id_{1}] ON {0} (id)
-CREATE INDEX [IX_key_{1}] ON {0} ([key] ASC);
-CREATE INDEX [IX_tags_{1}] ON {0} ([tags] ASC);
-CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
-", tableName, new Random().Next(1000, 9999));
+    CREATE UNIQUE CLUSTERED INDEX [IX_id_{1}] ON {0} (id)
+    CREATE INDEX [IX_key_{1}] ON {0} ([key] ASC);
+    CREATE INDEX [IX_tags_{1}] ON {0} ([tags] ASC);
+    CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);",
+    tableName, new Random().Next(1000, 9999));
                 conn.Execute(sql);
             }
         }
@@ -250,19 +254,20 @@ CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
                 Trace.WriteLine(
                     $"seed db table=[{conn.Database}].{tableName}, index={_indexMap.NullToEmpty().Select(i => i.Name).ToString(", ")}");
                 var sql = string.Format(@"
-CREATE TABLE {0}(
-[uid] UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY NONCLUSTERED,
-[id] INTEGER NOT NULL IDENTITY(1,1),
-[key] NVARCHAR(512) NOT NULL,
-[tags] NVARCHAR(1024) NOT NULL,
-[hash] NVARCHAR(128),
-[timestamp] DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
-{2});
-CREATE UNIQUE CLUSTERED INDEX [IX_id_{1}] ON {0} (id)
-CREATE INDEX [IX_key_{1}] ON {0} ([key] ASC);
-CREATE INDEX [IX_tags_{1}] ON {0} ([tags] ASC);
-CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
-{3}", tableName, new Random().Next(1000, 9999),
+    CREATE TABLE {0}(
+    [uid] UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY NONCLUSTERED,
+    [id] INTEGER NOT NULL IDENTITY(1,1),
+    [key] NVARCHAR(512) NOT NULL,
+    [tags] NVARCHAR(1024) NOT NULL,
+    [hash] NVARCHAR(128),
+    [timestamp] DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
+    {2});
+    CREATE UNIQUE CLUSTERED INDEX [IX_id_{1}] ON {0} (id)
+    CREATE INDEX [IX_key_{1}] ON {0} ([key] ASC);
+    CREATE INDEX [IX_tags_{1}] ON {0} ([tags] ASC);
+    CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
+    {3}",
+    tableName, new Random().Next(1000, 9999),
                     _indexMap.NullToEmpty().Select(i =>
                         string.Format(",[{0}] NVARCHAR(2048)", i.Name.ToLower())).ToString(""),
                     _indexMap.NullToEmpty().Select(i =>

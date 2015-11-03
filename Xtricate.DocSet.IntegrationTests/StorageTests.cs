@@ -57,15 +57,15 @@ namespace Xtricate.DocSet.IntegrationTests
                 using (mp.Step("upsert"))
                 {
                     var result1 = storage.Upsert("key1", new Fixture().Create<TestDocument>(), new[] {"en-US"});
-                    //    Assert.That(result1, Is.EqualTo(StorageAction.Updated));
-                    //}
-                    //using (mp.Step("upsert string"))
-                    //{
+                //    Assert.That(result1, Is.EqualTo(StorageAction.Updated));
+                //}
+                //using (mp.Step("upsert string"))
+                //{
                     var result2 = storage.Upsert(Guid.NewGuid(), new Fixture().Create<TestDocument>(), new[] {"en-US"});
                     //Assert.That(result2, Is.EqualTo(StorageAction.Inserted));
-                    //}
-                    //using (mp.Step("upsert int"))
-                    //{
+                //}
+                //using (mp.Step("upsert int"))
+                //{
                     var result3 = storage.Upsert(id + i, new Fixture().Create<TestDocument>(), new[] {"en-US"});
                     //Assert.That(result3, Is.EqualTo(StorageAction.Inserted));
                 }
@@ -75,11 +75,11 @@ namespace Xtricate.DocSet.IntegrationTests
             {
                 using (mp.Step("load"))
                 {
-                    var result = storage.Load(new[] {"en-US"});
+                    var result = storage.Load(new[] {"en-US"}).Take(100);
                     //Assert.That(result, Is.Not.Null);
                     //Assert.That(result, Is.Not.Empty);
-                    //Trace.WriteLine($"loaded count: {result.Count()}");
-                    //Trace.WriteLine($"first: {result.FirstOrDefault().Id}");
+                    Trace.WriteLine($"loaded count: {result.Count()}");
+                    Trace.WriteLine($"first: {result.FirstOrDefault().Id}");
                     //result.ForEach(r => Trace.Write(r.Id));
                     //result.ForEach(r => Assert.That(r, Is.Not.Null));
                     result.ForEach(r => Trace.WriteLine(r, r.Name));
