@@ -151,7 +151,7 @@ namespace Xtricate.DocSet
 
         public virtual IEnumerable<TDoc> Load(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
-            Trace.WriteLine($"document load: ({tags?.ToString("?")})");
+            Trace.WriteLine($"document load: tags={tags?.ToString("||")}");
 
             using (var conn = CreateConnection())
             {
@@ -167,12 +167,16 @@ SELECT [value] FROM {_options.GetDocTableName<TDoc>()} WHERE [id]>0";
 
         public virtual StorageAction Delete(object key, IEnumerable<string> tags = null)
         {
-            throw new NotImplementedException();
-        }
-
-        public virtual StorageAction Delete(TDoc document)
-        {
-            throw new NotImplementedException();
+            Trace.WriteLine($"document delete: key={key},tags={tags?.ToString("||")}");
+            using (var conn = CreateConnection())
+            {
+                var sql = $@"
+    DELETE FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
+                tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");
+                conn.Open();
+                var num = conn.Execute(sql, new { key });
+                return num > 0 ? StorageAction.Deleted : StorageAction.None;
+            }
         }
 
         private bool TableExists(string tableName)

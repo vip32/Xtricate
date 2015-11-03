@@ -74,7 +74,7 @@ namespace Xtricate.DocSet.IntegrationTests
             {
                 using (mp.Step("load"))
                 {
-                    var result = storage.Load(new[] {"en-US"});
+                    var result = storage.Load(new[] {"en-US"}).Take(100);
                     //Assert.That(result, Is.Not.Null);
                     //Assert.That(result, Is.Not.Empty);
                     Trace.WriteLine($"loaded count: {result.Count()}");
