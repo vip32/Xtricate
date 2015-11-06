@@ -9,7 +9,7 @@ using Dapper;
 
 namespace Xtricate.DocSet
 {
-    public class Storage<TDoc> : IStorage<TDoc>
+    public class DocStorage<TDoc> : IStorage<TDoc>
     {
         private readonly IDbConnectionFactory _connectionFactory;
         private readonly IEnumerable<IDocIndexMap<TDoc>> _indexMap;
@@ -17,7 +17,7 @@ namespace Xtricate.DocSet
         private readonly ISerializer _serializer;
         private readonly IHasher _hasher;
 
-        public Storage(IDbConnectionFactory connectionFactory, IStorageOptions options,
+        public DocStorage(IDbConnectionFactory connectionFactory, IStorageOptions options,
             ISerializer serializer, IHasher hasher = null, IEnumerable<IDocIndexMap<TDoc>> indexMap = null)
         {
             if (connectionFactory == null) throw new ArgumentNullException(nameof(connectionFactory));

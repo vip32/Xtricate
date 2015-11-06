@@ -73,7 +73,7 @@
     <Compile Include="IHasher.cs" />
     <Compile Include="IStorageOptions.cs" />
     <Compile Include="LinqExtensions.cs" />
-    <Compile Include="Storage.cs" />
+    <Compile Include="DocStorage.cs" />
     <Compile Include="ICriteria.cs" />
     <Compile Include="IDocIndexMap.cs" />
     <Compile Include="IStorage.cs" />
