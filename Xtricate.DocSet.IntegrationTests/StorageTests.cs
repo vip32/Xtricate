@@ -51,7 +51,7 @@ namespace Xtricate.DocSet.IntegrationTests
             }
 
             var id = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
-            for (var i = 1; i < 5; i++)
+            for (var i = 1; i < 1000; i++)
             {
                 Trace.WriteLine($"+{i}");
                 using (mp.Step("upsert"))

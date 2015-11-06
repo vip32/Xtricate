@@ -1,1 +1,1 @@
-﻿try different json parser: https://github.com/ysharplanguage/FastJsonParser
+﻿try different json parser: https://github.com/ysharplanguage/FastJsonParser or JIL

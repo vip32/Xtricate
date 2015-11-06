@@ -64,7 +64,7 @@ namespace Xtricate.DocSet
 
         public virtual bool Exists(object key, IEnumerable<string> tags = null)
         {
-            Trace.WriteLine($"document exists: key={key},tags={tags?.ToString("||")}");
+            //Trace.WriteLine($"document exists: key={key},tags={tags?.ToString("||")}");
             var sql = $@"
     SELECT [id] FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
             tags.NullToEmpty().ForEach(t => sql += $" AND [tags] LIKE '%||{t}||%'");

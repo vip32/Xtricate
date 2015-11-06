@@ -76,7 +76,6 @@
     <Compile Include="Storage.cs" />
     <Compile Include="ICriteria.cs" />
     <Compile Include="IDocIndexMap.cs" />
-    <Compile Include="IDocSchema.cs" />
     <Compile Include="IStorage.cs" />
     <Compile Include="ISerializer.cs" />
     <Compile Include="IDocSet.cs" />
