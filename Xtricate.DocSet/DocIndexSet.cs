@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace Xtricate.DocSet
 {
-    public class DocIndexSet<T, TKey> : IDocSet<T>
+    public class DocIndexSet<TDoc, TKey> : IDocSet<TDoc, TKey>
     {
-        private readonly IEnumerable<IDocIndexMap<T>> _indexMap;
+        private readonly IEnumerable<IDocIndexMap<TDoc>> _indexMap;
         private readonly ISerializer _serializer;
-        private readonly IStorage<T> _storage;
+        private readonly IStorage<TDoc> _storage;
 
-        public DocIndexSet(Func<T, TKey> key, IStorage<T> storage, ISerializer serializer,
-            IEnumerable<IDocIndexMap<T>> indexMap = null)
+        public DocIndexSet(Func<TDoc, TKey> key, IStorage<TDoc> storage, ISerializer serializer,
+            IEnumerable<IDocIndexMap<TDoc>> indexMap = null)
         {
             if (storage == null) throw new ArgumentNullException(nameof(storage));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
@@ -20,52 +20,47 @@ namespace Xtricate.DocSet
             _indexMap = indexMap;
         }
 
-        public IEnumerable<T> Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public int Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<T> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public IEnumerable<TDoc> Load(TKey TKey, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<T> Load(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public IEnumerable<TDoc> Load(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
             throw new NotImplementedException();
         }
 
-        public T Store(T document, IEnumerable<string> tags = null)
+        public TDoc Store(TDoc document, IEnumerable<string> tags = null)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<T> Store(IEnumerable<T> documents, IEnumerable<string> tags = null)
+        public IEnumerable<TDoc> Store(IEnumerable<TDoc> documents, IEnumerable<string> tags = null)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public void Delete(TKey key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(T document)
+        public void Delete(TDoc document)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(IEnumerable<T> documents, IEnumerable<string> tags = null)
+        public void Delete(IEnumerable<TDoc> documents, IEnumerable<string> tags = null)
         {
             throw new NotImplementedException();
         }
 
         public void Delete(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        int IDocSet<T>.Count(IEnumerable<string> tags, IEnumerable<Criteria> criteria)
         {
             throw new NotImplementedException();
         }

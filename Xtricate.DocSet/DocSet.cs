@@ -4,15 +4,15 @@ using System.Linq;
 
 namespace Xtricate.DocSet
 {
-    public class DocSet<TDoc, TKey> : IDocSet<TDoc>
+    public class DocSet<TDoc, TKey> : IDocSet<TDoc, TKey>
     {
-        private readonly IDocSet<TDoc> _docIndexSet;
+        private readonly IDocSet<TDoc, TKey> _docIndexSet;
         private readonly Func<TDoc, TKey> _key;
         private readonly IStorage<TDoc> _storage;
         private readonly IEnumerable<Func<TDoc, string>> _tagMap;
 
         public DocSet(Func<TDoc, TKey> key, IStorage<TDoc> storage,
-            IEnumerable<Func<TDoc, string>> tagMap = null, IDocSet<TDoc> docIndexSet = null)
+            IEnumerable<Func<TDoc, string>> tagMap = null, IDocSet<TDoc, TKey> docIndexSet = null)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (storage == null) throw new ArgumentNullException(nameof(storage));
@@ -30,7 +30,7 @@ namespace Xtricate.DocSet
             return _storage.Count(tags, criteria);
         }
 
-        public IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public IEnumerable<TDoc> Load(TKey key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
             if (key == null) return null;
             return _storage.Load(key, tags, criteria);
@@ -68,7 +68,7 @@ namespace Xtricate.DocSet
             Delete(_key(document), EnsureTags(document, null, _tagMap));
         }
 
-        public void Delete(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public void Delete(TKey key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
             if (key == null) return;
             _storage.Delete(key, tags, criteria);
