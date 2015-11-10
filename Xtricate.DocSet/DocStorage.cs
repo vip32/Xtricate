@@ -12,13 +12,13 @@ namespace Xtricate.DocSet
     public class DocStorage<TDoc> : IStorage<TDoc>
     {
         private readonly IDbConnectionFactory _connectionFactory;
-        private readonly IEnumerable<IDocIndexMap<TDoc>> _indexMap;
+        private readonly IEnumerable<IIndexMap<TDoc>> _indexMap;
         private readonly IStorageOptions _options;
         private readonly ISerializer _serializer;
         private readonly IHasher _hasher;
 
         public DocStorage(IDbConnectionFactory connectionFactory, IStorageOptions options,
-            ISerializer serializer, IHasher hasher = null, IEnumerable<IDocIndexMap<TDoc>> indexMap = null)
+            ISerializer serializer, IHasher hasher = null, IEnumerable<IIndexMap<TDoc>> indexMap = null)
         {
             if (connectionFactory == null) throw new ArgumentNullException(nameof(connectionFactory));
             if (options == null) throw new ArgumentNullException(nameof(options));
@@ -245,34 +245,22 @@ namespace Xtricate.DocSet
         private void EnsureIndexTable()
         {
             if (_indexMap == null || !_indexMap.Any()) return;
-            var tableName = _options.GetIndexTableName<TDoc>();
-            if (TableExists(tableName)) return;
+            var tableName = _options.GetDocTableName<TDoc>();
+            if (!TableExists(tableName)) EnsureDocTable();
             using (var conn = CreateConnection())
             {
                 conn.Open();
                 Trace.WriteLine(
                     $"seed db table=[{conn.Database}].{tableName}, index={_indexMap.NullToEmpty().Select(i => i.Name).ToString(", ")}");
-                var sql = string.Format(@"
-    CREATE TABLE {0}(
-    [uid] UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY NONCLUSTERED,
-    [id] INTEGER NOT NULL IDENTITY(1,1),
-    [key] NVARCHAR(512) NOT NULL,
-    [tags] NVARCHAR(1024) NOT NULL,
-    [hash] NVARCHAR(128),
-    [timestamp] DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
-    {2});
-    CREATE UNIQUE CLUSTERED INDEX [IX_id_{1}] ON {0} (id)
-    CREATE INDEX [IX_key_{1}] ON {0} ([key] ASC);
-    CREATE INDEX [IX_tags_{1}] ON {0} ([tags] ASC);
-    CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);
-    {3}",
-    tableName, new Random().Next(1000, 9999),
-                    _indexMap.NullToEmpty().Select(i =>
-                        string.Format(",[{0}] NVARCHAR(2048)", i.Name.ToLower())).ToString(""),
-                    _indexMap.NullToEmpty().Select(i =>
-                        string.Format("CREATE INDEX [ixp_{1}_{2}] ON {0} ([{1}] ASC);",
-                            tableName, i.Name.ToLower(), new Random().Next(1000, 9999))).ToString(""));
-                conn.Execute(sql);
+                var sql = _indexMap.NullToEmpty().Select(i =>
+                        string.Format(@"
+    IF NOT EXISTS(SELECT * FROM sys.columns
+            WHERE Name = N'{1}_idx' AND Object_ID = Object_ID(N'{0}'))
+    BEGIN
+        ALTER TABLE {0} ADD [{1}_idx] NVARCHAR(2048)
+        CREATE INDEX [IX_{1}_idx_{2}] ON {0} ([{1}_idx] ASC)
+    END ", tableName, i.Name.ToLower(), new Random().Next(1000, 9999)));
+                sql.ForEach(s => conn.Execute(s));
             }
         }
 

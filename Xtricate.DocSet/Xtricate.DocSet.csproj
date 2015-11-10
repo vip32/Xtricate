@@ -66,8 +66,7 @@
     <Compile Include="BsonSerializer.cs" />
     <Compile Include="Criteria.cs" />
     <Compile Include="CriteriaOperator.cs" />
-    <Compile Include="DocIndexMap.cs" />
-    <Compile Include="DocIndexSet.cs" />
+    <Compile Include="IndexMap.cs" />
     <Compile Include="DocSet.cs" />
     <Compile Include="Hasher.cs" />
     <Compile Include="IHasher.cs" />
@@ -75,7 +74,7 @@
     <Compile Include="LinqExtensions.cs" />
     <Compile Include="DocStorage.cs" />
     <Compile Include="ICriteria.cs" />
-    <Compile Include="IDocIndexMap.cs" />
+    <Compile Include="IIndexMap.cs" />
     <Compile Include="IStorage.cs" />
     <Compile Include="ISerializer.cs" />
     <Compile Include="IDocSet.cs" />

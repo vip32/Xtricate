@@ -26,12 +26,12 @@ namespace Xtricate.DocSet.IntegrationTests
             int preCount;
             var options = new StorageOptions("TestDb", "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
-            var indexMap = new List<IDocIndexMap<TestDocument>>
+            var indexMap = new List<IIndexMap<TestDocument>>
             {
-                new DocIndexMap<TestDocument>(nameof(TestDocument.Name), i => i.Name),
-                new DocIndexMap<TestDocument>(nameof(TestDocument.Group), i => i.Group),
-                new DocIndexMap<TestDocument>(nameof(TestSku.Sku), values: i => i.Skus.Select(s => s.Sku)),
-                new DocIndexMap<TestDocument>(nameof(TestDocument.Date), i =>
+                new IndexMap<TestDocument>(nameof(TestDocument.Name), i => i.Name),
+                new IndexMap<TestDocument>(nameof(TestDocument.Group), i => i.Group),
+                new IndexMap<TestDocument>(nameof(TestSku.Sku), values: i => i.Skus.Select(s => s.Sku)),
+                new IndexMap<TestDocument>(nameof(TestDocument.Date), i =>
                     i.Date.HasValue ? i.Date.Value.ToString("s") : null)
             };
             var storage = new DocStorage<TestDocument>(connectionFactory, options,
@@ -101,12 +101,12 @@ namespace Xtricate.DocSet.IntegrationTests
         {
             var options = new StorageOptions("TestDb", "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
-            var indexMap = new List<IDocIndexMap<TestDocument>>
+            var indexMap = new List<IIndexMap<TestDocument>>
             {
-                new DocIndexMap<TestDocument>(nameof(TestDocument.Name), i => i.Name),
-                new DocIndexMap<TestDocument>(nameof(TestDocument.Group), i => i.Group),
-                new DocIndexMap<TestDocument>(nameof(TestSku.Sku), values: i => i.Skus.Select(s => s.Sku)),
-                new DocIndexMap<TestDocument>(nameof(TestDocument.Date), i =>
+                new IndexMap<TestDocument>(nameof(TestDocument.Name), i => i.Name),
+                new IndexMap<TestDocument>(nameof(TestDocument.Group), i => i.Group),
+                new IndexMap<TestDocument>(nameof(TestSku.Sku), values: i => i.Skus.Select(s => s.Sku)),
+                new IndexMap<TestDocument>(nameof(TestDocument.Date), i =>
                     i.Date.HasValue ? i.Date.Value.ToString("s") : null)
             };
             var storage = new DocStorage<TestDocument>(connectionFactory, options,
@@ -123,12 +123,12 @@ namespace Xtricate.DocSet.IntegrationTests
         {
             var options = new StorageOptions("TestDb", "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
-            var indexMap = new List<IDocIndexMap<TestDocument>>
+            var indexMap = new List<IIndexMap<TestDocument>>
             {
-                new DocIndexMap<TestDocument>(nameof(TestDocument.Name), i => i.Name),
-                new DocIndexMap<TestDocument>(nameof(TestDocument.Group), i => i.Group),
-                new DocIndexMap<TestDocument>(nameof(TestSku.Sku), values: i => i.Skus.Select(s => s.Sku)),
-                new DocIndexMap<TestDocument>(nameof(TestDocument.Date), i =>
+                new IndexMap<TestDocument>(nameof(TestDocument.Name), i => i.Name),
+                new IndexMap<TestDocument>(nameof(TestDocument.Group), i => i.Group),
+                new IndexMap<TestDocument>(nameof(TestSku.Sku), values: i => i.Skus.Select(s => s.Sku)),
+                new IndexMap<TestDocument>(nameof(TestDocument.Date), i =>
                     i.Date.HasValue ? i.Date.Value.ToString("s") : null)
             };
             var storage = new DocStorage<TestDocument>(connectionFactory, options,

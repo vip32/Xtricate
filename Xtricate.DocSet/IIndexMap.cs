@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Xtricate.DocSet
 {
-    public interface IDocIndexMap<T>
+    public interface IIndexMap<T>
     {
         string Description { get; set; }
         string Name { get; set; }
