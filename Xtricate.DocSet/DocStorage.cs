@@ -38,15 +38,15 @@ namespace Xtricate.DocSet
         public void Initialize()
         {
             EnsureSchema(_options);
-            EnsureTable();
-            EnsureIndex();
+            EnsureTable(_options.GetDocTableName<TDoc>());
+            EnsureIndex(_options.GetIndexTableName<TDoc>());
         }
 
         public virtual void Reset(bool indexOnly = false)
         {
             if (!indexOnly)
                 DeleteTable(_options.GetDocTableName<TDoc>());
-            DeleteIndex(_options.GetDocTableName<TDoc>());
+            DeleteIndex(_options.GetIndexTableName<TDoc>());
             Initialize();
         }
 
@@ -214,10 +214,9 @@ namespace Xtricate.DocSet
             }
         }
 
-        private void EnsureTable()
+        private void EnsureTable(string tableName)
         {
-            if (TableExists(_options.GetDocTableName<TDoc>())) return;
-            var tableName = _options.GetDocTableName<TDoc>();
+            if (TableExists(tableName)) return;
             using (var conn = CreateConnection())
             {
                 conn.Open();
@@ -242,11 +241,10 @@ namespace Xtricate.DocSet
             }
         }
 
-        private void EnsureIndex()
+        private void EnsureIndex(string tableName)
         {
             if (_indexMap == null || !_indexMap.Any()) return;
-            var tableName = _options.GetDocTableName<TDoc>();
-            if (!TableExists(tableName)) EnsureTable();
+            if (!TableExists(tableName)) EnsureTable(tableName);
             using (var conn = CreateConnection())
             {
                 conn.Open();
@@ -261,7 +259,8 @@ namespace Xtricate.DocSet
         CREATE INDEX [IX_{1}_idx] ON {0} ([{1}_idx] ASC)
     END ", tableName, i.Name.ToLower()));
                 sql.ForEach(s => conn.Execute(s));
-            }
+            } // sqlite check column exists: http://stackoverflow.com/questions/18920136/check-if-a-column-exists-in-sqlite
+              // sqlite alter table https://www.sqlite.org/lang_altertable.html
         }
 
         private void DeleteTable(string tableName)
