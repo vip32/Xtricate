@@ -68,7 +68,7 @@
     <Compile Include="CriteriaOperator.cs" />
     <Compile Include="IndexMap.cs" />
     <Compile Include="DocSet.cs" />
-    <Compile Include="Hasher.cs" />
+    <Compile Include="Md5Hasher.cs" />
     <Compile Include="IHasher.cs" />
     <Compile Include="IStorageOptions.cs" />
     <Compile Include="LinqExtensions.cs" />
@@ -80,6 +80,7 @@
     <Compile Include="IDocSet.cs" />
     <Compile Include="JsonSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sha1Hasher.cs" />
     <Compile Include="StorageAction.cs" />
     <Compile Include="StorageOptions.cs" />
   </ItemGroup>

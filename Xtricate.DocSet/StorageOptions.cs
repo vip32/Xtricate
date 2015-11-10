@@ -41,7 +41,7 @@ namespace Xtricate.DocSet
 
         public string GetIndexTableName<T>()
         {
-            return GetDocTableName<T>("_idx");
+            return GetDocTableName<T>();
         }
     }
 }

@@ -6,22 +6,21 @@ using Newtonsoft.Json.Bson;
 
 namespace Xtricate.DocSet
 {
-    public class Hasher: IHasher
+    public class Md5Hasher: IHasher
     {
         public string Compute(object value)
         {
             if (value == null) return null;
-            var bytes = BsonByteSerialize(value);
 
-            using (var md5 = new MD5CryptoServiceProvider())
+            using (var provider = new MD5CryptoServiceProvider())
             {
-                var hash = md5.ComputeHash(bytes);
+                var hash = provider.ComputeHash(ToBytes(value));
                 var hex = BitConverter.ToString(hash);
                 return hex.Replace("-", "");
             }
         }
 
-        private static byte[] BsonByteSerialize<T>(T obj) where T : class
+        private static byte[] ToBytes<T>(T obj) where T : class
         {
             if (obj == null) return null;
 

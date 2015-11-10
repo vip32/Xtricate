@@ -35,7 +35,7 @@ namespace Xtricate.DocSet.IntegrationTests
                     i.Date.HasValue ? i.Date.Value.ToString("s") : null)
             };
             var storage = new DocStorage<TestDocument>(connectionFactory, options,
-                new JsonNetSerializer(), new Hasher(), indexMap);
+                new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             MiniProfiler.Start();
             var mp = MiniProfiler.Current;
@@ -110,10 +110,10 @@ namespace Xtricate.DocSet.IntegrationTests
                     i.Date.HasValue ? i.Date.Value.ToString("s") : null)
             };
             var storage = new DocStorage<TestDocument>(connectionFactory, options,
-                new JsonNetSerializer(), new Hasher(), indexMap);
+                new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             storage.Initialize();
-            storage.Reset();
+            storage.Reset(true);
 
             Assert.That(storage.Count(), Is.EqualTo(0));
         }
@@ -132,7 +132,7 @@ namespace Xtricate.DocSet.IntegrationTests
                     i.Date.HasValue ? i.Date.Value.ToString("s") : null)
             };
             var storage = new DocStorage<TestDocument>(connectionFactory, options,
-                new JsonNetSerializer(), new Hasher(), indexMap);
+                new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             storage.Initialize();
             storage.Reset();

@@ -38,15 +38,15 @@ namespace Xtricate.DocSet
         public void Initialize()
         {
             EnsureSchema(_options);
-            EnsureDocTable();
-            EnsureIndexTable();
+            EnsureTable();
+            EnsureIndex();
         }
 
         public virtual void Reset(bool indexOnly = false)
         {
             if (!indexOnly)
                 DeleteTable(_options.GetDocTableName<TDoc>());
-            DeleteTable(_options.GetIndexTableName<TDoc>());
+            DeleteIndex(_options.GetDocTableName<TDoc>());
             Initialize();
         }
 
@@ -214,7 +214,7 @@ namespace Xtricate.DocSet
             }
         }
 
-        private void EnsureDocTable()
+        private void EnsureTable()
         {
             if (TableExists(_options.GetDocTableName<TDoc>())) return;
             var tableName = _options.GetDocTableName<TDoc>();
@@ -242,11 +242,11 @@ namespace Xtricate.DocSet
             }
         }
 
-        private void EnsureIndexTable()
+        private void EnsureIndex()
         {
             if (_indexMap == null || !_indexMap.Any()) return;
             var tableName = _options.GetDocTableName<TDoc>();
-            if (!TableExists(tableName)) EnsureDocTable();
+            if (!TableExists(tableName)) EnsureTable();
             using (var conn = CreateConnection())
             {
                 conn.Open();
@@ -258,8 +258,8 @@ namespace Xtricate.DocSet
             WHERE Name = N'{1}_idx' AND Object_ID = Object_ID(N'{0}'))
     BEGIN
         ALTER TABLE {0} ADD [{1}_idx] NVARCHAR(2048)
-        CREATE INDEX [IX_{1}_idx_{2}] ON {0} ([{1}_idx] ASC)
-    END ", tableName, i.Name.ToLower(), new Random().Next(1000, 9999)));
+        CREATE INDEX [IX_{1}_idx] ON {0} ([{1}_idx] ASC)
+    END ", tableName, i.Name.ToLower()));
                 sql.ForEach(s => conn.Execute(s));
             }
         }
@@ -270,9 +270,28 @@ namespace Xtricate.DocSet
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                Trace.WriteLine($"drop db table [{conn.Database}].{tableName}");
+                Trace.WriteLine($"drop table [{conn.Database}].{tableName}");
                 var sql = string.Format(@"DROP TABLE {0}", tableName);
                 conn.Execute(sql);
+            }
+        }
+
+        private void DeleteIndex(string tableName)
+        {
+            if (!TableExists(tableName)) return;
+            using (var conn = CreateConnection())
+            {
+                conn.Open();
+                Trace.WriteLine($"drop table [{conn.Database}].{tableName}");
+                var sql = _indexMap.NullToEmpty().Select(i =>
+                        string.Format(@"
+    IF EXISTS(SELECT * FROM sys.columns
+            WHERE Name = N'{1}_idx' AND Object_ID = Object_ID(N'{0}'))
+    BEGIN
+        DROP INDEX {0}.[IX_{1}_idx]
+        ALTER TABLE {0} DROP COLUMN [{1}_idx]
+    END ", tableName, i.Name.ToLower()));
+                sql.ForEach(s => conn.Execute(s));
             }
         }
     }
