@@ -26,14 +26,7 @@ namespace Xtricate.DocSet.IntegrationTests
             int preCount;
             var options = new StorageOptions("TestDb", "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
-            var indexMap = new List<IIndexMap<TestDocument>>
-            {
-                new IndexMap<TestDocument>(nameof(TestDocument.Name), i => i.Name),
-                new IndexMap<TestDocument>(nameof(TestDocument.Group), i => i.Group),
-                new IndexMap<TestDocument>(nameof(TestSku.Sku), values: i => i.Skus.Select(s => s.Sku)),
-                new IndexMap<TestDocument>(nameof(TestDocument.Date), i =>
-                    i.Date.HasValue ? i.Date.Value.ToString("s") : null)
-            };
+            var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options,
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
@@ -101,14 +94,7 @@ namespace Xtricate.DocSet.IntegrationTests
         {
             var options = new StorageOptions("TestDb", "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
-            var indexMap = new List<IIndexMap<TestDocument>>
-            {
-                new IndexMap<TestDocument>(nameof(TestDocument.Name), i => i.Name),
-                new IndexMap<TestDocument>(nameof(TestDocument.Group), i => i.Group),
-                new IndexMap<TestDocument>(nameof(TestSku.Sku), values: i => i.Skus.Select(s => s.Sku)),
-                new IndexMap<TestDocument>(nameof(TestDocument.Date), i =>
-                    i.Date.HasValue ? i.Date.Value.ToString("s") : null)
-            };
+            var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options,
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
@@ -123,14 +109,7 @@ namespace Xtricate.DocSet.IntegrationTests
         {
             var options = new StorageOptions("TestDb", "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
-            var indexMap = new List<IIndexMap<TestDocument>>
-            {
-                new IndexMap<TestDocument>(nameof(TestDocument.Name), i => i.Name),
-                new IndexMap<TestDocument>(nameof(TestDocument.Group), i => i.Group),
-                new IndexMap<TestDocument>(nameof(TestSku.Sku), values: i => i.Skus.Select(s => s.Sku)),
-                new IndexMap<TestDocument>(nameof(TestDocument.Date), i =>
-                    i.Date.HasValue ? i.Date.Value.ToString("s") : null)
-            };
+            var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options,
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
@@ -164,6 +143,21 @@ namespace Xtricate.DocSet.IntegrationTests
 
             Assert.That(result3, Is.EqualTo(StorageAction.Deleted));
             Assert.That(storage.Count(), Is.EqualTo(0));
+        }
+
+        private static List<IIndexMap<TestDocument>> TestDocumentIndexMap
+        {
+            get
+            {
+                return new List<IIndexMap<TestDocument>>
+                {
+                    new IndexMap<TestDocument>(nameof(TestDocument.Name), i => i.Name),
+                    new IndexMap<TestDocument>(nameof(TestDocument.Group), i => i.Group),
+                    new IndexMap<TestDocument>(nameof(TestSku.Sku), values: i => i.Skus.Select(s => s.Sku)),
+                    new IndexMap<TestDocument>(nameof(TestDocument.Date), i =>
+                        i.Date.HasValue ? i.Date.Value.ToString("s") : null)
+                };
+            }
         }
     }
 
