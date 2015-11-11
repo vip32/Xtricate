@@ -8,6 +8,8 @@
 ## Introduction
 
 ## Storage
+### Sqlserver
+### Sqlite
 
 ## Bugs and feature requests
 Do you have a bug or a feature request? Please use the [issue tracker](https://github.com/vip32/xtricate.docset/issues) and search for existing and closed issues. If your problem or request isn't addressed yet, go ahead and [open a new issue](https://github.com/vip32/xtricate.docset/issues/new). 
