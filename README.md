@@ -2,8 +2,8 @@
 
 | | |
 |-------|------|
-|Xtricate.DocSet|[![NuGet downloads](https://img.shields.io/nuget/dt/DocSet.svg)](http://www.nuget.org/packages/DocSet) [![NuGet version](https://img.shields.io/nuget/vpre/DocSet.svg)](http://www.nuget.org/packages/DocSet)|
-|Xtricate.DocSet.Sqlite|[![NuGet downloads](https://img.shields.io/nuget/dt/DocSet.Sqlite.svg)](http://www.nuget.org/packages/DocSet.Sqlite) [![NuGet version](https://img.shields.io/nuget/vpre/DocSet.Sqlite.svg)](http://www.nuget.org/packages/DocSet.Sqlite)|
+|Xtricate.DocSet|[![NuGet downloads](https://img.shields.io/nuget/dt/Xtricate.DocSet.svg)](http://www.nuget.org/packages/Xtricate.DocSet) [![NuGet version](https://img.shields.io/nuget/vpre/Xtricate.DocSet.svg)](http://www.nuget.org/packages/Xtricate.DocSet)|
+|Xtricate.DocSet.Sqlite|[![NuGet downloads](https://img.shields.io/nuget/dt/Xtricate.DocSet.Sqlite.svg)](http://www.nuget.org/packages/Xtricate.DocSet.Sqlite) [![NuGet version](https://img.shields.io/nuget/vpre/Xtricate.DocSet.Sqlite.svg)](http://www.nuget.org/packages/Xtricate.DocSet.Sqlite)|
 
 
 
