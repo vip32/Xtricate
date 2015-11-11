@@ -3,7 +3,7 @@
   <metadata>
     <id>Xtricate.Expando</id>
     <version>$version$</version>
-    <title>Xtricate.DocSet</title>
+    <title>Xtricate.Expando</title>
     <authors>vip32</authors>
     <owners>vip32</owners>
     <description>
@@ -15,7 +15,7 @@
       A short description of the package. If specified, this shows up in the middle pane of the Add Package Dialog. If not specified, a truncated version of the description is used instead.
     </summary>
     <language>en-US</language>
-    <projectUrl>https://github.com/vip32/Xtricate.DocSet</projectUrl>
+    <projectUrl>https://github.com/vip32/Xtricate</projectUrl>
     <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon-50x50.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
