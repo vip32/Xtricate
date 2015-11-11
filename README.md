@@ -16,7 +16,7 @@ Do you have a bug or a feature request? Please use the [issue tracker](https://g
 You can also get involved and [fork the repository](https://github.com/vip32/xtricate.docset/fork) to submit your own pull requests. 
 
 ## Versioning
-For transparency and to maintain backward compatibility (as much as possible), Cadru uses the [Semantic Versioning guidelines](http://semver.org/).
+For transparency and to maintain backward compatibility (as much as possible), this project uses the [Semantic Versioning guidelines](http://semver.org/).
 
 ## Creators
 * [vip32](http://about.me/vip32) - for the initial conception and core contributor.
