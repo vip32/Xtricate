@@ -23,7 +23,6 @@ namespace Xtricate.DocSet.IntegrationTests
         [Test]
         public void UpsertTest()
         {
-            int preCount;
             var options = new StorageOptions("TestDb", "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
@@ -33,21 +32,15 @@ namespace Xtricate.DocSet.IntegrationTests
             MiniProfiler.Start();
             var mp = MiniProfiler.Current;
 
-            using (mp.Step("initialize"))
-            {
-                storage.Initialize();
-            }
-            using (mp.Step("pre count"))
-            {
-                preCount = storage.Count(new[] {"en-US"});
-                Trace.WriteLine($"pre count: {preCount}");
-            }
+            storage.Reset();
+            var preCount = storage.Count(new[] {"en-US"});
+            Trace.WriteLine($"pre count: {preCount}");
 
             var id = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
-            for (var i = 1; i < 1000; i++)
+            for (var i = 1; i < 100; i++)
             {
                 Trace.WriteLine($"+{i}");
-                using (mp.Step("upsert"))
+                using (mp.Step("upsert " + i))
                 {
                     var result1 = storage.Upsert("key1", new Fixture().Create<TestDocument>(), new[] {"en-US"});
                 //    Assert.That(result1, Is.EqualTo(StorageAction.Updated));
@@ -64,9 +57,9 @@ namespace Xtricate.DocSet.IntegrationTests
                 }
             }
 
-            for (var i = 1; i <= 1; i++)
+            for (var i = 1; i <= 5; i++)
             {
-                using (mp.Step("load"))
+                using (mp.Step("load " + i))
                 {
                     var result = storage.Load(new[] {"en-US"}).Take(100);
                     //Assert.That(result, Is.Not.Null);
@@ -99,7 +92,7 @@ namespace Xtricate.DocSet.IntegrationTests
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             storage.Initialize();
-            storage.Reset(true);
+            storage.Reset();
 
             Assert.That(storage.Count(), Is.EqualTo(0));
         }

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Xtricate.DocSet.Sqlite</id>
+    <id>Xtricate.Expando</id>
     <version>$version$</version>
-    <title>Xtricate.DocSet.Sqlite</title>
+    <title>Xtricate.DocSet</title>
     <authors>vip32</authors>
     <owners>vip32</owners>
     <description>
@@ -21,6 +21,6 @@
     <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
     <copyright></copyright>
     <references></references>
-    <tags>nosql, data, sqlite, dapper, docset, xtricate</tags>
+    <tags>dynamic, expando, objects, xtricate</tags>
   </metadata>
 </package>

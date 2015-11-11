@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>DocSet</id>
+    <id>Xtricate.DocSet</id>
     <version>$version$</version>
-    <title>DocSet</title>
+    <title>Xtricate.DocSet</title>
     <authors>vip32</authors>
     <owners>vip32</owners>
     <description>
@@ -21,6 +21,6 @@
     <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
     <copyright></copyright>
     <references></references>
-    <tags>nosql, data, dapper, docset</tags>
+    <tags>nosql, data, dapper, docset, xtricate</tags>
   </metadata>
 </package>
