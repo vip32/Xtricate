@@ -19,7 +19,7 @@ You can also get involved and [fork the repository](https://github.com/vip32/xtr
 For transparency and to maintain backward compatibility (as much as possible), this project uses the [Semantic Versioning guidelines](http://semver.org/).
 
 ## Creators
-* [vip32](http://about.me/vip32) - for the initial conception and core contributor.
+* [vip32](https://github.com/vip32) - for the initial conception and core contributor.
 
 ## Copyright and license
 Code and documentation copyright 2015 vip32. Code is licensed under the [Microsoft Public License](http://opensource.org/licenses/Ms-PL.html), use it as you wish (but please 
