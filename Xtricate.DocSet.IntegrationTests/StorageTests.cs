@@ -23,7 +23,7 @@ namespace Xtricate.DocSet.IntegrationTests
         public void JsonNetPerformanceTests()
         {
             Trace.WriteLine("creating docs");
-            var docs = new Fixture().CreateMany<TestDocument>(2000).ToList();
+            var docs = new Fixture().CreateMany<TestDocument>(100).ToList();
             MiniProfiler.Start();
             var mp = MiniProfiler.Current;
             Trace.WriteLine("performance test on: " + docs.Count() + " docs");
@@ -52,6 +52,17 @@ namespace Xtricate.DocSet.IntegrationTests
                 });
             }
 
+            var textSerializer = new ServiceStackTextSerializer();
+            Trace.WriteLine("start JSONNET");
+            textSerializer.ToJson(new Fixture().Create<TestDocument>()); // warmup
+            using (mp.Step("SERVICESTACK serialization"))
+            {
+                1.Times(i =>
+                {
+                    foreach (var doc in docs)
+                        textSerializer.ToJson(doc);
+                });
+            }
 
             Trace.WriteLine($"trace: {mp.RenderPlainText()}");
             MiniProfiler.Stop();

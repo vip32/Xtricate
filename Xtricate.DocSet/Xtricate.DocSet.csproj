@@ -56,6 +56,10 @@
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ServiceStack.Text, Version=4.0.46.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ServiceStack.Text.4.0.46\lib\net40\ServiceStack.Text.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Sigil, Version=4.5.0.0, Culture=neutral, PublicKeyToken=2d06c3494341c8ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Sigil.4.5.0\lib\net45\Sigil.dll</HintPath>
       <Private>True</Private>
@@ -75,25 +79,26 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="BsonSerializer.cs" />
+    <Compile Include="Serialize\BsonSerializer.cs" />
     <Compile Include="Criteria.cs" />
     <Compile Include="CriteriaOperator.cs" />
     <Compile Include="IndexMap.cs" />
     <Compile Include="DocSet.cs" />
-    <Compile Include="JilSerializer.cs" />
-    <Compile Include="Md5Hasher.cs" />
-    <Compile Include="IHasher.cs" />
+    <Compile Include="Serialize\JilSerializer.cs" />
+    <Compile Include="Hash\Md5Hasher.cs" />
+    <Compile Include="Hash\IHasher.cs" />
     <Compile Include="IStorageOptions.cs" />
     <Compile Include="LinqExtensions.cs" />
     <Compile Include="DocStorage.cs" />
     <Compile Include="ICriteria.cs" />
     <Compile Include="IIndexMap.cs" />
     <Compile Include="IStorage.cs" />
-    <Compile Include="ISerializer.cs" />
+    <Compile Include="Serialize\ISerializer.cs" />
     <Compile Include="IDocSet.cs" />
-    <Compile Include="JsonNetSerializer.cs" />
+    <Compile Include="Serialize\JsonNetSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sha1Hasher.cs" />
+    <Compile Include="Serialize\ServiceStackTextSerializer.cs" />
+    <Compile Include="Hash\Sha1Hasher.cs" />
     <Compile Include="StorageAction.cs" />
     <Compile Include="StorageOptions.cs" />
   </ItemGroup>
@@ -105,6 +110,7 @@
   <ItemGroup>
     <Content Include="readme.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

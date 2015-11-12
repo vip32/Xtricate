@@ -1,5 +1,7 @@
+using System.Runtime.CompilerServices;
 using Jil;
 using Newtonsoft.Json;
+using ServiceStack.Text;
 
 namespace Xtricate.DocSet
 {
