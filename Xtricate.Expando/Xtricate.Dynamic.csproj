@@ -7,8 +7,8 @@
     <ProjectGuid>{9C96D6F2-784A-400C-9306-180D413800BE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Xtricate.Expando</RootNamespace>
-    <AssemblyName>Xtricate.Expando</AssemblyName>
+    <RootNamespace>Xtricate.Dynamic</RootNamespace>
+    <AssemblyName>Xtricate.Dynamic</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -45,9 +45,12 @@
     </Compile>
     <Compile Include="Expando.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyBag.cs" />
+    <Compile Include="SerializationHelper.cs" />
+    <Compile Include="ToDynamic.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Xtricate.Expando.nuspec" />
+    <None Include="Xtricate.Dynamic.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

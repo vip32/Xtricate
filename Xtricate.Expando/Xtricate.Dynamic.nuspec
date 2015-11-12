@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Xtricate.Expando</id>
+    <id>Xtricate.Dynamic</id>
     <version>$version$</version>
-    <title>Xtricate.Expando</title>
+    <title>Xtricate.Dynamic</title>
     <authors>vip32</authors>
     <owners>vip32</owners>
     <description>
