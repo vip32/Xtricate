@@ -47,5 +47,36 @@ namespace Xtricate.DocSet
             }
             return sb.ToString();
         }
+
+        /// <summary>
+        ///     Returns the property or a default value if the source was null
+        /// </summary>
+        /// <typeparam name="T1">The type of the source.</typeparam>
+        /// <typeparam name="T2">The type of the property.</typeparam>
+        /// <param name="source">The source.</param>
+        /// <param name="property">The property to get.</param>
+        /// <returns></returns>
+        public static T2 ValueOrDefault<T1, T2>(this T1 source, Func<T1, T2> property)
+        {
+            if (typeof(T1).IsValueType)
+                return Equals(source, default(T1)) ? default(T2) : property(source);
+            return Equals(source, null) ? default(T2) : property(source);
+        }
+
+        /// <summary>
+        ///     Returns the property or a default value if the source was null
+        /// </summary>
+        /// <typeparam name="T1">The type of the source.</typeparam>
+        /// <typeparam name="T2">The type of the property.</typeparam>
+        /// <param name="source">The source.</param>
+        /// <param name="property">The property to get.</param>
+        /// <param name="defaultValue">The defaule value.</param>
+        /// <returns></returns>
+        public static T2 ValueOrDefault<T1, T2>(this T1 source, Func<T1, T2> property, T2 defaultValue)
+        {
+            if (typeof(T1).IsValueType)
+                return Equals(source, default(T1)) ? defaultValue : property(source);
+            return Equals(source, null) ? defaultValue : property(source);
+        }
     }
 }

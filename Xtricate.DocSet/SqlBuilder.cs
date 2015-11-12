@@ -8,12 +8,12 @@ namespace Xtricate.DocSet
     {
         public string IndexColumnNameSuffix => "_idx";
 
-        public string BuildTagSql(string tag)
+        public string BuildTagSelect(string tag)
         {
             return $" AND [tags] LIKE '%||{tag}||%'";
         }
 
-        public string BuildCriteriaSql<TDoc>(IEnumerable<IIndexMap<TDoc>> indexMaps = null, ICriteria criteria = null)
+        public string BuildCriteriaSelect<TDoc>(IEnumerable<IIndexMap<TDoc>> indexMaps = null, ICriteria criteria = null)
         {
             if (indexMaps == null || !indexMaps.Any()) return null;
             if (criteria == null) return null;
@@ -22,10 +22,10 @@ namespace Xtricate.DocSet
                 i.Name.Equals(criteria.Name, StringComparison.InvariantCultureIgnoreCase));
             return indexMap == null
                 ? null
-                : BuildCriteriaSql(indexMap.Name, criteria.Operator, criteria.Value);
+                : BuildCriteriaSelect(indexMap.Name, criteria.Operator, criteria.Value);
         }
 
-        public string BuildCriteriaSql(string column, CriteriaOperator op, string value)
+        public string BuildCriteriaSelect(string column, CriteriaOperator op, string value)
         {
             if (string.IsNullOrEmpty(column)) return null;
 

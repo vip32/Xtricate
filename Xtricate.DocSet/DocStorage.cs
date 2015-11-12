@@ -72,7 +72,7 @@ namespace Xtricate.DocSet
             //Trace.WriteLine($"document exists: key={key},tags={tags?.ToString("||")}");
             var sql = $@"
     SELECT [id] FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
-            tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSql(t));
+            tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
 
             using (var conn = CreateConnection())
             {
@@ -94,8 +94,10 @@ namespace Xtricate.DocSet
                     sql =
                         $@"
     UPDATE {_options.GetDocTableName<TDoc>()}
-    SET [hash]=@hash,[timestamp]=@timestamp,[value]=@value WHERE [key]=@key";
-                    tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSql(t));
+    SET [hash]=@hash,[timestamp]=@timestamp,[value]=@value
+        {_indexMaps.NullToEmpty().Select(i => ",[" + i.Name.ToLower() + _sqlBuilder.IndexColumnNameSuffix + "]=@" + i.Name.ToLower() + _sqlBuilder.IndexColumnNameSuffix).ToString("")}
+    WHERE [key]=@key";
+                    tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
                     result = StorageAction.Updated;
                 }
                 else
@@ -104,20 +106,39 @@ namespace Xtricate.DocSet
                     sql =
                         $@"
     INSERT INTO {_options.GetDocTableName<TDoc>()}
-    ([key],[tags],[hash],[timestamp],[value]) VALUES(@key,@tags,@hash,@timestamp,@value);";
+        ([key],[tags],[hash],[timestamp],[value]{_indexMaps.NullToEmpty().Select(i => ",[" + i.Name.ToLower() + _sqlBuilder.IndexColumnNameSuffix + "]").ToString("")})
+        VALUES(@key,@tags,@hash,@timestamp,@value{_indexMaps.NullToEmpty().Select(i => ",@" + i.Name.ToLower() + _sqlBuilder.IndexColumnNameSuffix).ToString("")})";
                     result = StorageAction.Inserted;
                 }
+
+                var parameters = new DynamicParameters();
+                parameters.Add("key", key.ToString());
+                parameters.Add("tags", $"||{tags.ToString("||")}||");
+                parameters.Add("hash", _hasher?.Compute(document));
+                parameters.Add("timestamp", DateTime.UtcNow);
+                parameters.Add("value", _serializer.ToJson(document));
+                AddIndexParameters(document, parameters);
+
                 conn.Open();
-                conn.Execute(sql,
-                    new
-                    {
-                        key = key.ToString(),
-                        tags = $"||{tags.ToString("||")}||",
-                        hash = _hasher?.Compute(document),
-                        value = _serializer.ToJson(document),
-                        timestamp = DateTime.UtcNow
-                    });
+                conn.Execute(sql, parameters);
                 return result;
+            }
+        }
+
+        private void AddIndexParameters(TDoc document, DynamicParameters parameters)
+        {
+            if (_indexMaps.IsNullOrEmpty()) return;
+            if (parameters == null) parameters = new DynamicParameters();
+            var indexColumnValues = _indexMaps.ToDictionary(i => i.Name,
+                i => i.Value != null
+                    ? $"||{i.Value(document)}||"
+                    : $"||{i.Values(document).ToString("||")}||");
+
+            foreach (var item in _indexMaps)
+            {
+                parameters.Add(item.Name.ToLower() + _sqlBuilder.IndexColumnNameSuffix, indexColumnValues.FirstOrDefault(
+                    i => i.Key.Equals(item.Name, StringComparison.InvariantCultureIgnoreCase))
+                    .ValueOrDefault(i => i.Value));
             }
         }
 
@@ -129,8 +150,8 @@ namespace Xtricate.DocSet
             {
                 var sql = $@"
     SELECT COUNT(*) FROM {_options.GetDocTableName<TDoc>()} WHERE [id]>0";
-                tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSql(t));
-                criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSql(_indexMaps, c));
+                tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
+                criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSelect(_indexMaps, c));
                 conn.Open();
                 return conn.Query<int>(sql).SingleOrDefault();
             }
@@ -145,8 +166,8 @@ namespace Xtricate.DocSet
             {
                 var sql = $@"
     SELECT [value] FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
-                tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSql(t));
-                criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSql(_indexMaps, c));
+                tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
+                criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSelect(_indexMaps, c));
                 conn.Open();
                 var documents = conn.Query<string>(sql, new { key }, buffered: false);
                 foreach (var document in documents)
@@ -162,8 +183,8 @@ namespace Xtricate.DocSet
             {
                 var sql = $@"
     SELECT [value] FROM {_options.GetDocTableName<TDoc>()} WHERE [id]>0";
-                tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSql(t));
-                criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSql(_indexMaps, c));
+                tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
+                criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSelect(_indexMaps, c));
                 conn.Open();
                 var documents = conn.Query<string>(sql, buffered: false);
                 foreach (var document in documents)
@@ -178,8 +199,8 @@ namespace Xtricate.DocSet
             {
                 var sql = $@"
     DELETE FROM {_options.GetDocTableName<TDoc>()} WHERE [key]='{key}'";
-                tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSql(t));
-                criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSql(_indexMaps, c));
+                tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
+                criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSelect(_indexMaps, c));
                 conn.Open();
                 var num = conn.Execute(sql, new { key });
                 return num > 0 ? StorageAction.Deleted : StorageAction.None;

@@ -81,7 +81,7 @@ namespace Xtricate.DocSet.IntegrationTests
         }
 
         [Test]
-        public void UpsertTest()
+        public void InsertTest()
         {
             var options = new StorageOptions("TestDb", "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
@@ -100,7 +100,7 @@ namespace Xtricate.DocSet.IntegrationTests
             for (var i = 1; i < 100; i++)
             {
                 Trace.WriteLine($"+{i}");
-                using (mp.Step("upsert " + i))
+                using (mp.Step("insert " + i))
                 {
                     var result1 = storage.Upsert("key1", new Fixture().Create<TestDocument>(), new[] {"en-US"});
                 //    Assert.That(result1, Is.EqualTo(StorageAction.Updated));
@@ -137,6 +137,45 @@ namespace Xtricate.DocSet.IntegrationTests
                 var postCount = storage.Count(new[] {"en-US"});
                 Trace.WriteLine($"post count: {postCount}");
                 //Assert.That(storage.Count(), Is.GreaterThan(preCount));
+            }
+            Trace.WriteLine($"trace: {mp.RenderPlainText()}");
+            MiniProfiler.Stop();
+        }
+
+        [Test]
+        public void UpdateTest()
+        {
+            var options = new StorageOptions("TestDb", "StorageTests");
+            var connectionFactory = new SqlConnectionFactory();
+            var indexMap = TestDocumentIndexMap;
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
+                new JsonNetSerializer(), new Md5Hasher(), indexMap);
+
+            MiniProfiler.Start();
+            var mp = MiniProfiler.Current;
+
+            storage.Reset();
+
+            var id = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
+            using (mp.Step("insert "))
+            {
+                var newDoc = new Fixture().Create<TestDocument>();
+                var result1 = storage.Upsert(id, newDoc, new[] {"en-US"});
+                Assert.That(result1, Is.EqualTo(StorageAction.Inserted));
+                Trace.WriteLine("newDoc: " + newDoc.Name);
+
+                newDoc.Name = Guid.NewGuid().ToString();
+                var result2 = storage.Upsert(id, newDoc, new[] { "en-US" });
+                Assert.That(result2, Is.EqualTo(StorageAction.Updated));
+                Trace.WriteLine("newDoc: " + newDoc.Name);
+
+                var updatedDoc = storage.Load(id, new[] {"en-US"}).ToList();
+                Assert.That(updatedDoc, Is.Not.Null);
+                Assert.That(updatedDoc.Any(), Is.True);
+                Assert.That(updatedDoc.Count(), Is.EqualTo(1));
+                Assert.That(updatedDoc.First().Name, Is.Not.Null);
+                Assert.That(updatedDoc.First().Name, Is.EqualTo(newDoc.Name));
+                Trace.WriteLine("updatedDoc: " + updatedDoc.First().Name);
             }
             Trace.WriteLine($"trace: {mp.RenderPlainText()}");
             MiniProfiler.Stop();
