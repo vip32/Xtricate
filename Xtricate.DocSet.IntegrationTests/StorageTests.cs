@@ -10,6 +10,53 @@ using Xtricate.DocSet.IntegrationTests.Profiling;
 
 namespace Xtricate.DocSet.IntegrationTests
 {
+    public class SerializerTests
+    {
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            MiniProfiler.Settings.Storage = new MiniPofilerInMemoryStorage();
+            MiniProfiler.Settings.ProfilerProvider = new MiniPofilerInMemoryProvider();
+        }
+
+        [Test]
+        public void JsonNetPerformanceTests()
+        {
+            Trace.WriteLine("creating docs");
+            var docs = new Fixture().CreateMany<TestDocument>(2000).ToList();
+            MiniProfiler.Start();
+            var mp = MiniProfiler.Current;
+            Trace.WriteLine("performance test on: " + docs.Count() + " docs");
+
+            var jilSserializer = new JilSerializer();
+            Trace.WriteLine("start JIL");
+            jilSserializer.ToJson(new Fixture().Create<TestDocument>()); // warmup
+            using (mp.Step("JIL serialization"))
+            {
+                1.Times(i =>
+                {
+                    foreach (var doc in docs)
+                        jilSserializer.ToJson(doc);
+                });
+            }
+
+            var jsonNetSerializer = new JsonNetSerializer();
+            Trace.WriteLine("start JSONNET");
+            jsonNetSerializer.ToJson(new Fixture().Create<TestDocument>()); // warmup
+            using (mp.Step("JSONNET serialization"))
+            {
+                1.Times(i =>
+                {
+                    foreach (var doc in docs)
+                        jsonNetSerializer.ToJson(doc);
+                });
+            }
+
+
+            Trace.WriteLine($"trace: {mp.RenderPlainText()}");
+            MiniProfiler.Stop();
+        }
+    }
     [TestFixture]
     public class StorageTests
     {

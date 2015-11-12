@@ -15,5 +15,11 @@ namespace Xtricate.DocSet.IntegrationTests
             var unixTimeSpan = date - unixEpoch;
             return (long)unixTimeSpan.TotalSeconds;
         }
+
+        public static void Times(this int repeatCount, Action<int> action)
+        {
+            for (var i = 1; i <= repeatCount; i++)
+                action(i);
+        }
     }
 }

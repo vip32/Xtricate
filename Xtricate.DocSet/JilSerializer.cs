@@ -8,14 +8,16 @@ namespace Xtricate.DocSet
         public string ToJson(object value)
         {
             if (value == null) return null;
-            return JSON.SerializeDynamic(value, new Options(excludeNulls: true));
+            return JSON.Serialize /*Dynamic*/(value,
+                new Options(excludeNulls: true, serializationNameFormat: SerializationNameFormat.CamelCase));
 
         }
 
         public T FromJson<T>(string value)
         {
             if (value == null) return default(T);
-            return JSON.DeserializeDynamic(value);
+            return JSON.Deserialize /*Dynamic*/<T>(value,
+                new Options(excludeNulls: true, serializationNameFormat: SerializationNameFormat.CamelCase));
         }
     }
 }
