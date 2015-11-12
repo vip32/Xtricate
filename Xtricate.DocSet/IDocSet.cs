@@ -4,7 +4,7 @@ namespace Xtricate.DocSet
 {
     public interface IDocSet<TDoc, TKey>
     {
-        int Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
+        long Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
         IEnumerable<TDoc> Load(TKey key, IEnumerable<string> tags = null);
         IEnumerable<TDoc> Load(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
         TDoc Store(TDoc document, IEnumerable<string> tags = null);

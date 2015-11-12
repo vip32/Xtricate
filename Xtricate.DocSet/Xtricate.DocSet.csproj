@@ -79,6 +79,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ISqlBuilder.cs" />
     <Compile Include="Serialize\BsonSerializer.cs" />
     <Compile Include="Criteria.cs" />
     <Compile Include="CriteriaOperator.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialize\ServiceStackTextSerializer.cs" />
     <Compile Include="Hash\Sha1Hasher.cs" />
+    <Compile Include="SqlBuilder.cs" />
     <Compile Include="StorageAction.cs" />
     <Compile Include="StorageOptions.cs" />
   </ItemGroup>

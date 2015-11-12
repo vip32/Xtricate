@@ -19,18 +19,20 @@ namespace Xtricate.DocSet.IntegrationTests
             MiniProfiler.Settings.ProfilerProvider = new MiniPofilerInMemoryProvider();
         }
 
-        [Test]
-        public void JsonNetPerformanceTests()
+        [TestCase(1, false)]
+        [TestCase(1, true)]
+        [TestCase(2, true)]
+        public void JsonNetPerformanceTests(int docCount, bool warmup)
         {
-            Trace.WriteLine("creating docs");
-            var docs = new Fixture().CreateMany<TestDocument>(100).ToList();
+            Trace.WriteLine(string.Format("JsonNetPerformanceTests: warmup={0}, count={1}", docCount, docCount));
+            var docs = new Fixture().CreateMany<TestDocument>(docCount).ToList();
             MiniProfiler.Start();
             var mp = MiniProfiler.Current;
             Trace.WriteLine("performance test on: " + docs.Count() + " docs");
 
             var jilSserializer = new JilSerializer();
             Trace.WriteLine("start JIL");
-            jilSserializer.ToJson(new Fixture().Create<TestDocument>()); // warmup
+            if(warmup) jilSserializer.ToJson(new Fixture().Create<TestDocument>()); // warmup
             using (mp.Step("JIL serialization"))
             {
                 1.Times(i =>
@@ -42,7 +44,7 @@ namespace Xtricate.DocSet.IntegrationTests
 
             var jsonNetSerializer = new JsonNetSerializer();
             Trace.WriteLine("start JSONNET");
-            jsonNetSerializer.ToJson(new Fixture().Create<TestDocument>()); // warmup
+            if (warmup) jsonNetSerializer.ToJson(new Fixture().Create<TestDocument>()); // warmup
             using (mp.Step("JSONNET serialization"))
             {
                 1.Times(i =>
@@ -54,7 +56,7 @@ namespace Xtricate.DocSet.IntegrationTests
 
             var textSerializer = new ServiceStackTextSerializer();
             Trace.WriteLine("start JSONNET");
-            textSerializer.ToJson(new Fixture().Create<TestDocument>()); // warmup
+            if (warmup) textSerializer.ToJson(new Fixture().Create<TestDocument>()); // warmup
             using (mp.Step("SERVICESTACK serialization"))
             {
                 1.Times(i =>
@@ -84,7 +86,7 @@ namespace Xtricate.DocSet.IntegrationTests
             var options = new StorageOptions("TestDb", "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options,
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             MiniProfiler.Start();
@@ -146,7 +148,7 @@ namespace Xtricate.DocSet.IntegrationTests
             var options = new StorageOptions("TestDb", "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options,
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             storage.Initialize();
@@ -161,7 +163,7 @@ namespace Xtricate.DocSet.IntegrationTests
             var options = new StorageOptions("TestDb", "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options,
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             storage.Initialize();

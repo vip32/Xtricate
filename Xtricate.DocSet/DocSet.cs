@@ -9,10 +9,9 @@ namespace Xtricate.DocSet
         private readonly Func<TDoc, TKey> _key;
         private readonly IStorage<TDoc> _docStorage;
         private readonly IEnumerable<Func<TDoc, string>> _tagMap;
-        private readonly IStorage<TDoc> _indexStorage;
 
         public DocSet(Func<TDoc, TKey> key, IStorage<TDoc> docStorage,
-            IEnumerable<Func<TDoc, string>> tagMap = null, IStorage<TDoc> indexStorage = null)
+            IEnumerable<Func<TDoc, string>> tagMap = null)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (docStorage == null) throw new ArgumentNullException(nameof(docStorage));
@@ -20,12 +19,11 @@ namespace Xtricate.DocSet
             _key = key;
             _docStorage = docStorage;
             _tagMap = tagMap;
-            _indexStorage = indexStorage;
 
             _docStorage.Initialize();
         }
 
-        public int Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public long Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
         {
             return _docStorage.Count(tags, criteria);
         }
