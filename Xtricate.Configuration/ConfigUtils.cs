@@ -17,7 +17,7 @@ namespace Xtricate.Configuration
         private const string ConfigNullValue = "{null}";
 
         /// <summary>
-        /// Gets the nullable app setting.
+        ///     Gets the nullable app setting.
         /// </summary>
         public static string GetNullableAppSetting(string key)
         {
@@ -25,22 +25,22 @@ namespace Xtricate.Configuration
         }
 
         /// <summary>
-        /// Gets the app setting.
+        ///     Gets the app setting.
         /// </summary>
         public static string GetAppSetting(string key)
         {
-            string value = ConfigurationManager.AppSettings[key];
+            var value = ConfigurationManager.AppSettings[key];
 
             if (value == null)
             {
-                throw new ConfigurationErrorsException(String.Format(ErrorAppsettingNotFound, key));
+                throw new ConfigurationErrorsException(string.Format(ErrorAppsettingNotFound, key));
             }
 
             return value;
         }
 
         /// <summary>
-        /// Determines wheter the Config section identified by the sectionName exists.
+        ///     Determines wheter the Config section identified by the sectionName exists.
         /// </summary>
         public static bool ConfigSectionExists(string sectionName)
         {
@@ -48,7 +48,7 @@ namespace Xtricate.Configuration
         }
 
         /// <summary>
-        /// Returns AppSetting[key] if exists otherwise defaultValue
+        ///     Returns AppSetting[key] if exists otherwise defaultValue
         /// </summary>
         public static string GetAppSetting(string key, string defaultValue)
         {
@@ -56,11 +56,11 @@ namespace Xtricate.Configuration
         }
 
         /// <summary>
-        /// Returns AppSetting[key] if exists otherwise defaultValue, for non-string values
+        ///     Returns AppSetting[key] if exists otherwise defaultValue, for non-string values
         /// </summary>
         public static T GetAppSetting<T>(string key, T defaultValue)
         {
-            string val = ConfigurationManager.AppSettings[key];
+            var val = ConfigurationManager.AppSettings[key];
             if (val != null)
             {
                 if (ConfigNullValue.EndsWith(val))
@@ -73,21 +73,21 @@ namespace Xtricate.Configuration
         }
 
         /// <summary>
-        /// Gets the connection string setting.
+        ///     Gets the connection string setting.
         /// </summary>
         public static ConnectionStringSettings GetConnectionStringSetting(string key)
         {
             var value = ConfigurationManager.ConnectionStrings[key];
             if (value == null)
             {
-                throw new ConfigurationErrorsException(String.Format(ErrorConnectionStringNotFound, key));
+                throw new ConfigurationErrorsException(string.Format(ErrorConnectionStringNotFound, key));
             }
 
             return value;
         }
 
         /// <summary>
-        /// Gets the connection string.
+        ///     Gets the connection string.
         /// </summary>
         public static string GetConnectionString(string key)
         {
@@ -95,7 +95,7 @@ namespace Xtricate.Configuration
         }
 
         /// <summary>
-        /// Gets the list from app setting.
+        ///     Gets the list from app setting.
         /// </summary>
         public static List<string> GetListFromAppSetting(string key)
         {
@@ -109,7 +109,7 @@ namespace Xtricate.Configuration
         }
 
         /// <summary>
-        /// Gets the dictionary from app setting.
+        ///     Gets the dictionary from app setting.
         /// </summary>
         public static Dictionary<string, string> GetDictionaryFromAppSetting(string key)
         {
@@ -130,7 +130,7 @@ namespace Xtricate.Configuration
         }
 
         /// <summary>
-        /// Get the static Parse(string) method on the type supplied
+        ///     Get the static Parse(string) method on the type supplied
         /// </summary>
         private static MethodInfo GetParseMethod(Type type)
         {
@@ -141,17 +141,17 @@ namespace Xtricate.Configuration
             }
             var parseMethodInfo = type.GetMethod(parseMethod,
                 BindingFlags.Public | BindingFlags.Static, null,
-                new Type[] {typeof (string)}, null);
+                new[] {typeof (string)}, null);
 
             return parseMethodInfo;
         }
 
         /// <summary>
-        /// Gets the constructor info for T(string) if exists.
+        ///     Gets the constructor info for T(string) if exists.
         /// </summary>
         private static ConstructorInfo GetConstructorInfo(Type type)
         {
-            foreach (ConstructorInfo ci in type.GetConstructors())
+            foreach (var ci in type.GetConstructors())
             {
                 var ciTypes = ci.GetGenericArguments();
                 var matchFound = (ciTypes.Length == 1 && ciTypes[0] == typeof (string)); //e.g. T(string)
@@ -164,9 +164,9 @@ namespace Xtricate.Configuration
         }
 
         /// <summary>
-        /// Returns the value returned by the 'T.Parse(string)' method if exists otherwise 'new T(string)'.
-        /// e.g. if T was a TimeSpan it will return TimeSpan.Parse(textValue).
-        /// If there is no Parse Method it will attempt to create a new instance of the destined type
+        ///     Returns the value returned by the 'T.Parse(string)' method if exists otherwise 'new T(string)'.
+        ///     e.g. if T was a TimeSpan it will return TimeSpan.Parse(textValue).
+        ///     If there is no Parse Method it will attempt to create a new instance of the destined type
         /// </summary>
         private static T ParseTextValue<T>(string textValue)
         {

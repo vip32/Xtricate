@@ -6,9 +6,20 @@ namespace Xtricate.Configuration
 {
     public class DictionarySettings : AppSettingsBase, ISettings
     {
-        private DictionaryWrapper instance;
+        private readonly DictionaryWrapper _instance;
 
-        class DictionaryWrapper : ISettingsWriter
+        public DictionarySettings(Dictionary<string, string> map = null)
+            : base(new DictionaryWrapper(map))
+        {
+            _instance = (DictionaryWrapper) Settings;
+        }
+
+        public override Dictionary<string, string> GetAll()
+        {
+            return _instance.Map;
+        }
+
+        private class DictionaryWrapper : ISettingsWriter
         {
             internal readonly Dictionary<string, string> Map;
 
@@ -36,17 +47,6 @@ namespace Xtricate.Configuration
 
                 Map[key] = textValue;
             }
-        }
-
-        public DictionarySettings(Dictionary<string, string> map = null)
-            : base(new DictionaryWrapper(map))
-        {
-            instance = (DictionaryWrapper)settings;
-        }
-
-        public override Dictionary<string, string> GetAll()
-        {
-            return instance.Map;
         }
     }
 }

@@ -5,7 +5,16 @@ namespace Xtricate.Configuration
 {
     public class EnvironmentVariableSettings : AppSettingsBase
     {
-        class EnvironmentSettingsWrapper : ISettings
+        public EnvironmentVariableSettings() : base(new EnvironmentSettingsWrapper())
+        {
+        }
+
+        public override string GetString(string name)
+        {
+            return GetNullableString(name);
+        }
+
+        private class EnvironmentSettingsWrapper : ISettings
         {
             public string Get(string key)
             {
@@ -16,13 +25,6 @@ namespace Xtricate.Configuration
             {
                 return Environment.GetEnvironmentVariables().Keys.Map(x => x.ToString());
             }
-        }
-
-        public EnvironmentVariableSettings() : base(new EnvironmentSettingsWrapper()) { }
-
-        public override string GetString(string name)
-        {
-            return base.GetNullableString(name);
         }
     }
 }

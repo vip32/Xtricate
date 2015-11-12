@@ -6,6 +6,7 @@ namespace Xtricate.Configuration
     {
         public TextFileSettings(string filePath, string delimiter = " ")
             : base(File.ReadAllText(filePath).ParseKeyValueText(delimiter))
-        { }
+        {
+        }
     }
 }

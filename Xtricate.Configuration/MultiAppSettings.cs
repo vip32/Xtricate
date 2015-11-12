@@ -6,15 +6,15 @@ namespace Xtricate.Configuration
 {
     public class MultiAppSettings : AppSettingsBase, ISettings
     {
+        private MultiSettingsWrapper instance;
+
         public MultiAppSettings(params IAppSettings[] appSettings)
             : base(new MultiSettingsWrapper(appSettings))
         {
-            this.instance = (MultiSettingsWrapper)settings;
+            instance = (MultiSettingsWrapper) Settings;
         }
 
-        private MultiSettingsWrapper instance;
-
-        class MultiSettingsWrapper : ISettingsWriter
+        private class MultiSettingsWrapper : ISettingsWriter
         {
             private readonly IAppSettings[] appSettings;
 

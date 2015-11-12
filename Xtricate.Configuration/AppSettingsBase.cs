@@ -10,47 +10,18 @@ namespace Xtricate.Configuration
 
     public class AppSettingsBase : IAppSettings, ISettingsWriter
     {
-        protected ISettings settings;
-        protected ISettingsWriter settingsWriter;
-
         protected const string ErrorAppsettingNotFound = "Unable to find App Setting: {0}";
-
-        public string Tier { get; set; }
-
-        public ParsingStrategyDelegate ParsingStrategy { get; set; }
+        protected ISettings Settings;
+        protected ISettingsWriter SettingsWriter;
 
         public AppSettingsBase(ISettings settings = null)
         {
             Init(settings);
         }
 
-        protected void Init(ISettings settings)
-        {
-            this.settings = settings;
-            this.settingsWriter = settings as ISettingsWriter;
-        }
+        public string Tier { get; set; }
 
-        public virtual string GetNullableString(string name)
-        {
-            var value = Tier != null
-                ? Get("{0}.{1}".Fmt(Tier, name)) ?? Get(name)
-                : Get(name);
-
-            return ParsingStrategy != null
-                ? ParsingStrategy(value)
-                : value;
-        }
-
-        public string Get(string name)
-        {
-            if (settingsWriter != null)
-            {
-                var value = settingsWriter.Get(name);
-                if (value != null)
-                    return value;
-            }
-            return settings.Get(name);
-        }
+        public ParsingStrategyDelegate ParsingStrategy { get; set; }
 
         public virtual Dictionary<string, string> GetAll()
         {
@@ -65,9 +36,9 @@ namespace Xtricate.Configuration
 
         public virtual List<string> GetAllKeys()
         {
-            var keys = settings.GetAllKeys().ToHashSet();
-            if (settingsWriter != null)
-                settingsWriter.GetAllKeys().Each(x => keys.Add(x));
+            var keys = Settings.GetAllKeys().ToHashSet();
+            if (SettingsWriter != null)
+                SettingsWriter.GetAllKeys().Each(x => keys.Add(x));
 
             return keys.ToList();
         }
@@ -80,17 +51,6 @@ namespace Xtricate.Configuration
         public virtual string GetString(string name)
         {
             return GetNullableString(name);
-        }
-
-        public virtual string GetRequiredString(string name)
-        {
-            var value = GetNullableString(name);
-            if (value == null)
-            {
-                throw new ConfigurationErrorsException(String.Format(ErrorAppsettingNotFound, name));
-            }
-
-            return value;
         }
 
         public virtual IList<string> GetList(string key)
@@ -130,7 +90,7 @@ namespace Xtricate.Configuration
         {
             var stringValue = GetNullableString(name);
 
-            T ret = defaultValue;
+            var ret = defaultValue;
             try
             {
                 if (stringValue != null)
@@ -142,9 +102,9 @@ namespace Xtricate.Configuration
             catch (Exception ex)
             {
                 var message =
-                   string.Format(
-                       "The {0} setting had an invalid format. The value \"{1}\" could not be cast to type {2}",
-                       name, stringValue, typeof(T).FullName);
+                    string.Format(
+                        "The {0} setting had an invalid format. The value \"{1}\" could not be cast to type {2}",
+                        name, stringValue, typeof (T).FullName);
                 throw new ConfigurationErrorsException(message, ex);
             }
 
@@ -153,10 +113,49 @@ namespace Xtricate.Configuration
 
         public virtual void Set<T>(string key, T value)
         {
-            if (settingsWriter == null)
-                settingsWriter = new DictionarySettings();
+            if (SettingsWriter == null)
+                SettingsWriter = new DictionarySettings();
 
-            settingsWriter.Set(key, value);
+            SettingsWriter.Set(key, value);
+        }
+
+        public string Get(string name)
+        {
+            if (SettingsWriter != null)
+            {
+                var value = SettingsWriter.Get(name);
+                if (value != null)
+                    return value;
+            }
+            return Settings.Get(name);
+        }
+
+        protected void Init(ISettings settings)
+        {
+            this.Settings = settings;
+            SettingsWriter = settings as ISettingsWriter;
+        }
+
+        public virtual string GetNullableString(string name)
+        {
+            var value = Tier != null
+                ? Get("{0}.{1}".Fmt(Tier, name)) ?? Get(name)
+                : Get(name);
+
+            return ParsingStrategy != null
+                ? ParsingStrategy(value)
+                : value;
+        }
+
+        public virtual string GetRequiredString(string name)
+        {
+            var value = GetNullableString(name);
+            if (value == null)
+            {
+                throw new ConfigurationErrorsException(string.Format(ErrorAppsettingNotFound, name));
+            }
+
+            return value;
         }
     }
 }
