@@ -38,9 +38,10 @@ namespace Xtricate.DocSet
             if (op.Equals(CriteriaOperator.Le))
                 return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] <= '||{value}' ";
             if (op.Equals(CriteriaOperator.Contains))
-                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] LIKE '%{value}%' ";
+                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] LIKE '||%{value}%||' ";
 
-            return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] LIKE '%||{value}||%' ";
+            //return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] LIKE '%||{value}||%' "; // TODO: remove % for much faster PERF
+            return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] = '||{value}||' ";
         }
     }
 }

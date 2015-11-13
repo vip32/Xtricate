@@ -48,6 +48,7 @@ namespace Xtricate.IntegrationTests
             MiniProfiler.Start();
             var mp = MiniProfiler.Current;
 
+            Trace.WriteLine($"pre count: {storage.Count(new[] { "en-US" })}");
             var key = DateTime.Now.Epoch() + new Random().Next(10000, 99999) + "c";
             var name = "NEWNAME" + key;
             var sku = "";
@@ -63,7 +64,7 @@ namespace Xtricate.IntegrationTests
 
             5.Times(i =>
             {
-                using (mp.Step("find by key/tags " + i))
+                using (mp.Step("find by KEY/tags " + i))
                 {
                     var result = storage.Load(key, new[] {"en-US"}).ToList();
                     Assert.That(result, Is.Not.Null);
@@ -74,7 +75,7 @@ namespace Xtricate.IntegrationTests
 
             5.Times(i =>
             {
-                using (mp.Step("find by name criteria/tags " + i))
+                using (mp.Step("find by NAME criteria/tags " + i))
                 {
                     var criterias = new List<Criteria> {new Criteria("name", CriteriaOperator.Eq, name)};
                     var result = storage.Load(new[] { "en-US" }, criterias).ToList();
@@ -86,9 +87,9 @@ namespace Xtricate.IntegrationTests
 
             5.Times(i =>
             {
-                using (mp.Step("find by sku criteria/tags " + i))
+                using (mp.Step("find by SKU criteria/tags " + i))
                 {
-                    var criterias = new List<Criteria> { new Criteria("sku", CriteriaOperator.Eq, sku) };
+                    var criterias = new List<Criteria> { new Criteria("sku", CriteriaOperator.Contains, sku) };
                     var result = storage.Load(new[] { "en-US" }, criterias).ToList();
                     Assert.That(result, Is.Not.Null);
                     Assert.That(result.Any(), Is.True);
@@ -100,7 +101,7 @@ namespace Xtricate.IntegrationTests
             MiniProfiler.Stop();
         }
 
-        [TestCase(300000, false)]
+        [TestCase(1000, false)]
         public void MassInsertTest(int docCount, bool reset)
         {
             var options = new StorageOptions("TestDb", "StorageTests");

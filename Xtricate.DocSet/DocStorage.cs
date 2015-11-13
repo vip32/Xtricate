@@ -157,8 +157,7 @@ namespace Xtricate.DocSet
             }
         }
 
-        public virtual IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null,
-            IEnumerable<Criteria> criterias = null)
+        public virtual IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null)
         {
             Trace.WriteLine($"document load: key={key}, tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
 
