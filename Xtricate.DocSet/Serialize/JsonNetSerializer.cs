@@ -10,7 +10,7 @@ namespace Xtricate.DocSet
         {
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             //TypeNameHandling = TypeNameHandling.All,
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            //ContractResolver = new CamelCasePropertyNamesContractResolver(),
             Converters = new JsonConverter[]
             {
                 new StringEnumConverter(),

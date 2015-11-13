@@ -7,6 +7,7 @@ using NUnit.Framework;
 using Ploeh.AutoFixture;
 using StackExchange.Profiling;
 using Xtricate.DocSet;
+using Xtricate.Dynamic;
 using Xtricate.UnitTests.TestHelpers;
 
 namespace Xtricate.IntegrationTests
@@ -54,12 +55,14 @@ namespace Xtricate.IntegrationTests
             var sku = "";
             using (mp.Step("insert "))
             {
-                var newDoc = new Fixture().Create<TestDocument>();
-                newDoc.Name = name;
-                sku = newDoc.Skus.FirstOrDefault().Sku;
-                var result1 = storage.Upsert(key, newDoc, new[] { "en-US" });
+                var document = new Fixture().Create<TestDocument>();
+                document.Name = name;
+                sku = document.Skus.FirstOrDefault().Sku;
+                dynamic dDocument = document;
+                dDocument.Dyn = "dynamic property";
+                var result1 = storage.Upsert(key, document, new[] { "en-US" });
                 Assert.That(result1, Is.EqualTo(StorageAction.Inserted));
-                Trace.WriteLine("newDoc: " + newDoc.Name);
+                Trace.WriteLine("newDoc: " + document.Name);
             }
 
             5.Times(i =>
@@ -286,7 +289,7 @@ namespace Xtricate.IntegrationTests
         }
     }
 
-    public class TestDocument
+    public class TestDocument : Expando
     {
         public int Id { get; set; }
         public IDictionary<string, string> Identifiers { get; set; }
