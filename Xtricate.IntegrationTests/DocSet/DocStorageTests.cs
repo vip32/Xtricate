@@ -6,9 +6,10 @@ using System.Linq;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using StackExchange.Profiling;
-using Xtricate.DocSet.IntegrationTests.Profiling;
+using Xtricate.DocSet;
+using Xtricate.UnitTests.TestHelpers;
 
-namespace Xtricate.DocSet.IntegrationTests
+namespace Xtricate.IntegrationTests
 {
     [TestFixture]
     public class DocStorageTests
