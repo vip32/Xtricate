@@ -10,74 +10,29 @@ using Xtricate.DocSet.IntegrationTests.Profiling;
 
 namespace Xtricate.DocSet.IntegrationTests
 {
-    public class SerializerTests
-    {
-        [TestFixtureSetUp]
-        public void Setup()
-        {
-            MiniProfiler.Settings.Storage = new MiniPofilerInMemoryStorage();
-            MiniProfiler.Settings.ProfilerProvider = new MiniPofilerInMemoryProvider();
-        }
-
-        [TestCase(1, false)]
-        [TestCase(1, true)]
-        [TestCase(2, true)]
-        public void JsonNetPerformanceTests(int docCount, bool warmup)
-        {
-            Trace.WriteLine(string.Format("JsonNetPerformanceTests: warmup={0}, count={1}", docCount, docCount));
-            var docs = new Fixture().CreateMany<TestDocument>(docCount).ToList();
-            MiniProfiler.Start();
-            var mp = MiniProfiler.Current;
-            Trace.WriteLine("performance test on: " + docs.Count() + " docs");
-
-            var jilSserializer = new JilSerializer();
-            Trace.WriteLine("start JIL");
-            if(warmup) jilSserializer.ToJson(new Fixture().Create<TestDocument>()); // warmup
-            using (mp.Step("JIL serialization"))
-            {
-                1.Times(i =>
-                {
-                    foreach (var doc in docs)
-                        jilSserializer.ToJson(doc);
-                });
-            }
-
-            var jsonNetSerializer = new JsonNetSerializer();
-            Trace.WriteLine("start JSONNET");
-            if (warmup) jsonNetSerializer.ToJson(new Fixture().Create<TestDocument>()); // warmup
-            using (mp.Step("JSONNET serialization"))
-            {
-                1.Times(i =>
-                {
-                    foreach (var doc in docs)
-                        jsonNetSerializer.ToJson(doc);
-                });
-            }
-
-            var textSerializer = new ServiceStackTextSerializer();
-            Trace.WriteLine("start JSONNET");
-            if (warmup) textSerializer.ToJson(new Fixture().Create<TestDocument>()); // warmup
-            using (mp.Step("SERVICESTACK serialization"))
-            {
-                1.Times(i =>
-                {
-                    foreach (var doc in docs)
-                        textSerializer.ToJson(doc);
-                });
-            }
-
-            Trace.WriteLine($"trace: {mp.RenderPlainText()}");
-            MiniProfiler.Stop();
-        }
-    }
     [TestFixture]
-    public class StorageTests
+    public class DocStorageTests
     {
         [TestFixtureSetUp]
         public void Setup()
         {
             MiniProfiler.Settings.Storage = new MiniPofilerInMemoryStorage();
             MiniProfiler.Settings.ProfilerProvider = new MiniPofilerInMemoryProvider();
+        }
+
+        [Test]
+        public void InitializeTest()
+        {
+            var options = new StorageOptions("TestDb", "StorageTests");
+            var connectionFactory = new SqlConnectionFactory();
+            var indexMap = TestDocumentIndexMap;
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
+                new JsonNetSerializer(), new Md5Hasher(), indexMap);
+
+            storage.Initialize();
+            storage.Reset();
+
+            Assert.That(storage.Count(), Is.EqualTo(0));
         }
 
         [Test]
@@ -179,21 +134,6 @@ namespace Xtricate.DocSet.IntegrationTests
             }
             Trace.WriteLine($"trace: {mp.RenderPlainText()}");
             MiniProfiler.Stop();
-        }
-
-        [Test]
-        public void InitializeTest()
-        {
-            var options = new StorageOptions("TestDb", "StorageTests");
-            var connectionFactory = new SqlConnectionFactory();
-            var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
-                new JsonNetSerializer(), new Md5Hasher(), indexMap);
-
-            storage.Initialize();
-            storage.Reset();
-
-            Assert.That(storage.Count(), Is.EqualTo(0));
         }
 
         [Test]

@@ -77,7 +77,8 @@
     <Compile Include="Profiling\Extensions.cs" />
     <Compile Include="Profiling\MiniPofilerInMemoryProvider.cs" />
     <Compile Include="Profiling\MiniPofilerInMemoryStorage.cs" />
-    <Compile Include="StorageTests.cs" />
+    <Compile Include="SerializerTests.cs" />
+    <Compile Include="DocStorageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
