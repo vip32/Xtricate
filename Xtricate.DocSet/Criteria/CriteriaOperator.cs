@@ -3,6 +3,7 @@
     public enum CriteriaOperator
     {
         Eq,
+        Eqm, // equals multiple
         Gt,
         Ge,
         Lt,
