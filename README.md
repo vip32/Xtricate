@@ -4,7 +4,7 @@
 |-------|------|
 |Xtricate.DocSet|[![NuGet downloads](https://img.shields.io/nuget/dt/Xtricate.DocSet.svg)](http://www.nuget.org/packages/Xtricate.DocSet) [![NuGet version](https://img.shields.io/nuget/vpre/Xtricate.DocSet.svg)](http://www.nuget.org/packages/Xtricate.DocSet)|
 |Xtricate.DocSet.Sqlite|[![NuGet downloads](https://img.shields.io/nuget/dt/Xtricate.DocSet.Sqlite.svg)](http://www.nuget.org/packages/Xtricate.DocSet.Sqlite) [![NuGet version](https://img.shields.io/nuget/vpre/Xtricate.DocSet.Sqlite.svg)](http://www.nuget.org/packages/Xtricate.DocSet.Sqlite)|
-|Xtricate.Expando|[![NuGet downloads](https://img.shields.io/nuget/dt/Xtricate.Expando.svg)](http://www.nuget.org/packages/Xtricate.Expando) [![NuGet version](https://img.shields.io/nuget/vpre/Xtricate.Expando.svg)](http://www.nuget.org/packages/Xtricate.Expando)|
+|Xtricate.Dynamic|[![NuGet downloads](https://img.shields.io/nuget/dt/Xtricate.Dynamic.svg)](http://www.nuget.org/packages/Xtricate.Dynamic) [![NuGet version](https://img.shields.io/nuget/vpre/Xtricate.Dynamic.svg)](http://www.nuget.org/packages/Xtricate.Dynamic)|
 
 
 ## Introduction
