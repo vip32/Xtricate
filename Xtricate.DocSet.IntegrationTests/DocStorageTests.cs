@@ -36,6 +36,70 @@ namespace Xtricate.DocSet.IntegrationTests
         }
 
         [Test]
+        public void FindTest()
+        {
+            var options = new StorageOptions("TestDb", "StorageTests");
+            var connectionFactory = new SqlConnectionFactory();
+            var indexMap = TestDocumentIndexMap;
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
+                new JsonNetSerializer(), new Md5Hasher(), indexMap);
+
+            MiniProfiler.Start();
+            var mp = MiniProfiler.Current;
+
+            var key = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
+            var name = "NEWNAME" + key;
+            var sku = "";
+            using (mp.Step("insert "))
+            {
+                var newDoc = new Fixture().Create<TestDocument>();
+                newDoc.Name = name;
+                sku = newDoc.Skus.FirstOrDefault().Sku;
+                var result1 = storage.Upsert(key, newDoc, new[] { "en-US" });
+                Assert.That(result1, Is.EqualTo(StorageAction.Inserted));
+                Trace.WriteLine("newDoc: " + newDoc.Name);
+            }
+
+            5.Times(i =>
+            {
+                using (mp.Step("find by key/tags " + i))
+                {
+                    var result = storage.Load(key, new[] {"en-US"}).ToList();
+                    Assert.That(result, Is.Not.Null);
+                    Assert.That(result.Any(), Is.True);
+                    Assert.That(result.FirstOrDefault().Name, Is.EqualTo(name));
+                }
+            });
+
+            5.Times(i =>
+            {
+                using (mp.Step("find by name criteria/tags " + i))
+                {
+                    var criterias = new List<Criteria> {new Criteria("name", CriteriaOperator.Eq, name)};
+                    var result = storage.Load(new[] { "en-US" }, criterias).ToList();
+                    Assert.That(result, Is.Not.Null);
+                    Assert.That(result.Any(), Is.True);
+                    Assert.That(result.FirstOrDefault().Name, Is.EqualTo(name));
+                }
+            });
+
+            5.Times(i =>
+            {
+                using (mp.Step("find by sku criteria/tags " + i))
+                {
+                    var criterias = new List<Criteria> { new Criteria("sku", CriteriaOperator.Eq, sku) };
+                    var result = storage.Load(new[] { "en-US" }, criterias).ToList();
+                    Assert.That(result, Is.Not.Null);
+                    Assert.That(result.Any(), Is.True);
+                    Assert.That(result.FirstOrDefault().Skus.FirstOrDefault().Sku, Is.EqualTo(sku));
+                }
+            });
+
+            Trace.WriteLine($"trace: {mp.RenderPlainText()}");
+            MiniProfiler.Stop();
+        }
+
+        [Test]
         public void InsertTest()
         {
             var options = new StorageOptions("TestDb", "StorageTests");
@@ -51,7 +115,7 @@ namespace Xtricate.DocSet.IntegrationTests
             var preCount = storage.Count(new[] {"en-US"});
             Trace.WriteLine($"pre count: {preCount}");
 
-            var id = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
+            var key = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
             for (var i = 1; i < 100; i++)
             {
                 Trace.WriteLine($"+{i}");
@@ -67,7 +131,7 @@ namespace Xtricate.DocSet.IntegrationTests
                 //}
                 //using (mp.Step("upsert int"))
                 //{
-                    var result3 = storage.Upsert(id + i, new Fixture().Create<TestDocument>(), new[] {"en-US"});
+                    var result3 = storage.Upsert(key + i, new Fixture().Create<TestDocument>(), new[] {"en-US"});
                     //Assert.That(result3, Is.EqualTo(StorageAction.Inserted));
                 }
             }
@@ -111,20 +175,20 @@ namespace Xtricate.DocSet.IntegrationTests
 
             storage.Reset();
 
-            var id = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
+            var key = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
             using (mp.Step("insert "))
             {
                 var newDoc = new Fixture().Create<TestDocument>();
-                var result1 = storage.Upsert(id, newDoc, new[] {"en-US"});
+                var result1 = storage.Upsert(key, newDoc, new[] {"en-US"});
                 Assert.That(result1, Is.EqualTo(StorageAction.Inserted));
                 Trace.WriteLine("newDoc: " + newDoc.Name);
 
                 newDoc.Name = Guid.NewGuid().ToString();
-                var result2 = storage.Upsert(id, newDoc, new[] { "en-US" });
+                var result2 = storage.Upsert(key, newDoc, new[] { "en-US" });
                 Assert.That(result2, Is.EqualTo(StorageAction.Updated));
                 Trace.WriteLine("newDoc: " + newDoc.Name);
 
-                var updatedDoc = storage.Load(id, new[] {"en-US"}).ToList();
+                var updatedDoc = storage.Load(key, new[] {"en-US"}).ToList();
                 Assert.That(updatedDoc, Is.Not.Null);
                 Assert.That(updatedDoc.Any(), Is.True);
                 Assert.That(updatedDoc.Count(), Is.EqualTo(1));
