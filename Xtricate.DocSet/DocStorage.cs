@@ -160,7 +160,7 @@ namespace Xtricate.DocSet
         public virtual IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null,
             IEnumerable<Criteria> criterias = null)
         {
-            Trace.WriteLine($"document load: key={key},tags={tags?.ToString("||")}");
+            Trace.WriteLine($"document load: key={key}, tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
 
             using (var conn = CreateConnection())
             {
@@ -177,7 +177,7 @@ namespace Xtricate.DocSet
 
         public virtual IEnumerable<TDoc> Load(IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null)
         {
-            Trace.WriteLine($"document load: tags={tags?.ToString("||")}");
+            Trace.WriteLine($"document load: tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
 
             using (var conn = CreateConnection())
             {

@@ -47,7 +47,7 @@ namespace Xtricate.DocSet.IntegrationTests
             MiniProfiler.Start();
             var mp = MiniProfiler.Current;
 
-            var key = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
+            var key = DateTime.Now.Epoch() + new Random().Next(10000, 99999) + "c";
             var name = "NEWNAME" + key;
             var sku = "";
             using (mp.Step("insert "))
@@ -95,6 +95,33 @@ namespace Xtricate.DocSet.IntegrationTests
                 }
             });
 
+            Trace.WriteLine($"trace: {mp.RenderPlainText()}");
+            MiniProfiler.Stop();
+        }
+
+        [TestCase(10000, false)]
+        public void MassInsertTest(int docCount, bool reset)
+        {
+            var options = new StorageOptions("TestDb", "StorageTests");
+            var connectionFactory = new SqlConnectionFactory();
+            var indexMap = TestDocumentIndexMap;
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
+                new JsonNetSerializer(), new Md5Hasher(), indexMap);
+
+            MiniProfiler.Start();
+            var mp = MiniProfiler.Current;
+
+            if(reset) storage.Reset();
+            Trace.WriteLine($"pre count: {storage.Count(new[] { "en-US" })}");
+
+            var key = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
+            for (var i = 1; i <= docCount; i++)
+            {
+                Trace.WriteLine($"+{i}");
+                storage.Upsert(key + i, new Fixture().Create<TestDocument>(), new[] {"en-US"});
+            }
+
+            Trace.WriteLine($"post count: {storage.Count(new[] { "en-US" })}");
             Trace.WriteLine($"trace: {mp.RenderPlainText()}");
             MiniProfiler.Stop();
         }
