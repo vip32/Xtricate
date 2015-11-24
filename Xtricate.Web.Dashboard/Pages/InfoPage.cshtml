@@ -1,0 +1,29 @@
+﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
+
+@inherits Xtricate.Web.Dashboard.RazorPage<Xtricate.Web.Dashboard.Models.DashboardInfoViewModel>
+@{
+    Layout = new LayoutPage();
+}
+
+<h4>Routes</h4>
+<ul>
+    @foreach (var route in Model.Routes)
+    {
+        <li><a href="@Url.To(route)">@route</a></li>
+    }
+</ul>
+<h4>Javascripts</h4>
+<ul>
+    @foreach (var name in Model.Javascripts)
+    {
+        <li>@name</li>
+    }
+</ul>
+<h4>Stylesheets</h4>
+<ul>
+    @foreach (var name in Model.Stylesheets)
+    {
+        <li>@name</li>
+    }
+</ul>
+
