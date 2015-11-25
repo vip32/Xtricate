@@ -20,6 +20,13 @@ namespace Xtricate.Web.Dashboard
     {
         public static IAppBuilder UseDashboard(
             this IAppBuilder builder,
+            RouteCollection routes = null)
+        {
+            return builder.UseDashboard(null, null, routes);
+        }
+
+        public static IAppBuilder UseDashboard(
+            this IAppBuilder builder,
             string pathMatch = null,
             DashboardOptions options = null,
             RouteCollection routes = null)

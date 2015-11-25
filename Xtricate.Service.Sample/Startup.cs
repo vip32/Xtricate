@@ -18,8 +18,7 @@ namespace Xtricate.Service.Sample
 
             ConfigureWebApi(httpConfig);
 
-            app.UseDashboard(
-                routes: new RouteCollectionBuilder(
+            app.UseDashboard(new RouteCollectionBuilder(
                     //resources: new EmbeddedResources(
                     //    new[]
                     //    {

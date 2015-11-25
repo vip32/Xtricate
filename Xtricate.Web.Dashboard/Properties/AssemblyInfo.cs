@@ -22,5 +22,3 @@ using System.Security;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("3fc62e9e-bf9b-4f50-9a8f-5aa74e99b599")]
-//[assembly: InternalsVisibleTo("Xtricate.Service.Sample")]
-[assembly: SecurityTransparent]
