@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Text;
@@ -21,6 +22,7 @@ namespace Xtricate.Web.Dashboard
             GenerationTime = Stopwatch.StartNew();
             Html = new HtmlHelper(this);
         }
+        public IDictionary<string, string> Parameters { get; set; }
 
         public string[] Scripts { get; set; }
         public string[] Stylesheets { get; set; }

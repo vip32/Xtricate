@@ -1,5 +1,6 @@
 ﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
 
+@using Xtricate.Service.Dashboard
 @using Xtricate.Web.Dashboard.Pages
 @inherits Xtricate.Web.Dashboard.RazorPage
 @{
@@ -18,19 +19,19 @@
 <table class="table tree">
     <thead>
         <tr>
-            <th>Cat</th>
+            <th>Category</th>
             <th>Id</th>
             <th>Name</th>
             <th>Sku</th>
         </tr>
     </thead>
     <tbody data-bind="template: { foreach: products }">
-        <tr>
-            <td><span class="treegrid-expander glyphicon glyphicon-chevron-down"></span>Category</td>
-            <td data-bind="text: id"></td>
-            <td data-bind="text: name"></td>
-            <td data-bind="text: sku"></td>
-        </tr>
+    <tr>
+        <td>Category</td>
+        <td><a data-bind="attr: { href:'@Url.To("/products")/'+id}, text: id"></a></td>
+        <td data-bind="text: name"></td>
+        <td data-bind="text: sku"></td>
+    </tr>
     </tbody>
 </table>
 

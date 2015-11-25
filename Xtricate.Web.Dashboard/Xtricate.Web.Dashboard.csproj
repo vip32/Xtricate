@@ -106,16 +106,16 @@
     <EmbeddedResource Include="Content\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="packages.config" />
     <None Include="Pages\HomePage.cshtml">
-      <Generator>RazorGenerator</Generator>
-      <LastGenOutput>HomePage.generated.cs</LastGenOutput>
+      <!--<Generator>RazorGenerator</Generator>
+      <LastGenOutput>HomePage.generated.cs</LastGenOutput>-->
     </None>
     <None Include="Pages\LayoutPage.cshtml">
-      <Generator>RazorGenerator</Generator>
-      <LastGenOutput>LayoutPage.generated.cs</LastGenOutput>
+      <!--<Generator>RazorGenerator</Generator>
+      <LastGenOutput>LayoutPage.generated.cs</LastGenOutput>-->
     </None>
     <None Include="Pages\InfoPage.cshtml">
-      <Generator>RazorGenerator</Generator>
-      <LastGenOutput>InfoPage.generated.cs</LastGenOutput>
+      <!--<Generator>RazorGenerator</Generator>
+      <LastGenOutput>InfoPage.generated.cs</LastGenOutput>-->
     </None>
     <None Include="Xtricate.Web.Dashboard.nuspec" />
   </ItemGroup>

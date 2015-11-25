@@ -21,7 +21,7 @@ namespace Xtricate.Web.Dashboard
             >;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static class MiddlewareExtensions
+    public static class MiddlewareExtensions // http://benfoster.io/blog/how-to-write-owin-middleware-in-5-different-steps
     {
         public static BuildFunc UseDashboard(
             this BuildFunc builder,

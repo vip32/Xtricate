@@ -1,0 +1,53 @@
+﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
+
+@using Xtricate.Web.Dashboard.Pages
+@inherits Xtricate.Web.Dashboard.RazorPage
+@{
+    Layout = new LayoutPage();
+    Scripts = new[] { Url.To("/js-treegrid") };
+    Stylesheets = new[] { Url.To("/css-treegrid") };
+    Title = "Product Details " + Parameters["id"];
+}
+
+<table class="table tree">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    //var data = [];
+    //var viewModel = {
+    //    isLoading: ko.observable(false),
+    //    products: ko.observableArray(data)
+    //};
+    //ko.applyBindings(viewModel);
+
+    //$(document).ready(function () {
+    //    Refresh();
+    //});
+
+    //$('#refresh').click(function () {
+    //    Refresh();
+    //    $('.tree').treegrid();
+    //});
+
+    //function Refresh() {
+    //    viewModel.products(null);
+    //    viewModel.isLoading(true);
+    //    $.getJSON("/api/products", function (data) {
+    //        //console.log(data);
+    //        viewModel.isLoading(false);
+    //        viewModel.products(data);
+    //    });
+    //};
+</script>

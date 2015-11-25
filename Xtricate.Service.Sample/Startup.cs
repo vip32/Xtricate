@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Formatting;
 using System.Web.Http;
@@ -19,32 +20,32 @@ namespace Xtricate.Service.Sample
             ConfigureWebApi(httpConfig);
 
             app.UseDashboard(new RouteCollectionBuilder(
-                    //resources: new EmbeddedResources(
-                    //    new[]
-                    //    {
-                    //        "jquery.treegrid.min.js", "jquery.treegrid.bootstrap3.js"
-                    //    },
-                    //    new[]
-                    //    {
-                    //        "jquery.treegrid.css"
-                    //    }),
-                    dispatchers:
                         new Dictionary<string, IRequestDispatcher>
                         {
                             {
                                 "/products", new RazorPageDispatcher(x => new ProductIndex())
                             },
                             {
+                                "/products/(?<PageId>\\d+)",
+                                    new RazorPageDispatcher(x => new ProductDetails
+                                    {
+                                        Parameters = new Dictionary<string, string>
+                                        {
+                                            { "id", x.Groups["PageId"].Value}
+                                        }
+                                    } )
+                            },
+                            {
                                 "/js-treegrid", new CombinedResourceDispatcher(
                                     "application/javascript",
-                                    typeof (ProductIndex).Assembly,
+                                    typeof (Root).Assembly,
                                     RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "js"),
                                     "jquery.treegrid.min.js", "jquery.treegrid.bootstrap3.js")
                             },
                             {
                                 "/css-treegrid", new CombinedResourceDispatcher(
                                     "text/css",
-                                    typeof (ProductIndex).Assembly,
+                                    typeof (Root).Assembly,
                                     RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "css"),
                                     "jquery.treegrid.css")
                             }

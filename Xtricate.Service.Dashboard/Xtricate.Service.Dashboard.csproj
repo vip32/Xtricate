@@ -71,9 +71,13 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Pages\ProductDetails.cshtml">
+      <!--<Generator>RazorGenerator</Generator>-->
+      <!--<LastGenOutput>ProductDetails.generated.cs</LastGenOutput>-->
+    </None>
     <None Include="Pages\ProductIndex.cshtml">
-      <Generator>RazorGenerator</Generator>
-      <LastGenOutput>ProductIndex.generated.cs</LastGenOutput>
+      <!--<Generator>RazorGenerator</Generator>-->
+      <!--<LastGenOutput>ProductIndex.generated.cs</LastGenOutput>-->
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -89,7 +93,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\RazorGenerator.MsBuild.2.3.13\build\RazorGenerator.MsBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\RazorGenerator.MsBuild.2.3.13\build\RazorGenerator.MsBuild.targets'))" />
   </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
