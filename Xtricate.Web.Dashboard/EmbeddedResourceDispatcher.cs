@@ -5,7 +5,7 @@ using Microsoft.Owin;
 
 namespace Xtricate.Web.Dashboard
 {
-    internal class EmbeddedResourceDispatcher : IRequestDispatcher
+    public class EmbeddedResourceDispatcher : IRequestDispatcher
     {
         private readonly Assembly _assembly;
         private readonly string _resourceName;

@@ -3,7 +3,7 @@ using Microsoft.Owin;
 
 namespace Xtricate.Web.Dashboard
 {
-    internal class CombinedResourceDispatcher : EmbeddedResourceDispatcher
+    public class CombinedResourceDispatcher : EmbeddedResourceDispatcher
     {
         private readonly Assembly _assembly;
         private readonly string _baseNamespace;
