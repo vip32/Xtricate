@@ -22,11 +22,14 @@ namespace Xtricate.Web.Dashboard
             Html = new HtmlHelper(this);
         }
 
+        public string[] Scripts { get; set; }
+        public string[] Stylesheets { get; set; }
         public RazorPage Layout { get; protected set; }
         public HtmlHelper Html { get; private set; }
         public UrlHelper Url { get; private set; }
 
-        public string Name { get; internal set; }
+        public string Name { get; private set; }
+        public string Title { get; set; }
         public string AppPath { get; internal set; }
         public Stopwatch GenerationTime { get; private set; }
 
@@ -54,9 +57,11 @@ namespace Xtricate.Web.Dashboard
         {
             Request = parentPage.Request;
             Response = parentPage.Response;
-            Name = parentPage.Name;
+            Name = !string.IsNullOrEmpty(parentPage.Title) ? string.Format("{0} - {1}", parentPage.Name, parentPage.Title) : parentPage.Name;
             AppPath = parentPage.AppPath;
             Url = parentPage.Url;
+            Scripts = parentPage.Scripts;
+            Stylesheets = parentPage.Stylesheets;
 
             GenerationTime = parentPage.GenerationTime;
             OnAssigned();

@@ -4,8 +4,9 @@ using System.Net.Http.Formatting;
 using System.Web.Http;
 using Newtonsoft.Json.Serialization;
 using Owin;
+using Xtricate.Service.Dashboard;
+using Xtricate.Service.Dashboard.Pages;
 using Xtricate.Web.Dashboard;
-using Xtricate.Web.Dashboard.Pages;
 
 namespace Xtricate.Service.Sample
 {
@@ -22,17 +23,31 @@ namespace Xtricate.Service.Sample
                     //resources: new EmbeddedResources(
                     //    new[]
                     //    {
-                    //        "myscript.js"
+                    //        "jquery.treegrid.min.js", "jquery.treegrid.bootstrap3.js"
                     //    },
                     //    new[]
                     //    {
-                    //        "mycss.css"
+                    //        "jquery.treegrid.css"
                     //    }),
                     dispatchers:
                         new Dictionary<string, IRequestDispatcher>
                         {
                             {
-                                "/mypage", new RazorPageDispatcher(x => new HomePage())
+                                "/products", new RazorPageDispatcher(x => new ProductIndex())
+                            },
+                            {
+                                "/js-treegrid", new CombinedResourceDispatcher(
+                                    "application/javascript",
+                                    typeof (ProductIndex).Assembly,
+                                    RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "js"),
+                                    "jquery.treegrid.min.js", "jquery.treegrid.bootstrap3.js")
+                            },
+                            {
+                                "/css-treegrid", new CombinedResourceDispatcher(
+                                    "text/css",
+                                    typeof (ProductIndex).Assembly,
+                                    RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "css"),
+                                    "jquery.treegrid.css")
                             }
                         }).Routes);
             app.UseWebApi(httpConfig);

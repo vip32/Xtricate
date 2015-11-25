@@ -67,11 +67,109 @@ WriteAttribute("href", Tuple.Create(" href=\"", 380), Tuple.Create("\"", 402)
 , 387), false)
 );
 
-WriteLiteral(" />\r\n</head>\r\n<body>\r\n    <!-- Wrap all page content here -->\r\n    <div");
+WriteLiteral(" />\r\n");
+
+            
+            #line 11 "..\..\Pages\LayoutPage.cshtml"
+    
+            
+            #line default
+            #line hidden
+            
+            #line 11 "..\..\Pages\LayoutPage.cshtml"
+     if (Stylesheets != null && Stylesheets.Any())
+    {
+        foreach (var stylesheet in Stylesheets)
+        {
+
+            
+            #line default
+            #line hidden
+WriteLiteral("            <link");
+
+WriteLiteral(" rel=\"stylesheet\"");
+
+WriteAttribute("href", Tuple.Create(" href=\"", 561), Tuple.Create("\"", 579)
+            
+            #line 15 "..\..\Pages\LayoutPage.cshtml"
+, Tuple.Create(Tuple.Create("", 568), Tuple.Create<System.Object, System.Int32>(stylesheet
+            
+            #line default
+            #line hidden
+, 568), false)
+);
+
+WriteLiteral(" />\r\n");
+
+            
+            #line 16 "..\..\Pages\LayoutPage.cshtml"
+        }
+    }
+
+            
+            #line default
+            #line hidden
+WriteLiteral("    <script");
+
+WriteAttribute("src", Tuple.Create(" src=\"", 614), Tuple.Create("\"", 634)
+            
+            #line 18 "..\..\Pages\LayoutPage.cshtml"
+, Tuple.Create(Tuple.Create("", 620), Tuple.Create<System.Object, System.Int32>(Url.To("/js")
+            
+            #line default
+            #line hidden
+, 620), false)
+);
+
+WriteLiteral(" type=\"application/javascript\"");
+
+WriteLiteral("></script>\r\n");
+
+            
+            #line 19 "..\..\Pages\LayoutPage.cshtml"
+    
+            
+            #line default
+            #line hidden
+            
+            #line 19 "..\..\Pages\LayoutPage.cshtml"
+     if (Scripts != null && Scripts.Any())
+    {
+        foreach (var script in Scripts)
+        {
+
+            
+            #line default
+            #line hidden
+WriteLiteral("            <script");
+
+WriteAttribute("src", Tuple.Create(" src=\"", 799), Tuple.Create("\"", 812)
+            
+            #line 23 "..\..\Pages\LayoutPage.cshtml"
+, Tuple.Create(Tuple.Create("", 805), Tuple.Create<System.Object, System.Int32>(script
+            
+            #line default
+            #line hidden
+, 805), false)
+);
+
+WriteLiteral(" type=\"application/javascript\"");
+
+WriteLiteral("></script>\r\n");
+
+            
+            #line 24 "..\..\Pages\LayoutPage.cshtml"
+        }
+    }
+
+            
+            #line default
+            #line hidden
+WriteLiteral("</head>\r\n<body>\r\n    <!-- Wrap all page content here -->\r\n    <div");
 
 WriteLiteral(" id=\"wrap\"");
 
-WriteLiteral(">\r\n\r\n        <!-- Fixed navbar -->\r\n        <div");
+WriteLiteral(">\r\n        <!-- Fixed navbar -->\r\n        <div");
 
 WriteLiteral(" class=\"navbar navbar-default navbar-static-top\"");
 
@@ -109,14 +207,14 @@ WriteLiteral("></span>\r\n                    </button>\r\n                    <
 
 WriteLiteral(" class=\"navbar-brand\"");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 1027), Tuple.Create("\"", 1045)
+WriteAttribute("href", Tuple.Create(" href=\"", 1490), Tuple.Create("\"", 1508)
             
-            #line 25 "..\..\Pages\LayoutPage.cshtml"
-, Tuple.Create(Tuple.Create("", 1034), Tuple.Create<System.Object, System.Int32>(Url.Home()
+            #line 39 "..\..\Pages\LayoutPage.cshtml"
+, Tuple.Create(Tuple.Create("", 1497), Tuple.Create<System.Object, System.Int32>(Url.Home()
             
             #line default
             #line hidden
-, 1034), false)
+, 1497), false)
 );
 
 WriteLiteral(">\r\n                        <img");
@@ -125,20 +223,20 @@ WriteLiteral(" class=\"logo\"");
 
 WriteLiteral(" alt=\"\"");
 
-WriteAttribute("src", Tuple.Create(" src=\"", 1097), Tuple.Create("\"", 1123)
+WriteAttribute("src", Tuple.Create(" src=\"", 1560), Tuple.Create("\"", 1586)
             
-            #line 26 "..\..\Pages\LayoutPage.cshtml"
-, Tuple.Create(Tuple.Create("", 1103), Tuple.Create<System.Object, System.Int32>(Url.To("/img/logo")
+            #line 40 "..\..\Pages\LayoutPage.cshtml"
+, Tuple.Create(Tuple.Create("", 1566), Tuple.Create<System.Object, System.Int32>(Url.To("/img/logo")
             
             #line default
             #line hidden
-, 1103), false)
+, 1566), false)
 );
 
 WriteLiteral(" />\r\n                        <span>");
 
             
-            #line 27 "..\..\Pages\LayoutPage.cshtml"
+            #line 41 "..\..\Pages\LayoutPage.cshtml"
                          Write(Name);
 
             
@@ -154,14 +252,14 @@ WriteLiteral(" class=\"nav navbar-nav navbar-right\"");
 
 WriteLiteral(">\r\n                        <li>\r\n                            <a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 1401), Tuple.Create("\"", 1416)
+WriteAttribute("href", Tuple.Create(" href=\"", 1864), Tuple.Create("\"", 1879)
             
-            #line 33 "..\..\Pages\LayoutPage.cshtml"
-, Tuple.Create(Tuple.Create("", 1408), Tuple.Create<System.Object, System.Int32>(AppPath
+            #line 47 "..\..\Pages\LayoutPage.cshtml"
+, Tuple.Create(Tuple.Create("", 1871), Tuple.Create<System.Object, System.Int32>(AppPath
             
             #line default
             #line hidden
-, 1408), false)
+, 1871), false)
 );
 
 WriteLiteral(">\r\n                                <span");
@@ -190,7 +288,7 @@ WriteLiteral(">\r\n");
 WriteLiteral("            ");
 
             
-            #line 46 "..\..\Pages\LayoutPage.cshtml"
+            #line 60 "..\..\Pages\LayoutPage.cshtml"
        Write(RenderBody());
 
             
@@ -210,14 +308,14 @@ WriteLiteral(" class=\"list-inline credit\"");
 
 WriteLiteral(">\r\n                <li>\r\n                    <span>\r\n                        <a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 2068), Tuple.Create("\"", 2091)
+WriteAttribute("href", Tuple.Create(" href=\"", 2531), Tuple.Create("\"", 2554)
             
-            #line 55 "..\..\Pages\LayoutPage.cshtml"
-, Tuple.Create(Tuple.Create("", 2075), Tuple.Create<System.Object, System.Int32>(Url.To("/info")
+            #line 69 "..\..\Pages\LayoutPage.cshtml"
+, Tuple.Create(Tuple.Create("", 2538), Tuple.Create<System.Object, System.Int32>(Url.To("/info")
             
             #line default
             #line hidden
-, 2075), false)
+, 2538), false)
 );
 
 WriteLiteral(">\r\n");
@@ -225,7 +323,7 @@ WriteLiteral(">\r\n");
 WriteLiteral("                            ");
 
             
-            #line 56 "..\..\Pages\LayoutPage.cshtml"
+            #line 70 "..\..\Pages\LayoutPage.cshtml"
                        Write(Name);
 
             
@@ -234,13 +332,13 @@ WriteLiteral("                            ");
 WriteLiteral("\r\n");
 
             
-            #line 57 "..\..\Pages\LayoutPage.cshtml"
+            #line 71 "..\..\Pages\LayoutPage.cshtml"
                             
             
             #line default
             #line hidden
             
-            #line 57 "..\..\Pages\LayoutPage.cshtml"
+            #line 71 "..\..\Pages\LayoutPage.cshtml"
                               
                                 var version = GetType().Assembly.GetName().Version;
                             
@@ -252,7 +350,7 @@ WriteLiteral("\r\n");
 WriteLiteral("                            ");
 
             
-            #line 60 "..\..\Pages\LayoutPage.cshtml"
+            #line 74 "..\..\Pages\LayoutPage.cshtml"
                        Write(string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build));
 
             
@@ -262,7 +360,7 @@ WriteLiteral("\r\n                        </a>\r\n                    </span>\r\
 ">\r\n                <li>Time: ");
 
             
-            #line 64 "..\..\Pages\LayoutPage.cshtml"
+            #line 78 "..\..\Pages\LayoutPage.cshtml"
                      Write(DateTime.UtcNow);
 
             
@@ -271,25 +369,13 @@ WriteLiteral("\r\n                        </a>\r\n                    </span>\r\
 WriteLiteral(" GMT</li>\r\n                <li>Generated: ");
 
             
-            #line 65 "..\..\Pages\LayoutPage.cshtml"
+            #line 79 "..\..\Pages\LayoutPage.cshtml"
                            Write(GenerationTime.Elapsed.TotalMilliseconds.ToString("N"));
 
             
             #line default
             #line hidden
-WriteLiteral("ms</li>\r\n            </ul>\r\n        </div>\r\n    </div>\r\n\r\n    <script");
-
-WriteAttribute("src", Tuple.Create(" src=\"", 2674), Tuple.Create("\"", 2694)
-            
-            #line 70 "..\..\Pages\LayoutPage.cshtml"
-, Tuple.Create(Tuple.Create("", 2680), Tuple.Create<System.Object, System.Int32>(Url.To("/js")
-            
-            #line default
-            #line hidden
-, 2680), false)
-);
-
-WriteLiteral("></script>\r\n</body>\r\n</html>");
+WriteLiteral("ms</li>\r\n            </ul>\r\n        </div>\r\n    </div>\r\n\r\n</body>\r\n</html>");
 
         }
     }

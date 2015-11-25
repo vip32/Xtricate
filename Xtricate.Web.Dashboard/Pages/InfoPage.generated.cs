@@ -16,6 +16,12 @@ namespace Xtricate.Web.Dashboard.Pages
     using System.Linq;
     using System.Text;
     
+    #line 3 "..\..\Pages\InfoPage.cshtml"
+    using Xtricate.Web.Dashboard.Pages;
+    
+    #line default
+    #line hidden
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("RazorGenerator", "2.0.0.0")]
     internal partial class InfoPage : Xtricate.Web.Dashboard.RazorPage<Xtricate.Web.Dashboard.Models.DashboardInfoViewModel>
     {
@@ -25,9 +31,10 @@ namespace Xtricate.Web.Dashboard.Pages
 WriteLiteral("\r\n\r\n");
 
             
-            #line 4 "..\..\Pages\InfoPage.cshtml"
+            #line 5 "..\..\Pages\InfoPage.cshtml"
   
     Layout = new LayoutPage();
+    Title = "Info";
 
             
             #line default
@@ -35,13 +42,13 @@ WriteLiteral("\r\n\r\n");
 WriteLiteral("\r\n\r\n<h4>Routes</h4>\r\n<ul>\r\n");
 
             
-            #line 10 "..\..\Pages\InfoPage.cshtml"
+            #line 12 "..\..\Pages\InfoPage.cshtml"
     
             
             #line default
             #line hidden
             
-            #line 10 "..\..\Pages\InfoPage.cshtml"
+            #line 12 "..\..\Pages\InfoPage.cshtml"
      foreach (var route in Model.Routes)
     {
 
@@ -50,20 +57,20 @@ WriteLiteral("\r\n\r\n<h4>Routes</h4>\r\n<ul>\r\n");
             #line hidden
 WriteLiteral("        <li><a");
 
-WriteAttribute("href", Tuple.Create(" href=\"", 305), Tuple.Create("\"", 326)
+WriteAttribute("href", Tuple.Create(" href=\"", 363), Tuple.Create("\"", 384)
             
-            #line 12 "..\..\Pages\InfoPage.cshtml"
-, Tuple.Create(Tuple.Create("", 312), Tuple.Create<System.Object, System.Int32>(Url.To(route)
+            #line 14 "..\..\Pages\InfoPage.cshtml"
+, Tuple.Create(Tuple.Create("", 370), Tuple.Create<System.Object, System.Int32>(Url.To(route)
             
             #line default
             #line hidden
-, 312), false)
+, 370), false)
 );
 
 WriteLiteral(">");
 
             
-            #line 12 "..\..\Pages\InfoPage.cshtml"
+            #line 14 "..\..\Pages\InfoPage.cshtml"
                                 Write(route);
 
             
@@ -72,7 +79,7 @@ WriteLiteral(">");
 WriteLiteral("</a></li>\r\n");
 
             
-            #line 13 "..\..\Pages\InfoPage.cshtml"
+            #line 15 "..\..\Pages\InfoPage.cshtml"
     }
 
             
@@ -81,13 +88,13 @@ WriteLiteral("</a></li>\r\n");
 WriteLiteral("</ul>\r\n<h4>Javascripts</h4>\r\n<ul>\r\n");
 
             
-            #line 17 "..\..\Pages\InfoPage.cshtml"
+            #line 19 "..\..\Pages\InfoPage.cshtml"
     
             
             #line default
             #line hidden
             
-            #line 17 "..\..\Pages\InfoPage.cshtml"
+            #line 19 "..\..\Pages\InfoPage.cshtml"
      foreach (var name in Model.Javascripts)
     {
 
@@ -97,7 +104,7 @@ WriteLiteral("</ul>\r\n<h4>Javascripts</h4>\r\n<ul>\r\n");
 WriteLiteral("        <li>");
 
             
-            #line 19 "..\..\Pages\InfoPage.cshtml"
+            #line 21 "..\..\Pages\InfoPage.cshtml"
        Write(name);
 
             
@@ -106,7 +113,7 @@ WriteLiteral("        <li>");
 WriteLiteral("</li>\r\n");
 
             
-            #line 20 "..\..\Pages\InfoPage.cshtml"
+            #line 22 "..\..\Pages\InfoPage.cshtml"
     }
 
             
@@ -115,13 +122,13 @@ WriteLiteral("</li>\r\n");
 WriteLiteral("</ul>\r\n<h4>Stylesheets</h4>\r\n<ul>\r\n");
 
             
-            #line 24 "..\..\Pages\InfoPage.cshtml"
+            #line 26 "..\..\Pages\InfoPage.cshtml"
     
             
             #line default
             #line hidden
             
-            #line 24 "..\..\Pages\InfoPage.cshtml"
+            #line 26 "..\..\Pages\InfoPage.cshtml"
      foreach (var name in Model.Stylesheets)
     {
 
@@ -131,7 +138,7 @@ WriteLiteral("</ul>\r\n<h4>Stylesheets</h4>\r\n<ul>\r\n");
 WriteLiteral("        <li>");
 
             
-            #line 26 "..\..\Pages\InfoPage.cshtml"
+            #line 28 "..\..\Pages\InfoPage.cshtml"
        Write(name);
 
             
@@ -140,7 +147,7 @@ WriteLiteral("        <li>");
 WriteLiteral("</li>\r\n");
 
             
-            #line 27 "..\..\Pages\InfoPage.cshtml"
+            #line 29 "..\..\Pages\InfoPage.cshtml"
     }
 
             

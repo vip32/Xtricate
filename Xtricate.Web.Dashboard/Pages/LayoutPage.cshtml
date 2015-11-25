@@ -8,11 +8,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="@Url.To("/css")" />
+    @if (Stylesheets != null && Stylesheets.Any())
+    {
+        foreach (var stylesheet in Stylesheets)
+        {
+            <link rel="stylesheet" href="@stylesheet" />
+        }
+    }
+    <script src="@Url.To("/js")" type="application/javascript"></script>
+    @if (Scripts != null && Scripts.Any())
+    {
+        foreach (var script in Scripts)
+        {
+            <script src="@script" type="application/javascript"></script>
+        }
+    }
 </head>
 <body>
     <!-- Wrap all page content here -->
     <div id="wrap">
-
         <!-- Fixed navbar -->
         <div class="navbar navbar-default navbar-static-top">
             <div class="container">
@@ -67,6 +81,5 @@
         </div>
     </div>
 
-    <script src="@Url.To("/js")"></script>
 </body>
 </html>

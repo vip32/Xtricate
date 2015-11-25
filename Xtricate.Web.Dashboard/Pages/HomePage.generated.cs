@@ -16,6 +16,12 @@ namespace Xtricate.Web.Dashboard.Pages
     using System.Linq;
     using System.Text;
     
+    #line 3 "..\..\Pages\HomePage.cshtml"
+    using Xtricate.Web.Dashboard.Pages;
+    
+    #line default
+    #line hidden
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("RazorGenerator", "2.0.0.0")]
     internal partial class HomePage : Xtricate.Web.Dashboard.RazorPage
     {
@@ -25,15 +31,15 @@ namespace Xtricate.Web.Dashboard.Pages
 WriteLiteral("\r\n\r\n");
 
             
-            #line 4 "..\..\Pages\HomePage.cshtml"
+            #line 5 "..\..\Pages\HomePage.cshtml"
   
     Layout = new LayoutPage();
-    bool first = true;
+    Title = "Home";
 
             
             #line default
             #line hidden
-WriteLiteral("\r\n<h3>Welcome to the dashboard</h3>");
+WriteLiteral("\r\n<h3>Welcome to the dashboard!</h3>");
 
         }
     }
