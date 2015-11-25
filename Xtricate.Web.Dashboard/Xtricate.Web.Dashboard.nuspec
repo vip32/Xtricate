@@ -21,6 +21,6 @@
     <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
     <copyright></copyright>
     <references></references>
-    <tags>dynamic, expando, objects, xtricate</tags>
+    <tags>web, mvc, razor, middleware, owin, webpages</tags>
   </metadata>
 </package>
