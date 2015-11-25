@@ -14,11 +14,31 @@ namespace Xtricate.Web.Dashboard
             if (pathTemplate == null) throw new ArgumentNullException(nameof(pathTemplate));
             if (dispatcher == null) throw new ArgumentNullException(nameof(dispatcher));
 
+            if (!pathTemplate.StartsWith("/"))
+                pathTemplate = "/" + pathTemplate;
+
+            if (Exists(pathTemplate))
+                Remove(pathTemplate);
             Dispatchers.Add(new Tuple<string, IRequestDispatcher>(pathTemplate, dispatcher));
+        }
+
+        public void Remove(string pathTemplate)
+        {
+            if (pathTemplate == null) throw new ArgumentNullException(nameof(pathTemplate));
+
+            Dispatchers.RemoveAll(d => d.Item1.Equals(pathTemplate));
+        }
+
+        public bool Exists(string pathTemplate)
+        {
+            if (pathTemplate == null) throw new ArgumentNullException(nameof(pathTemplate));
+
+            return Dispatchers.Exists(d => d.Item1.Equals(pathTemplate));
         }
 
         public Tuple<IRequestDispatcher, Match> FindDispatcher(string path)
         {
+            if (path == null) throw new ArgumentNullException(nameof(path));
             if (path.Length == 0) path = "/";
 
             foreach (var dispatcher in Dispatchers)

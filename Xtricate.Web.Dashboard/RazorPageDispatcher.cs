@@ -5,7 +5,7 @@ using Microsoft.Owin;
 
 namespace Xtricate.Web.Dashboard
 {
-    internal class RazorPageDispatcher : IRequestDispatcher
+    public class RazorPageDispatcher : IRequestDispatcher
     {
         private readonly Func<Match, RazorPage> _pageFunc;
 

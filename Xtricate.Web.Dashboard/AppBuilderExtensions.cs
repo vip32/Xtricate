@@ -27,7 +27,7 @@ namespace Xtricate.Web.Dashboard
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (string.IsNullOrEmpty(pathMatch)) pathMatch = "/dashboard";
             if (options == null) options = new DashboardOptions();
-            if (routes == null) routes = new DashboardRoutes().Routes;
+            if (routes == null) routes = new RouteCollectionBuilder().Routes;
 
             SignatureConversions.AddConversions(builder);
 

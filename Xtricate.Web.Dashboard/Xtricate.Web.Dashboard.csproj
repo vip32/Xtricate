@@ -78,7 +78,8 @@
     <Compile Include="AppBuilderExtensions.cs" />
     <Compile Include="CombinedResourceDispatcher.cs" />
     <Compile Include="DashboardOptions.cs" />
-    <Compile Include="DashboardRoutes.cs" />
+    <Compile Include="EmbeddedResources.cs" />
+    <Compile Include="RouteCollectionBuilder.cs" />
     <Compile Include="EmbeddedResourceDispatcher.cs" />
     <Compile Include="HtmlHelper.cs" />
     <Compile Include="IAuthorizationFilter.cs" />
@@ -151,6 +152,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\js\jquery.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\js\knockout.min.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

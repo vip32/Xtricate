@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http.Formatting;
 using System.Web.Http;
 using Newtonsoft.Json.Serialization;
 using Owin;
 using Xtricate.Web.Dashboard;
+using Xtricate.Web.Dashboard.Pages;
 
 namespace Xtricate.Service.Sample
 {
@@ -15,7 +17,24 @@ namespace Xtricate.Service.Sample
 
             ConfigureWebApi(httpConfig);
 
-            app.UseDashboard();
+            app.UseDashboard(
+                routes: new RouteCollectionBuilder(
+                    //resources: new EmbeddedResources(
+                    //    new[]
+                    //    {
+                    //        "myscript.js"
+                    //    },
+                    //    new[]
+                    //    {
+                    //        "mycss.css"
+                    //    }),
+                    dispatchers:
+                        new Dictionary<string, IRequestDispatcher>
+                        {
+                            {
+                                "/mypage", new RazorPageDispatcher(x => new HomePage())
+                            }
+                        }).Routes);
             app.UseWebApi(httpConfig);
         }
 
