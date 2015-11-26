@@ -21,7 +21,9 @@ namespace Xtricate.Web.Dashboard
         {
             GenerationTime = Stopwatch.StartNew();
             Html = new HtmlHelper(this);
+            Parameters = new Dictionary<string, string>();
         }
+
         public IDictionary<string, string> Parameters { get; set; }
 
         public string[] Scripts { get; set; }
@@ -29,6 +31,13 @@ namespace Xtricate.Web.Dashboard
         public RazorPage Layout { get; protected set; }
         public HtmlHelper Html { get; private set; }
         public UrlHelper Url { get; private set; }
+
+        public string Parameter(string key)
+        {
+            var value = "";
+            Parameters.TryGetValue(key, out value);
+            return value;
+        }
 
         public string Name { get; private set; }
         public string Title { get; set; }
@@ -59,7 +68,9 @@ namespace Xtricate.Web.Dashboard
         {
             Request = parentPage.Request;
             Response = parentPage.Response;
-            Name = !string.IsNullOrEmpty(parentPage.Title) ? string.Format("{0} - {1}", parentPage.Name, parentPage.Title) : parentPage.Name;
+            Name = !string.IsNullOrEmpty(parentPage.Title)
+                ? string.Format("{0} - {1}", parentPage.Name, parentPage.Title)
+                : parentPage.Name;
             AppPath = parentPage.AppPath;
             Url = parentPage.Url;
             Scripts = parentPage.Scripts;
@@ -81,7 +92,9 @@ namespace Xtricate.Web.Dashboard
             OnAssigned();
         }
 
-        public virtual void OnAssigned() { }
+        public virtual void OnAssigned()
+        {
+        }
 
         protected void WriteLiteral(string textToAppend)
         {
@@ -91,9 +104,9 @@ namespace Xtricate.Web.Dashboard
         }
 
         public virtual void WriteAttribute(string attr,
-                                   Tuple<string, int> token1,
-                                   Tuple<string, int> token2,
-                                   Tuple<Tuple<string, int>, Tuple<object, int>, bool> token3)
+            Tuple<string, int> token1,
+            Tuple<string, int> token2,
+            Tuple<Tuple<string, int>, Tuple<object, int>, bool> token3)
         {
             object value;
             if (token3 != null)
@@ -101,7 +114,7 @@ namespace Xtricate.Web.Dashboard
             else
                 value = string.Empty;
 
-            var output = token1.Item1 + value.ToString() + token2.Item1;
+            var output = token1.Item1 + value + token2.Item1;
 
             _content.Append(output);
         }
@@ -137,8 +150,8 @@ namespace Xtricate.Web.Dashboard
         private static string Encode(string text)
         {
             return string.IsNullOrEmpty(text)
-                       ? string.Empty
-                       : WebUtility.HtmlEncode(text);
+                ? string.Empty
+                : WebUtility.HtmlEncode(text);
         }
     }
 }

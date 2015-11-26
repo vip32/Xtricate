@@ -9,6 +9,12 @@
     Title = "Product Details " + Parameters["id"];
 }
 
+<div class="row show-grid">
+    <div class="col-md-4"><button id="refresh" class="btn btn-default btn-sm" data-bind="enabled: !isLoading()">Refresh</button></div>
+    <div class="col-md-4"><span data-bind="visible: isLoading" class="glyphicon glyphicon-refresh glyphicon-spin"></span></div>
+    <div class="col-md-4">&nbsp;</div>
+</div>
+
 <table class="table tree">
     <thead>
         <tr>
@@ -18,36 +24,47 @@
     </thead>
     <tbody>
         <tr>
-            <td></td>
-            <td></td>
+            <td>Name</td>
+            <td data-bind="text: name"></td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td data-bind="text: description"></td>
+        </tr>
+        <tr>
+            <td>Sku</td>
+            <td data-bind="text: sku"></td>
         </tr>
     </tbody>
 </table>
 
 <script type="text/javascript">
-    //var data = [];
-    //var viewModel = {
-    //    isLoading: ko.observable(false),
-    //    products: ko.observableArray(data)
-    //};
-    //ko.applyBindings(viewModel);
+    var data = {};
+    var viewModel = {
+        isLoading: ko.observable(false),
+        name: ko.observable(),
+        description: ko.observable(),
+        sku: ko.observable()
+    };
+    ko.applyBindings(viewModel);
 
-    //$(document).ready(function () {
-    //    Refresh();
-    //});
+    $(document).ready(function () {
+        Refresh();
+    });
 
-    //$('#refresh').click(function () {
-    //    Refresh();
-    //    $('.tree').treegrid();
-    //});
+    $('#refresh').click(function () {
+        Refresh();
+        $('.tree').treegrid();
+    });
 
-    //function Refresh() {
-    //    viewModel.products(null);
-    //    viewModel.isLoading(true);
-    //    $.getJSON("/api/products", function (data) {
-    //        //console.log(data);
-    //        viewModel.isLoading(false);
-    //        viewModel.products(data);
-    //    });
-    //};
+    function Refresh() {
+        viewModel.isLoading(true);
+        $.getJSON("/api/products/@Parameter("id")", function (data) {
+            console.log(data);
+            viewModel.isLoading(false);
+            viewModel.name(data.name);
+            viewModel.description(data.description);
+            viewModel.sku(data.sku);
+        });
+    };
 </script>
