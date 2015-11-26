@@ -30,7 +30,7 @@ namespace Xtricate.IntegrationTests
 
             var jilSserializer = new JilSerializer();
             Trace.WriteLine("start JIL");
-            if(warmup) jilSserializer.ToJson(new Fixture().Create<TestDocument>()); // warmup
+            if (warmup) jilSserializer.ToJson(new Fixture().Create<TestDocument>()); // warmup
             using (mp.Step("JIL serialization"))
             {
                 1.Times(i =>

@@ -6,8 +6,8 @@ namespace Xtricate.DocSet
 {
     public class DocSet<TDoc, TKey> : IDocSet<TDoc, TKey>
     {
-        private readonly Func<TDoc, TKey> _key;
         private readonly IStorage<TDoc> _docStorage;
+        private readonly Func<TDoc, TKey> _key;
         private readonly IEnumerable<Func<TDoc, string>> _tagMap;
 
         public DocSet(Func<TDoc, TKey> key, IStorage<TDoc> docStorage,

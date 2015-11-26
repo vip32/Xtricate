@@ -8,8 +8,8 @@ namespace Xtricate.Web.Dashboard
     public class EmbeddedResourceDispatcher : IRequestDispatcher
     {
         private readonly Assembly _assembly;
-        private readonly string _resourceName;
         private readonly string _contentType;
+        private readonly string _resourceName;
 
         public EmbeddedResourceDispatcher(
             string contentType,

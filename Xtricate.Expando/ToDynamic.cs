@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Xtricate.Dynamic
 {
-    public static partial class Extensions
+    public static class Extensions
     {
         public static dynamic ToExpando<T>(this T obj)
         {

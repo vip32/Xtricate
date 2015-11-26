@@ -58,7 +58,7 @@ namespace Xtricate.DocSet
         /// <returns></returns>
         public static T2 ValueOrDefault<T1, T2>(this T1 source, Func<T1, T2> property)
         {
-            if (typeof(T1).IsValueType)
+            if (typeof (T1).IsValueType)
                 return Equals(source, default(T1)) ? default(T2) : property(source);
             return Equals(source, null) ? default(T2) : property(source);
         }
@@ -74,7 +74,7 @@ namespace Xtricate.DocSet
         /// <returns></returns>
         public static T2 ValueOrDefault<T1, T2>(this T1 source, Func<T1, T2> property, T2 defaultValue)
         {
-            if (typeof(T1).IsValueType)
+            if (typeof (T1).IsValueType)
                 return Equals(source, default(T1)) ? defaultValue : property(source);
             return Equals(source, null) ? defaultValue : property(source);
         }

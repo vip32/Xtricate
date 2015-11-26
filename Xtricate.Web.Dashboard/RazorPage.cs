@@ -32,13 +32,6 @@ namespace Xtricate.Web.Dashboard
         public HtmlHelper Html { get; private set; }
         public UrlHelper Url { get; private set; }
 
-        public string Parameter(string key)
-        {
-            var value = "";
-            Parameters.TryGetValue(key, out value);
-            return value;
-        }
-
         public string Name { get; private set; }
         public string Title { get; set; }
         public string AppPath { get; internal set; }
@@ -50,6 +43,13 @@ namespace Xtricate.Web.Dashboard
         public string RequestPath
         {
             get { return Request.Path.Value; }
+        }
+
+        public string Parameter(string key)
+        {
+            var value = "";
+            Parameters.TryGetValue(key, out value);
+            return value;
         }
 
         public abstract void Execute();

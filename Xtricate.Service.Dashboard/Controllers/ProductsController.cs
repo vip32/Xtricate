@@ -30,12 +30,12 @@ namespace Xtricate.Service.Dashboard.Controllers
         }
 
         // POST: api/Products
-        public void Post([FromBody]string value)
+        public void Post([FromBody] string value)
         {
         }
 
         // PUT: api/Products/5
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody] string value)
         {
         }
 

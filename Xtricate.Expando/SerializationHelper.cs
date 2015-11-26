@@ -5,7 +5,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using Formatting = System.Xml.Formatting;
 
 namespace Xtricate.Dynamic
 {
@@ -163,36 +162,6 @@ namespace Xtricate.Dynamic
         /// <param name="resultBuffer">The result buffer.</param>
         /// <param name="throwExceptions">if set to <c>true</c> [throw exceptions].</param>
         /// <returns></returns>
-        //public static bool SerializeObject(object instance, out byte[] resultBuffer, bool throwExceptions = false)
-        //{
-        //    var retVal = true;
-
-        //    MemoryStream ms = null;
-        //    try
-        //    {
-        //        var serializer = new BinaryFormatter();
-        //        ms = new MemoryStream();
-        //        serializer.Serialize(ms, instance);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.Write("SerializeObject failed with : " + ex.GetBaseException().Message, "");
-        //        retVal = false;
-
-        //        if (throwExceptions)
-        //            throw;
-        //    }
-        //    finally
-        //    {
-        //        if (ms != null)
-        //            ms.Close();
-        //    }
-
-        //    resultBuffer = ms.ToArray();
-
-        //    return retVal;
-        //}
-
         /// <summary>
         ///     Serializes an object to an XML string. Unlike the other SerializeObject overloads
         ///     this methods *returns a string* rather than a bool result!
@@ -206,26 +175,6 @@ namespace Xtricate.Dynamic
         ///     If null is passed in null is also returned so you might want
         ///     to check for null before calling this method.
         /// </remarks>
-        //public static string SerializeObjectToString(object instance, bool throwExceptions = false)
-        //{
-        //    var xmlResultString = string.Empty;
-
-        //    if (!SerializeObject(instance, out xmlResultString, throwExceptions))
-        //        return null;
-
-        //    return xmlResultString;
-        //}
-
-        //public static byte[] SerializeObjectToByteArray(object instance, bool throwExceptions = false)
-        //{
-        //    byte[] byteResult;
-
-        //    if (!SerializeObject(instance, out byteResult))
-        //        return null;
-
-        //    return byteResult;
-        //}
-
         /// <summary>
         ///     Deserializes an object from file and returns a reference.
         /// </summary>
@@ -233,11 +182,6 @@ namespace Xtricate.Dynamic
         /// <param name="objectType">The Type of the object. Use typeof(yourobject class)</param>
         /// <param name="binarySerialization">determines whether we use Xml or Binary serialization</param>
         /// <returns>Instance of the deserialized object or null. Must be cast to your object type</returns>
-        //public static object DeSerializeObject(string fileName, Type objectType, bool binarySerialization)
-        //{
-        //    return DeSerializeObject(fileName, objectType, binarySerialization, false);
-        //}
-
         /// <summary>
         ///     Deserializes an object from file and returns a reference.
         /// </summary>
@@ -246,65 +190,6 @@ namespace Xtricate.Dynamic
         /// <param name="binarySerialization">determines whether we use Xml or Binary serialization</param>
         /// <param name="throwExceptions">determines whether failure will throw rather than return null on failure</param>
         /// <returns>Instance of the deserialized object or null. Must be cast to your object type</returns>
-        //public static object DeSerializeObject(string fileName, Type objectType, bool binarySerialization,
-        //    bool throwExceptions)
-        //{
-        //    object instance;
-
-        //    if (!binarySerialization)
-        //    {
-        //        XmlReader reader = null;
-        //        FileStream fs = null;
-        //        try
-        //        {
-        //            // Create an instance of the XmlSerializer specifying type and namespace.
-        //            var serializer = new XmlSerializer(objectType);
-
-        //            // A FileStream is needed to read the XML document.
-        //            fs = new FileStream(fileName, FileMode.Open);
-        //            reader = new XmlTextReader(fs);
-
-        //            instance = serializer.Deserialize(reader);
-        //        }
-        //        catch (Exception)
-        //        {
-        //            if (throwExceptions)
-        //                throw;
-        //            return null;
-        //        }
-        //        finally
-        //        {
-        //            if (fs != null)
-        //                fs.Close();
-
-        //            if (reader != null)
-        //                reader.Close();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        FileStream fs = null;
-
-        //        try
-        //        {
-        //            var serializer = new BinaryFormatter();
-        //            fs = new FileStream(fileName, FileMode.Open);
-        //            instance = serializer.Deserialize(fs);
-        //        }
-        //        catch
-        //        {
-        //            return null;
-        //        }
-        //        finally
-        //        {
-        //            if (fs != null)
-        //                fs.Close();
-        //        }
-        //    }
-
-        //    return instance;
-        //}
-
         /// <summary>
         ///     Deserialize an object from an XmlReader object.
         /// </summary>

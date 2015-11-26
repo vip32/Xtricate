@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Formatting;
 using System.Web.Http;
@@ -20,40 +19,40 @@ namespace Xtricate.Service.Sample
             ConfigureWebApi(httpConfig);
 
             app.UseDashboard(new RouteCollectionBuilder(
-                        new Dictionary<string, IRequestDispatcher>
+                new Dictionary<string, IRequestDispatcher>
+                {
+                    {
+                        "/products", new RazorPageDispatcher(x => new ProductIndex())
+                    },
+                    {
+                        "/products/(?<PageId>\\d+)",
+                        new RazorPageDispatcher(x => new ProductDetails
                         {
+                            Parameters = new Dictionary<string, string>
                             {
-                                "/products", new RazorPageDispatcher(x => new ProductIndex())
-                            },
-                            {
-                                "/products/(?<PageId>\\d+)",
-                                    new RazorPageDispatcher(x => new ProductDetails
-                                    {
-                                        Parameters = new Dictionary<string, string>
-                                        {
-                                            { "id", x.Groups["PageId"].Value}
-                                        }
-                                    } )
-                            },
-                            {
-                                "/js-treegrid", new CombinedResourceDispatcher(
-                                    "application/javascript",
-                                    typeof (Root).Assembly,
-                                    RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "js"),
-                                    "jquery.treegrid.min.js", "jquery.treegrid.bootstrap3.js")
-                            },
-                            {
-                                "/css-treegrid", new CombinedResourceDispatcher(
-                                    "text/css",
-                                    typeof (Root).Assembly,
-                                    RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "css"),
-                                    "jquery.treegrid.css")
+                                {"id", x.Groups["PageId"].Value}
                             }
-                        }).Routes);
+                        })
+                    },
+                    {
+                        "/js-treegrid", new CombinedResourceDispatcher(
+                            "application/javascript",
+                            typeof (Root).Assembly,
+                            RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "js"),
+                            "jquery.treegrid.min.js", "jquery.treegrid.bootstrap3.js")
+                    },
+                    {
+                        "/css-treegrid", new CombinedResourceDispatcher(
+                            "text/css",
+                            typeof (Root).Assembly,
+                            RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "css"),
+                            "jquery.treegrid.css")
+                    }
+                }).Routes);
             app.UseWebApi(httpConfig);
         }
 
-       private void ConfigureWebApi(HttpConfiguration config)
+        private void ConfigureWebApi(HttpConfiguration config)
         {
             config.MapHttpAttributeRoutes();
 

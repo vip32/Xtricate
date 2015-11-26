@@ -19,7 +19,6 @@ namespace Xtricate.DocSet
             if (criteria == null) return null;
 
 
-
             var indexMap = indexMaps.FirstOrDefault(i =>
                 i.Name.Equals(criteria.Name, StringComparison.InvariantCultureIgnoreCase));
             if (indexMap == null) return null;
@@ -46,7 +45,8 @@ namespace Xtricate.DocSet
             if (op.Equals(CriteriaOperator.Contains))
                 return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] LIKE '||%{value}%||' ";
             if (op.Equals(CriteriaOperator.Eqm))
-                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] LIKE '%||{value}||%' "; // TODO: remove % for much faster PERF
+                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] LIKE '%||{value}||%' ";
+                    // TODO: remove % for much faster PERF
 
             return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] = '||{value}||' ";
         }

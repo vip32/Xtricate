@@ -132,7 +132,7 @@ namespace Xtricate.Configuration
 
         protected void Init(ISettings settings)
         {
-            this.Settings = settings;
+            Settings = settings;
             SettingsWriter = settings as ISettingsWriter;
         }
 

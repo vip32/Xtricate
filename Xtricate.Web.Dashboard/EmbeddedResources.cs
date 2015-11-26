@@ -4,14 +4,6 @@ namespace Xtricate.Web.Dashboard
 {
     public class EmbeddedResources
     {
-        public EmbeddedResources(
-            string[] javascriptEmbeddedResources = null,
-            string[] stylesheetEmbeddedResources = null)
-        {
-            if (javascriptEmbeddedResources != null) JavascriptEmbeddedResources.AddRange(javascriptEmbeddedResources);
-            if (stylesheetEmbeddedResources != null) StylesheetEmbeddedResources.AddRange(stylesheetEmbeddedResources);
-        }
-
         public readonly List<string> JavascriptEmbeddedResources = new List<string>
         {
             "jquery.min.js",
@@ -25,5 +17,13 @@ namespace Xtricate.Web.Dashboard
             //"bootstrap-theme.min.css",
             "dashboard.css"
         };
+
+        public EmbeddedResources(
+            string[] javascriptEmbeddedResources = null,
+            string[] stylesheetEmbeddedResources = null)
+        {
+            if (javascriptEmbeddedResources != null) JavascriptEmbeddedResources.AddRange(javascriptEmbeddedResources);
+            if (stylesheetEmbeddedResources != null) StylesheetEmbeddedResources.AddRange(stylesheetEmbeddedResources);
+        }
     }
 }

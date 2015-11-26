@@ -14,14 +14,15 @@ namespace Xtricate.Web.Dashboard
             Func<
                 Func<IDictionary<string, object>, Task>,
                 Func<IDictionary<string, object>, Task>
-        >>>;
+                >>>;
     using MidFunc = Func<
-            Func<IDictionary<string, object>, Task>,
-            Func<IDictionary<string, object>, Task>
-            >;
+        Func<IDictionary<string, object>, Task>,
+        Func<IDictionary<string, object>, Task>
+        >;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static class MiddlewareExtensions // http://benfoster.io/blog/how-to-write-owin-middleware-in-5-different-steps
+    public static class MiddlewareExtensions
+        // http://benfoster.io/blog/how-to-write-owin-middleware-in-5-different-steps
     {
         public static BuildFunc UseDashboard(
             this BuildFunc builder,
@@ -46,30 +47,30 @@ namespace Xtricate.Web.Dashboard
 
             return
                 next =>
-                env =>
-                {
-                    var context = new OwinContext(env);
-                    var dispatcher = routes.FindDispatcher(context.Request.Path.Value);
-
-                    if (dispatcher == null)
+                    env =>
                     {
-                        return next(env);
-                    }
+                        var context = new OwinContext(env);
+                        var dispatcher = routes.FindDispatcher(context.Request.Path.Value);
 
-                    if (options.AuthorizationFilters.Any(filter => !filter.Authorize(context.Environment)))
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                        return Task.FromResult(false);
-                    }
+                        if (dispatcher == null)
+                        {
+                            return next(env);
+                        }
 
-                    var dispatcherContext = new RequestDispatcherContext(
-                        options.Name,
-                        options.AppPath,
-                        context.Environment,
-                        dispatcher.Item2);
+                        if (options.AuthorizationFilters.Any(filter => !filter.Authorize(context.Environment)))
+                        {
+                            context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
+                            return Task.FromResult(false);
+                        }
 
-                    return dispatcher.Item1.Dispatch(dispatcherContext);
-                };
+                        var dispatcherContext = new RequestDispatcherContext(
+                            options.Name,
+                            options.AppPath,
+                            context.Environment,
+                            dispatcher.Item2);
+
+                        return dispatcher.Item1.Dispatch(dispatcherContext);
+                    };
         }
     }
 }

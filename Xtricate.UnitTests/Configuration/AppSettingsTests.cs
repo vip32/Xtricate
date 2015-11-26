@@ -93,17 +93,17 @@ ObjectKey {SomeSetting:Test,SomeOtherSetting:12,FinalSetting:Final}";
                 Assert.That(appSettings.Get("EmptyKey"), Is.EqualTo(null));
                 Assert.That(appSettings.Get("RealKey"), Is.EqualTo("This is a real value"));
 
-                Assert.That(appSettings.Get("IntKey", defaultValue: 1), Is.EqualTo(42));
+                Assert.That(appSettings.Get("IntKey", 1), Is.EqualTo(42));
 
                 var list = appSettings.GetList("ListKey");
                 Assert.That(list, Has.Count.EqualTo(5));
-                Assert.That(list, Is.EqualTo(new List<string> { "A", "B", "C", "D", "E" }));
+                Assert.That(list, Is.EqualTo(new List<string> {"A", "B", "C", "D", "E"}));
 
                 var map = appSettings.GetDictionary("DictionaryKey");
 
                 Assert.That(map, Has.Count.EqualTo(5));
-                Assert.That(map.Keys, Is.EqualTo(new List<string> { "A", "B", "C", "D", "E" }));
-                Assert.That(map.Values, Is.EqualTo(new List<string> { "1", "2", "3", "4", "5" }));
+                Assert.That(map.Keys, Is.EqualTo(new List<string> {"A", "B", "C", "D", "E"}));
+                Assert.That(map.Values, Is.EqualTo(new List<string> {"1", "2", "3", "4", "5"}));
 
                 var value = appSettings.Get("ObjectKey", new SimpleAppSettings());
                 Assert.That(value, Is.Not.Null);
@@ -119,25 +119,25 @@ ObjectKey {SomeSetting:Test,SomeOtherSetting:12,FinalSetting:Final}";
             {
                 return new DictionarySettings(GetConfigDictionary())
                 {
-                    ParsingStrategy = null,
+                    ParsingStrategy = null
                 };
             }
 
             public virtual Dictionary<string, string> GetConfigDictionary()
             {
                 return new Dictionary<string, string>
-            {
-                {"NullableKey", null},
-                {"EmptyKey", string.Empty},
-                {"RealKey", "This is a real value"},
-                {"ListKey", "A,B,C,D,E"},
-                {"IntKey", "42"},
-                {"BadIntegerKey", "This is not an integer"},
-                {"DictionaryKey", "A:1,B:2,C:3,D:4,E:5"},
-                {"BadDictionaryKey", "A1,B:"},
-                {"ObjectNoLineFeed", "{SomeSetting:Test,SomeOtherSetting:12,FinalSetting:Final}"},
-                {"ObjectWithLineFeed", "{SomeSetting:Test,\r\nSomeOtherSetting:12,\r\nFinalSetting:Final}"},
-            };
+                {
+                    {"NullableKey", null},
+                    {"EmptyKey", string.Empty},
+                    {"RealKey", "This is a real value"},
+                    {"ListKey", "A,B,C,D,E"},
+                    {"IntKey", "42"},
+                    {"BadIntegerKey", "This is not an integer"},
+                    {"DictionaryKey", "A:1,B:2,C:3,D:4,E:5"},
+                    {"BadDictionaryKey", "A1,B:"},
+                    {"ObjectNoLineFeed", "{SomeSetting:Test,SomeOtherSetting:12,FinalSetting:Final}"},
+                    {"ObjectWithLineFeed", "{SomeSetting:Test,\r\nSomeOtherSetting:12,\r\nFinalSetting:Final}"}
+                };
             }
 
             [Test]
@@ -171,7 +171,7 @@ ObjectKey {SomeSetting:Test,SomeOtherSetting:12,FinalSetting:Final}";
             public void Get_Casts_To_Specified_Type()
             {
                 var appSettings = GetAppSettings();
-                var value = appSettings.Get<int>("IntKey", 1);
+                var value = appSettings.Get("IntKey", 1);
 
                 Assert.That(value, Is.EqualTo(42));
             }
@@ -183,7 +183,7 @@ ObjectKey {SomeSetting:Test,SomeOtherSetting:12,FinalSetting:Final}";
 
                 try
                 {
-                    appSettings.Get<int>("BadIntegerKey", 1);
+                    appSettings.Get("BadIntegerKey", 1);
                     Assert.Fail("Get did not throw a ConfigurationErrorsException");
                 }
                 catch (ConfigurationErrorsException ex)
@@ -199,7 +199,7 @@ ObjectKey {SomeSetting:Test,SomeOtherSetting:12,FinalSetting:Final}";
                 var value = appSettings.GetList("ListKey");
 
                 Assert.That(value, Has.Count.EqualTo(5));
-                Assert.That(value, Is.EqualTo(new List<string> { "A", "B", "C", "D", "E" }));
+                Assert.That(value, Is.EqualTo(new List<string> {"A", "B", "C", "D", "E"}));
             }
 
             [Test]
@@ -209,8 +209,8 @@ ObjectKey {SomeSetting:Test,SomeOtherSetting:12,FinalSetting:Final}";
                 var value = appSettings.GetDictionary("DictionaryKey");
 
                 Assert.That(value, Has.Count.EqualTo(5));
-                Assert.That(value.Keys, Is.EqualTo(new List<string> { "A", "B", "C", "D", "E" }));
-                Assert.That(value.Values, Is.EqualTo(new List<string> { "1", "2", "3", "4", "5" }));
+                Assert.That(value.Keys, Is.EqualTo(new List<string> {"A", "B", "C", "D", "E"}));
+                Assert.That(value.Values, Is.EqualTo(new List<string> {"1", "2", "3", "4", "5"}));
             }
 
             [Test]
@@ -293,13 +293,6 @@ ObjectKey {SomeSetting:Test,SomeOtherSetting:12,FinalSetting:Final}";
                 Assert.That(value, Is.EqualTo(99));
             }
 
-            public class SimpleAppSettings
-            {
-                public string SomeSetting { get; set; }
-                public int SomeOtherSetting { get; set; }
-                public string FinalSetting { get; set; }
-            }
-
             [Test]
             public void Can_get_all_keys()
             {
@@ -316,7 +309,14 @@ ObjectKey {SomeSetting:Test,SomeOtherSetting:12,FinalSetting:Final}";
                 var appSettings = GetAppSettings();
                 var badKeys = appSettings.GetAllKeys().Where(x => x.StartsWith("Bad"));
 
-                Assert.That(badKeys, Is.EquivalentTo(new[] { "BadIntegerKey", "BadDictionaryKey" }));
+                Assert.That(badKeys, Is.EquivalentTo(new[] {"BadIntegerKey", "BadDictionaryKey"}));
+            }
+
+            public class SimpleAppSettings
+            {
+                public string SomeSetting { get; set; }
+                public int SomeOtherSetting { get; set; }
+                public string FinalSetting { get; set; }
             }
         }
     }

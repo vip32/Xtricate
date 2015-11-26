@@ -1,6 +1,18 @@
-.treegrid-indent {width:16px; height: 16px; display: inline-block; position: relative;}
+.treegrid-indent {
+    display: inline-block;
+    height: 16px;
+    position: relative;
+    width: 16px;
+}
 
-.treegrid-expander {width:16px; height: 16px; display: inline-block; position: relative; cursor: pointer;}
+.treegrid-expander {
+    cursor: pointer;
+    display: inline-block;
+    height: 16px;
+    position: relative;
+    width: 16px;
+}
 
-.treegrid-expander-expanded{background-image: url(../img/collapse.png); }
-.treegrid-expander-collapsed{background-image: url(../img/expand.png);}
+.treegrid-expander-expanded { background-image: url(../img/collapse.png); }
+
+.treegrid-expander-collapsed { background-image: url(../img/expand.png); }

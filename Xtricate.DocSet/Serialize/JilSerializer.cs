@@ -1,7 +1,4 @@
-using System.Runtime.CompilerServices;
 using Jil;
-using Newtonsoft.Json;
-using ServiceStack.Text;
 
 namespace Xtricate.DocSet
 {
@@ -12,7 +9,6 @@ namespace Xtricate.DocSet
             if (value == null) return null;
             return JSON.Serialize /*Dynamic*/(value,
                 new Options(excludeNulls: true, serializationNameFormat: SerializationNameFormat.CamelCase));
-
         }
 
         public T FromJson<T>(string value)

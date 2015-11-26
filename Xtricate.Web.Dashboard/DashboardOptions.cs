@@ -9,7 +9,7 @@ namespace Xtricate.Web.Dashboard
             Name = "Dashboard";
             AppPath = "/";
             //AuthorizationFilters = new[] { new LocalRequestsOnlyAuthorizationFilter() };
-            AuthorizationFilters = new[] { new NoAuthorizationFilter() };
+            AuthorizationFilters = new[] {new NoAuthorizationFilter()};
         }
 
         public string Name { get; set; }

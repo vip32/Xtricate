@@ -1,6 +1,6 @@
 ﻿namespace Xtricate.Service.Dashboard
 {
-    class Root  // placeholder to get the root namespace
+    internal class Root // placeholder to get the root namespace
     {
     }
 }

@@ -8,7 +8,6 @@ namespace Xtricate.DocSet
         {
             if (value == null) return null;
             return TypeSerializer.SerializeToString(value);
-
         }
 
         public T FromJson<T>(string value)

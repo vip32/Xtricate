@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Xtricate.Web.Dashboard.Models;
 using Xtricate.Web.Dashboard.Pages;
-
 namespace Xtricate.Web.Dashboard
 {
     public class RouteCollectionBuilder
     {
-        private readonly EmbeddedResources _resources;
         private readonly IDictionary<string, IRequestDispatcher> _dispatchers;
+        private readonly EmbeddedResources _resources;
         private RouteCollection _routes;
 
         public RouteCollectionBuilder(
             IDictionary<string, IRequestDispatcher> dispatchers = null) : this(new EmbeddedResources(), dispatchers)
-        {}
+        {
+        }
 
         public RouteCollectionBuilder(
             EmbeddedResources resources,
@@ -34,7 +34,9 @@ namespace Xtricate.Web.Dashboard
                 _routes.AddRazorPage("/", x => new HomePage());
                 _routes.AddRazorPage("/info", x => new InfoPage
                 {
-                    Model = new DashboardInfoViewModel(Routes, _resources.JavascriptEmbeddedResources, _resources.StylesheetEmbeddedResources)
+                    Model =
+                        new DashboardInfoViewModel(Routes, _resources.JavascriptEmbeddedResources,
+                            _resources.StylesheetEmbeddedResources)
                 });
 
                 _routes.Add("/img/logo", new EmbeddedResourceDispatcher(

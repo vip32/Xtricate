@@ -6,7 +6,7 @@ using Newtonsoft.Json.Bson;
 
 namespace Xtricate.DocSet
 {
-    public class Md5Hasher: IHasher
+    public class Md5Hasher : IHasher
     {
         public string Compute(object value)
         {
