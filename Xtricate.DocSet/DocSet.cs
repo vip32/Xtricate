@@ -28,15 +28,16 @@ namespace Xtricate.DocSet
             return _docStorage.Count(tags, criteria);
         }
 
-        public IEnumerable<TDoc> Load(TKey key, IEnumerable<string> tags = null)
+        public IEnumerable<TDoc> Load(TKey key, IEnumerable<string> tags = null, int skip = 0, int take = 0)
         {
             if (key == null) return null;
-            return _docStorage.Load(key, tags);
+            return _docStorage.Load(key, tags, skip: skip, take: take);
         }
 
-        public IEnumerable<TDoc> Load(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)
+        public IEnumerable<TDoc> Load(IEnumerable<string> tags = null,
+            IEnumerable<Criteria> criteria = null, int skip = 0, int take = 0)
         {
-            return _docStorage.Load(tags, criteria);
+            return _docStorage.Load(tags, criteria, skip, take);
         }
 
         public IEnumerable<TDoc> Store(IEnumerable<TDoc> documents, IEnumerable<string> tags = null)

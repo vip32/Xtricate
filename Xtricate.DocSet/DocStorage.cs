@@ -149,8 +149,7 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = $@"
-    SELECT COUNT(*) FROM {_tableName} WHERE [id]>0";
+                var sql = $@"SELECT COUNT(*) FROM {_tableName} WHERE [id]>0";
                 tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
                 criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSelect(_indexMaps, c));
                 conn.Open();
@@ -166,10 +165,10 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = $@"
-    SELECT [value] FROM {_tableName} WHERE [key]='{key}'";
+                var sql = $@"SELECT [value] FROM {_tableName} WHERE [key]='{key}'";
                 tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
                 criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSelect(_indexMaps, c));
+                // TODO: add pagin clause
                 conn.Open();
                 var documents = conn.Query<string>(sql, new {key}, buffered: _options.BufferedLoad);
                 if (documents == null) yield break;
@@ -178,7 +177,7 @@ namespace Xtricate.DocSet
             }
         }
 
-        public virtual IEnumerable<TDoc> Load(IEnumerable<string> tags = null, 
+        public virtual IEnumerable<TDoc> Load(IEnumerable<string> tags = null,
             IEnumerable<Criteria> criterias = null, int skip = 0, int take = 0)
         {
             Trace.WriteLine(
@@ -186,10 +185,10 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = $@"
-    SELECT [value] FROM {_tableName} WHERE [id]>0";
+                var sql = $@"SELECT [value] FROM {_tableName} WHERE [id]>0";
                 tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
                 criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSelect(_indexMaps, c));
+                // TODO: add paging clause
                 conn.Open();
                 var documents = conn.Query<string>(sql, buffered: _options.BufferedLoad);
                 if (documents == null) yield break;
