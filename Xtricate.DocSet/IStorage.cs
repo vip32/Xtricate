@@ -13,8 +13,10 @@ namespace Xtricate.DocSet
         bool Exists(object key, IEnumerable<string> tags = null);
         StorageAction Upsert(object key, TDoc document, IEnumerable<string> tags = null);
         long Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null);
-        IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null);
-        IEnumerable<TDoc> Load(IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null);
+        IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null,
+            IEnumerable<Criteria> criteria = null, int skip = 0, int take = 0);
+        IEnumerable<TDoc> Load(IEnumerable<string> tags = null,
+            IEnumerable<Criteria> criterias = null, int skip = 0, int take = 0);
         StorageAction Delete(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null);
     }
 }

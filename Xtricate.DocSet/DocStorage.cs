@@ -5,7 +5,6 @@ using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Dapper;
 
 namespace Xtricate.DocSet
@@ -160,7 +159,7 @@ namespace Xtricate.DocSet
         }
 
         public virtual IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null,
-            IEnumerable<Criteria> criterias = null)
+            IEnumerable<Criteria> criterias = null, int skip = 0, int take = 0)
         {
             Trace.WriteLine(
                 $"document load: key={key}, tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
@@ -179,7 +178,8 @@ namespace Xtricate.DocSet
             }
         }
 
-        public virtual IEnumerable<TDoc> Load(IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null)
+        public virtual IEnumerable<TDoc> Load(IEnumerable<string> tags = null, 
+            IEnumerable<Criteria> criterias = null, int skip = 0, int take = 0)
         {
             Trace.WriteLine(
                 $"document load: tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
@@ -204,8 +204,7 @@ namespace Xtricate.DocSet
             Trace.WriteLine($"document delete: key={key},tags={tags?.ToString("||")}");
             using (var conn = CreateConnection())
             {
-                var sql = $@"
-    DELETE FROM {_tableName} WHERE [key]='{key}'";
+                var sql = $@"DELETE FROM {_tableName} WHERE [key]='{key}'";
                 tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
                 criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSelect(_indexMaps, c));
                 conn.Open();
