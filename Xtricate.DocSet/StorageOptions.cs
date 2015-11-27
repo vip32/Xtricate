@@ -6,7 +6,7 @@ namespace Xtricate.DocSet
     public class StorageOptions : IStorageOptions
     {
         public StorageOptions(string connectionString, string schemaName = null, string tableName = null,
-            string tableNamePrefix = null, string tableNameSuffix = null, bool useTransactions = false)
+            string tableNamePrefix = null, string tableNameSuffix = null, bool useTransactions = false, bool bufferedLoad = false)
         {
             if (string.IsNullOrEmpty(connectionString)) throw new ArgumentException(nameof(connectionString));
 
@@ -16,10 +16,12 @@ namespace Xtricate.DocSet
             TableNamePrefix = tableNamePrefix;
             TableNameSuffix = tableNameSuffix;
             UseTransactions = useTransactions;
+            BufferedLoad = bufferedLoad;
         }
 
         public string ConnectionString { get; set; }
         public string SchemaName { get; set; }
+        public bool BufferedLoad { get; set; }
         public string TableName { get; set; }
         public string TableNamePrefix { get; set; }
         public string TableNameSuffix { get; set; }

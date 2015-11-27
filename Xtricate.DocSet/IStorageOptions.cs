@@ -4,6 +4,7 @@ namespace Xtricate.DocSet
     {
         string ConnectionString { get; set; }
         string SchemaName { get; set; }
+        bool BufferedLoad { get; set; }
         string TableName { get; set; }
         string TableNamePrefix { get; set; }
         string TableNameSuffix { get; set; }

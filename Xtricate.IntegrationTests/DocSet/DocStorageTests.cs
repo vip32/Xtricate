@@ -15,6 +15,21 @@ namespace Xtricate.IntegrationTests
     [TestFixture]
     public class DocStorageTests
     {
+        private static List<IIndexMap<TestDocument>> TestDocumentIndexMap
+        {
+            get
+            {
+                return new List<IIndexMap<TestDocument>>
+                {
+                    new IndexMap<TestDocument>(nameof(TestDocument.Name), i => i.Name),
+                    new IndexMap<TestDocument>(nameof(TestDocument.Group), i => i.Group),
+                    new IndexMap<TestDocument>(nameof(TestSku.Sku), values: i => i.Skus.Select(s => s.Sku)),
+                    new IndexMap<TestDocument>(nameof(TestDocument.Date), i =>
+                        i.Date.HasValue ? i.Date.Value.ToString("s") : null)
+                };
+            }
+        }
+
         [TestFixtureSetUp]
         public void Setup()
         {
@@ -47,21 +62,6 @@ namespace Xtricate.IntegrationTests
             Trace.WriteLine($"post count: {storage.Count(new[] {"en-US"})}");
             Trace.WriteLine($"trace: {mp.RenderPlainText()}");
             MiniProfiler.Stop();
-        }
-
-        private static List<IIndexMap<TestDocument>> TestDocumentIndexMap
-        {
-            get
-            {
-                return new List<IIndexMap<TestDocument>>
-                {
-                    new IndexMap<TestDocument>(nameof(TestDocument.Name), i => i.Name),
-                    new IndexMap<TestDocument>(nameof(TestDocument.Group), i => i.Group),
-                    new IndexMap<TestDocument>(nameof(TestSku.Sku), values: i => i.Skus.Select(s => s.Sku)),
-                    new IndexMap<TestDocument>(nameof(TestDocument.Date), i =>
-                        i.Date.HasValue ? i.Date.Value.ToString("s") : null)
-                };
-            }
         }
 
         [Test]
@@ -108,7 +108,7 @@ namespace Xtricate.IntegrationTests
         [Test]
         public void FindTest()
         {
-            var options = new StorageOptions("TestDb", "StorageTests");
+            var options = new StorageOptions("TestDb", "StorageTests") {BufferedLoad = false};
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
