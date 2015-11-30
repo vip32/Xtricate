@@ -19,8 +19,6 @@ namespace Xtricate.DocSet
             _key = key;
             _docStorage = docStorage;
             _tagMap = tagMap;
-
-            _docStorage.Initialize();
         }
 
         public long Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criteria = null)

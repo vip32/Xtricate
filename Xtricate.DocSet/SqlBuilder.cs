@@ -6,14 +6,22 @@ namespace Xtricate.DocSet
 {
     public class SqlBuilder : ISqlBuilder
     {
-        public string IndexColumnNameSuffix => "_idx";
+        protected readonly IStorageOptions Options;
 
-        public string BuildTagSelect(string tag)
+        public SqlBuilder(IStorageOptions options)
+        {
+            if (options == null) throw new ArgumentNullException(nameof(options));
+
+            Options = options;
+        }
+        public virtual string IndexColumnNameSuffix => "_idx";
+
+        public virtual string BuildTagSelect(string tag)
         {
             return $" AND [tags] LIKE '%||{tag}||%'";
         }
 
-        public string BuildCriteriaSelect<TDoc>(IEnumerable<IIndexMap<TDoc>> indexMaps = null, ICriteria criteria = null)
+        public virtual string BuildCriteriaSelect<TDoc>(IEnumerable<IIndexMap<TDoc>> indexMaps = null, ICriteria criteria = null)
         {
             if (indexMaps == null || !indexMaps.Any()) return null;
             if (criteria == null) return null;
@@ -30,7 +38,7 @@ namespace Xtricate.DocSet
             return BuildCriteriaSelect(indexMap.Name, criteria.Operator, criteria.Value);
         }
 
-        public string BuildCriteriaSelect(string column, CriteriaOperator op, string value)
+        public virtual string BuildCriteriaSelect(string column, CriteriaOperator op, string value)
         {
             if (string.IsNullOrEmpty(column)) return null;
 
@@ -49,6 +57,12 @@ namespace Xtricate.DocSet
                     // TODO: remove % for much faster PERF
 
             return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] = '||{value}||' ";
+        }
+
+        public virtual string BuildPagingSelect(int skip = 0, int take = 0)
+        {
+            //TODO: use the _options.DefaultTakeSize & _options.MaxTakeSize
+            return "";
         }
     }
 }

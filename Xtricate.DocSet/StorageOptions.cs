@@ -6,7 +6,8 @@ namespace Xtricate.DocSet
     public class StorageOptions : IStorageOptions
     {
         public StorageOptions(string connectionString, string schemaName = null, string tableName = null,
-            string tableNamePrefix = null, string tableNameSuffix = null, bool useTransactions = false, bool bufferedLoad = false)
+            string tableNamePrefix = null, string tableNameSuffix = null, bool useTransactions = false,
+            bool bufferedLoad = false, int defaultTakeSize = 0, int maxTakeSize = 0)
         {
             if (string.IsNullOrEmpty(connectionString)) throw new ArgumentException(nameof(connectionString));
 
@@ -17,6 +18,8 @@ namespace Xtricate.DocSet
             TableNameSuffix = tableNameSuffix;
             UseTransactions = useTransactions;
             BufferedLoad = bufferedLoad;
+            DefaultTakeSize = defaultTakeSize > maxTakeSize ? maxTakeSize : defaultTakeSize;
+            MaxTakeSize = maxTakeSize;
         }
 
         public string ConnectionString { get; set; }
@@ -26,6 +29,8 @@ namespace Xtricate.DocSet
         public string TableNamePrefix { get; set; }
         public string TableNameSuffix { get; set; }
         public bool UseTransactions { get; set; }
+        public int DefaultTakeSize { get; set; }
+        public int MaxTakeSize { get; set; }
 
         public string GetDocTableName<T>(string suffix = null)
         {
@@ -39,11 +44,6 @@ namespace Xtricate.DocSet
             return !string.IsNullOrEmpty(SchemaName)
                 ? $"[{SchemaName}].[{tableName}]"
                 : $"[{tableName}]";
-        }
-
-        public string GetIndexTableName<T>()
-        {
-            return GetDocTableName<T>();
         }
     }
 }

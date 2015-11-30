@@ -10,6 +10,6 @@ namespace Xtricate.DocSet
         string TableNameSuffix { get; set; }
         bool UseTransactions { get; set; }
         string GetDocTableName<T>(string suffix = null);
-        string GetIndexTableName<T>();
+        int DefaultTakeSize { get; set; }
     }
 }

@@ -17,8 +17,8 @@ namespace Xtricate.DocSet
         private readonly IStorageOptions _options;
         private readonly ISerializer _serializer;
         private readonly ISqlBuilder _sqlBuilder;
-        private string _tableName;
         private string _indexTableName;
+        private string _tableName;
 
         public DocStorage(IDbConnectionFactory connectionFactory, IStorageOptions options, ISqlBuilder sqlBuilder,
             ISerializer serializer, IHasher hasher = null, IEnumerable<IIndexMap<TDoc>> indexMaps = null)
@@ -38,18 +38,6 @@ namespace Xtricate.DocSet
             _indexMaps.ForEach(im => Trace.WriteLine($"index map: {typeof (TDoc).Name} > {im.Name} [{im.Description}]"));
 
             Initialize();
-        }
-
-        public IDbConnection CreateConnection() => _connectionFactory.CreateConnection(_options.ConnectionString);
-
-        public void Initialize()
-        {
-            _tableName = _options.GetDocTableName<TDoc>();
-            _indexTableName = _options.GetIndexTableName<TDoc>();
-
-            EnsureSchema(_options);
-            EnsureTable(_tableName);
-            EnsureIndex(_indexTableName);
         }
 
         public virtual void Reset(bool indexOnly = false)
@@ -98,7 +86,8 @@ namespace Xtricate.DocSet
                     Trace.WriteLine($"document update: key={key},tags={tags?.ToString("||")}");
                     sql =
                         $@"
-    UPDATE {_tableName}
+    UPDATE {_tableName
+                            }
     SET [hash]=@hash,[timestamp]=@timestamp,[value]=@value
         {
                             _indexMaps.NullToEmpty()
@@ -168,7 +157,7 @@ namespace Xtricate.DocSet
                 var sql = $@"SELECT [value] FROM {_tableName} WHERE [key]='{key}'";
                 tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
                 criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSelect(_indexMaps, c));
-                // TODO: add pagin clause
+                sql += _sqlBuilder.BuildPagingSelect(skip, take);
                 conn.Open();
                 var documents = conn.Query<string>(sql, new {key}, buffered: _options.BufferedLoad);
                 if (documents == null) yield break;
@@ -188,7 +177,7 @@ namespace Xtricate.DocSet
                 var sql = $@"SELECT [value] FROM {_tableName} WHERE [id]>0";
                 tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
                 criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSelect(_indexMaps, c));
-                // TODO: add paging clause
+                sql += _sqlBuilder.BuildPagingSelect(skip, take);
                 conn.Open();
                 var documents = conn.Query<string>(sql, buffered: _options.BufferedLoad);
                 if (documents == null) yield break;
@@ -210,6 +199,17 @@ namespace Xtricate.DocSet
                 var num = conn.Execute(sql, new {key});
                 return num > 0 ? StorageAction.Deleted : StorageAction.None;
             }
+        }
+
+        private IDbConnection CreateConnection() => _connectionFactory.CreateConnection(_options.ConnectionString);
+
+        public void Initialize()
+        {
+            _tableName = _options.GetDocTableName<TDoc>();
+
+            EnsureSchema(_options);
+            EnsureTable(_tableName);
+            EnsureIndex(_indexTableName);
         }
 
         private void AddIndexParameters(TDoc document, DynamicParameters parameters)
@@ -313,7 +313,7 @@ namespace Xtricate.DocSet
     END ", tableName, i.Name.ToLower(), _sqlBuilder.IndexColumnNameSuffix));
                 sql.ForEach(s => conn.Execute(s));
             }
-                // sqlite check column exists: http://stackoverflow.com/questions/18920136/check-if-a-column-exists-in-sqlite
+            // sqlite check column exists: http://stackoverflow.com/questions/18920136/check-if-a-column-exists-in-sqlite
             // sqlite alter table https://www.sqlite.org/lang_altertable.html
         }
 

@@ -6,8 +6,6 @@ namespace Xtricate.DocSet
 {
     public interface IStorage<TDoc>
     {
-        IDbConnection CreateConnection();
-        void Initialize();
         void Reset(bool indexOnly = false);
         void Execute(Action action);
         bool Exists(object key, IEnumerable<string> tags = null);
