@@ -17,7 +17,6 @@ namespace Xtricate.DocSet
         private readonly IStorageOptions _options;
         private readonly ISerializer _serializer;
         private readonly ISqlBuilder _sqlBuilder;
-        private string _indexTableName;
         private string _tableName;
 
         public DocStorage(IDbConnectionFactory connectionFactory, IStorageOptions options, ISqlBuilder sqlBuilder,
@@ -33,6 +32,7 @@ namespace Xtricate.DocSet
             _sqlBuilder = sqlBuilder;
             _serializer = serializer;
             _hasher = hasher;
+            _tableName = options.GetDocTableName<TDoc>();
 
             _indexMaps = indexMaps.NullToEmpty().ToList().Where(im => im != null).OrderBy(i => i.Name);
             _indexMaps.ForEach(im => Trace.WriteLine($"index map: {typeof (TDoc).Name} > {im.Name} [{im.Description}]"));
@@ -44,7 +44,7 @@ namespace Xtricate.DocSet
         {
             if (!indexOnly)
                 DeleteTable(_tableName);
-            DeleteIndex(_indexTableName);
+            DeleteIndex(_tableName);
             Initialize();
         }
 
@@ -209,7 +209,7 @@ namespace Xtricate.DocSet
 
             EnsureSchema(_options);
             EnsureTable(_tableName);
-            EnsureIndex(_indexTableName);
+            EnsureIndex(_tableName);
         }
 
         private void AddIndexParameters(TDoc document, DynamicParameters parameters)
