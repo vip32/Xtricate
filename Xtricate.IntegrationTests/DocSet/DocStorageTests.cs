@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity.Infrastructure;
 using System.Diagnostics;
 using System.Linq;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using StackExchange.Profiling;
+using Xtricate.Configuration;
 using Xtricate.DocSet;
 using Xtricate.Dynamic;
 using Xtricate.UnitTests.TestHelpers;
@@ -40,7 +42,7 @@ namespace Xtricate.IntegrationTests
         [TestCase(1000, false)]
         public void MassInsertTest(int docCount, bool reset)
         {
-            var options = new StorageOptions("TestDb", "StorageTests");
+            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
@@ -67,7 +69,7 @@ namespace Xtricate.IntegrationTests
         [Test]
         public void DeleteTest()
         {
-            var options = new StorageOptions("TestDb", "StorageTests");
+            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
@@ -108,7 +110,7 @@ namespace Xtricate.IntegrationTests
         [Test]
         public void FindTest()
         {
-            var options = new StorageOptions("TestDb", "StorageTests") {BufferedLoad = false};
+            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests") {BufferedLoad = false};
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
@@ -175,13 +177,12 @@ namespace Xtricate.IntegrationTests
         [Test]
         public void InitializeTest()
         {
-            var options = new StorageOptions("TestDb", "StorageTests");
+            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
-            storage.Initialize();
             storage.Reset();
 
             Assert.That(storage.Count(), Is.EqualTo(0));
@@ -190,7 +191,7 @@ namespace Xtricate.IntegrationTests
         [Test]
         public void InsertTest()
         {
-            var options = new StorageOptions("TestDb", "StorageTests");
+            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
@@ -252,7 +253,7 @@ namespace Xtricate.IntegrationTests
         [Test]
         public void UpdateTest()
         {
-            var options = new StorageOptions("TestDb", "StorageTests");
+            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),

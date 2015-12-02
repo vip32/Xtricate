@@ -53,6 +53,7 @@
     <Compile Include="AppSettingsBase.cs" />
     <Compile Include="AppSettingsStrategy.cs" />
     <Compile Include="ConfigUtils.cs" />
+    <Compile Include="ConnectionStrings.cs" />
     <Compile Include="DictionarySettings.cs" />
     <Compile Include="EnvironmentVariableSettings.cs" />
     <Compile Include="Extensions.cs" />

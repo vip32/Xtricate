@@ -33,9 +33,11 @@ namespace Xtricate.DocSet
             _serializer = serializer;
             _hasher = hasher;
             _tableName = options.GetDocTableName<TDoc>();
-
             _indexMaps = indexMaps.NullToEmpty().ToList().Where(im => im != null).OrderBy(i => i.Name);
+
+            Trace.WriteLine($"table: {_tableName}");
             _indexMaps.ForEach(im => Trace.WriteLine($"index map: {typeof (TDoc).Name} > {im.Name} [{im.Description}]"));
+            Trace.WriteLine($"connection: {_options.ConnectionString}");
 
             Initialize();
         }
