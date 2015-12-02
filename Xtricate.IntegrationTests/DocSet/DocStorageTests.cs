@@ -9,8 +9,10 @@ using Ploeh.AutoFixture;
 using StackExchange.Profiling;
 using Xtricate.Configuration;
 using Xtricate.DocSet;
+using Xtricate.DocSet.Sqlite;
 using Xtricate.Dynamic;
 using Xtricate.UnitTests.TestHelpers;
+using SqlBuilder = Xtricate.DocSet.SqlBuilder;
 
 namespace Xtricate.IntegrationTests
 {
@@ -179,6 +181,20 @@ namespace Xtricate.IntegrationTests
         {
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
+            var indexMap = TestDocumentIndexMap;
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+                new JsonNetSerializer(), new Md5Hasher(), indexMap);
+
+            storage.Reset();
+
+            Assert.That(storage.Count(), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void InitializeTest_Sqlite()
+        {
+            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqliteDb"), "StorageTests");
+            var connectionFactory = new SqliteConnectionFactory();
             var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
