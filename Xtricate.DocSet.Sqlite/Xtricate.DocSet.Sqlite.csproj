@@ -74,6 +74,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlBuilder.cs" />
+    <Compile Include="SqliteConnectionFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Xtricate.DocSet\Xtricate.DocSet.csproj">
