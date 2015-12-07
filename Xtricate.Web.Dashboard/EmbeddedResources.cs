@@ -8,6 +8,7 @@ namespace Xtricate.Web.Dashboard
         {
             "jquery.min.js",
             "bootstrap.min.js",
+            "lodash.min.js",
             "knockout.min.js"
         };
 
