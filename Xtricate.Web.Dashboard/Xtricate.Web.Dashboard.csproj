@@ -143,6 +143,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Content\js\knockout.min.js" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\js\lodash.min.js" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\RazorGenerator.MsBuild.2.3.13\build\RazorGenerator.MsBuild.targets" Condition="Exists('..\packages\RazorGenerator.MsBuild.2.3.13\build\RazorGenerator.MsBuild.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
