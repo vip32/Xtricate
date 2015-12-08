@@ -9,7 +9,7 @@ namespace Xtricate.DocSet
         string TableNamePrefix { get; set; }
         string TableNameSuffix { get; set; }
         bool UseTransactions { get; set; }
-        string GetDocTableName<T>(string suffix = null);
+        string GetTableName<T>(string suffix = null);
         int DefaultTakeSize { get; set; }
     }
 }

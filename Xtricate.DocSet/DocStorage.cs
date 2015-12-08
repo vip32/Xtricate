@@ -11,13 +11,13 @@ namespace Xtricate.DocSet
 {
     public class DocStorage<TDoc> : IStorage<TDoc>
     {
-        private readonly IDbConnectionFactory _connectionFactory;
-        private readonly IHasher _hasher;
-        private readonly IEnumerable<IIndexMap<TDoc>> _indexMaps;
-        private readonly IStorageOptions _options;
-        private readonly ISerializer _serializer;
-        private readonly ISqlBuilder _sqlBuilder;
-        private string _tableName;
+        protected readonly IDbConnectionFactory ConnectionFactory;
+        protected readonly IHasher Hasher;
+        protected readonly IEnumerable<IIndexMap<TDoc>> IndexMaps;
+        protected readonly IStorageOptions Options;
+        protected readonly ISerializer Serializer;
+        protected readonly ISqlBuilder SqlBuilder;
+        protected string TableName;
 
         public DocStorage(IDbConnectionFactory connectionFactory, IStorageOptions options, ISqlBuilder sqlBuilder,
             ISerializer serializer, IHasher hasher = null, IEnumerable<IIndexMap<TDoc>> indexMaps = null)
@@ -27,17 +27,17 @@ namespace Xtricate.DocSet
             if (sqlBuilder == null) throw new ArgumentNullException(nameof(sqlBuilder));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
-            _connectionFactory = connectionFactory;
-            _options = options;
-            _sqlBuilder = sqlBuilder;
-            _serializer = serializer;
-            _hasher = hasher;
-            _tableName = options.GetDocTableName<TDoc>();
-            _indexMaps = indexMaps.NullToEmpty().ToList().Where(im => im != null).OrderBy(i => i.Name);
+            ConnectionFactory = connectionFactory;
+            Options = options;
+            SqlBuilder = sqlBuilder;
+            Serializer = serializer;
+            Hasher = hasher;
+            TableName = options.GetTableName<TDoc>();
+            IndexMaps = indexMaps.NullToEmpty().ToList().Where(im => im != null).OrderBy(i => i.Name);
 
-            Trace.WriteLine($"table: {_tableName}");
-            _indexMaps.ForEach(im => Trace.WriteLine($"index map: {typeof (TDoc).Name} > {im.Name} [{im.Description}]"));
-            Trace.WriteLine($"connection: {_options.ConnectionString}");
+            Trace.WriteLine($"table: {TableName}");
+            IndexMaps.ForEach(im => Trace.WriteLine($"index map: {typeof (TDoc).Name} > {im.Name} [{im.Description}]"));
+            Trace.WriteLine($"connection: {Options.ConnectionString}");
 
             Initialize();
         }
@@ -45,14 +45,14 @@ namespace Xtricate.DocSet
         public virtual void Reset(bool indexOnly = false)
         {
             if (!indexOnly)
-                DeleteTable(_tableName);
-            DeleteIndex(_tableName);
+                DeleteTable(TableName);
+            DeleteIndex(TableName);
             Initialize();
         }
 
         public virtual void Execute(Action action)
         {
-            if (_options.UseTransactions)
+            if (Options.UseTransactions)
                 using (var trans = CreateConnection().BeginTransaction())
                 {
                     action();
@@ -66,8 +66,8 @@ namespace Xtricate.DocSet
         {
             //Trace.WriteLine($"document exists: key={key},tags={tags?.ToString("||")}");
             var sql = $@"
-    SELECT [id] FROM {_tableName} WHERE [key]='{key}'";
-            tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
+    SELECT [id] FROM {TableName} WHERE [key]='{key}'";
+            tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
 
             using (var conn = CreateConnection())
             {
@@ -88,18 +88,18 @@ namespace Xtricate.DocSet
                     Trace.WriteLine($"document update: key={key},tags={tags?.ToString("||")}");
                     sql =
                         $@"
-    UPDATE {_tableName
+    UPDATE {TableName
                             }
     SET [hash]=@hash,[timestamp]=@timestamp,[value]=@value
         {
-                            _indexMaps.NullToEmpty()
+                            IndexMaps.NullToEmpty()
                                 .Select(
                                     i =>
-                                        ",[" + i.Name.ToLower() + _sqlBuilder.IndexColumnNameSuffix + "]=@" +
-                                        i.Name.ToLower() + _sqlBuilder.IndexColumnNameSuffix)
+                                        ",[" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix + "]=@" +
+                                        i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix)
                                 .ToString("")}
     WHERE [key]=@key";
-                    tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
+                    tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
                     result = StorageAction.Updated;
                 }
                 else
@@ -107,15 +107,15 @@ namespace Xtricate.DocSet
                     Trace.WriteLine($"document insert: key={key},tags={tags?.ToString("||")}");
                     sql =
                         $@"
-    INSERT INTO {_tableName
+    INSERT INTO {TableName
                             }
         ([key],[tags],[hash],[timestamp],[value]{
-                            _indexMaps.NullToEmpty()
-                                .Select(i => ",[" + i.Name.ToLower() + _sqlBuilder.IndexColumnNameSuffix + "]")
+                            IndexMaps.NullToEmpty()
+                                .Select(i => ",[" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix + "]")
                                 .ToString("")})
         VALUES(@key,@tags,@hash,@timestamp,@value{
-                            _indexMaps.NullToEmpty()
-                                .Select(i => ",@" + i.Name.ToLower() + _sqlBuilder.IndexColumnNameSuffix)
+                            IndexMaps.NullToEmpty()
+                                .Select(i => ",@" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix)
                                 .ToString("")})";
                     result = StorageAction.Inserted;
                 }
@@ -123,9 +123,9 @@ namespace Xtricate.DocSet
                 var parameters = new DynamicParameters();
                 parameters.Add("key", key.ToString());
                 parameters.Add("tags", $"||{tags.ToString("||")}||");
-                parameters.Add("hash", _hasher?.Compute(document));
+                parameters.Add("hash", Hasher?.Compute(document));
                 parameters.Add("timestamp", DateTime.UtcNow);
-                parameters.Add("value", _serializer.ToJson(document));
+                parameters.Add("value", Serializer.ToJson(document));
                 AddIndexParameters(document, parameters);
 
                 conn.Open();
@@ -140,9 +140,9 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = $@"SELECT COUNT(*) FROM {_tableName} WHERE [id]>0";
-                tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
-                criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSelect(_indexMaps, c));
+                var sql = $@"SELECT COUNT(*) FROM {TableName} WHERE [id]>0";
+                tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 conn.Open();
                 return conn.Query<int>(sql).SingleOrDefault();
             }
@@ -156,15 +156,15 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = $@"SELECT [value] FROM {_tableName} WHERE [key]='{key}'";
-                tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
-                criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSelect(_indexMaps, c));
-                sql += _sqlBuilder.BuildPagingSelect(skip, take);
+                var sql = $@"SELECT [value] FROM {TableName} WHERE [key]='{key}'";
+                tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                sql += SqlBuilder.BuildPagingSelect(skip, take);
                 conn.Open();
-                var documents = conn.Query<string>(sql, new {key}, buffered: _options.BufferedLoad);
+                var documents = conn.Query<string>(sql, new {key}, buffered: Options.BufferedLoad);
                 if (documents == null) yield break;
                 foreach (var document in documents)
-                    yield return _serializer.FromJson<TDoc>(document);
+                    yield return Serializer.FromJson<TDoc>(document);
             }
         }
 
@@ -176,15 +176,15 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = $@"SELECT [value] FROM {_tableName} WHERE [id]>0";
-                tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
-                criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSelect(_indexMaps, c));
-                sql += _sqlBuilder.BuildPagingSelect(skip, take);
+                var sql = $@"SELECT [value] FROM {TableName} WHERE [id]>0";
+                tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                sql += SqlBuilder.BuildPagingSelect(skip, take);
                 conn.Open();
-                var documents = conn.Query<string>(sql, buffered: _options.BufferedLoad);
+                var documents = conn.Query<string>(sql, buffered: Options.BufferedLoad);
                 if (documents == null) yield break;
                 foreach (var document in documents)
-                    yield return _serializer.FromJson<TDoc>(document);
+                    yield return Serializer.FromJson<TDoc>(document);
             }
         }
 
@@ -194,58 +194,57 @@ namespace Xtricate.DocSet
             Trace.WriteLine($"document delete: key={key},tags={tags?.ToString("||")}");
             using (var conn = CreateConnection())
             {
-                var sql = $@"DELETE FROM {_tableName} WHERE [key]='{key}'";
-                tags.NullToEmpty().ForEach(t => sql += _sqlBuilder.BuildTagSelect(t));
-                criterias.NullToEmpty().ForEach(c => sql += _sqlBuilder.BuildCriteriaSelect(_indexMaps, c));
+                var sql = $@"DELETE FROM {TableName} WHERE [key]='{key}'";
+                tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 conn.Open();
                 var num = conn.Execute(sql, new {key});
                 return num > 0 ? StorageAction.Deleted : StorageAction.None;
             }
         }
 
-        private IDbConnection CreateConnection() => _connectionFactory.CreateConnection(_options.ConnectionString);
+        private IDbConnection CreateConnection() => ConnectionFactory.CreateConnection(Options.ConnectionString);
 
         public void Initialize()
         {
-            _tableName = _options.GetDocTableName<TDoc>();
+            TableName = Options.GetTableName<TDoc>();
 
-            EnsureSchema(_options);
-            EnsureTable(_tableName);
-            EnsureIndex(_tableName);
+            EnsureSchema(Options);
+            EnsureTable(TableName);
+            EnsureIndex(TableName);
         }
 
         private void AddIndexParameters(TDoc document, DynamicParameters parameters)
         {
-            if (_indexMaps.IsNullOrEmpty()) return;
+            if (IndexMaps.IsNullOrEmpty()) return;
             if (parameters == null) parameters = new DynamicParameters();
-            var indexColumnValues = _indexMaps.ToDictionary(i => i.Name,
+            var indexColumnValues = IndexMaps.ToDictionary(i => i.Name,
                 i => i.Value != null
                     ? $"||{i.Value(document)}||"
                     : $"||{i.Values(document).ToString("||")}||");
 
-            foreach (var item in _indexMaps)
+            foreach (var item in IndexMaps)
             {
-                parameters.Add(item.Name.ToLower() + _sqlBuilder.IndexColumnNameSuffix,
+                parameters.Add(item.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix,
                     indexColumnValues.FirstOrDefault(
                         i => i.Key.Equals(item.Name, StringComparison.InvariantCultureIgnoreCase))
                         .ValueOrDefault(i => i.Value));
             }
         }
 
-        private bool TableExists(string tableName)
+        protected virtual bool TableExists(string tableName)
         {
             using (var conn = CreateConnection())
             {
                 conn.Open();
+                Trace.WriteLine($"exists [{conn.Database}].{tableName}");
                 return
-                    conn.Query<string>(@"
-    SELECT QUOTENAME(TABLE_SCHEMA) + '.' + QUOTENAME(TABLE_NAME) AS Name
-    FROM INFORMATION_SCHEMA.TABLES")
+                    conn.Query<string>(SqlBuilder.TableNamesSelect())
                         .Any(t => t.Equals(tableName, StringComparison.InvariantCultureIgnoreCase));
             }
         }
 
-        private void EnsureSchema(IStorageOptions options)
+        protected virtual void EnsureSchema(IStorageOptions options)
         {
             if (string.IsNullOrEmpty(options.SchemaName)) return;
             using (var conn = CreateConnection())
@@ -269,7 +268,7 @@ namespace Xtricate.DocSet
             }
         }
 
-        private void EnsureTable(string tableName)
+        protected virtual void EnsureTable(string tableName)
         {
             if (TableExists(tableName)) return;
             using (var conn = CreateConnection())
@@ -296,23 +295,23 @@ namespace Xtricate.DocSet
             }
         }
 
-        private void EnsureIndex(string tableName)
+        protected virtual void EnsureIndex(string tableName)
         {
-            if (_indexMaps == null || !_indexMaps.Any()) return;
+            if (IndexMaps == null || !IndexMaps.Any()) return;
             if (!TableExists(tableName)) EnsureTable(tableName);
             using (var conn = CreateConnection())
             {
                 conn.Open();
                 Trace.WriteLine(
-                    $"seed db table=[{conn.Database}].{tableName}, index={_indexMaps.NullToEmpty().Select(i => i.Name).ToString(", ")}");
-                var sql = _indexMaps.NullToEmpty().Select(i =>
+                    $"seed db table=[{conn.Database}].{tableName}, index={IndexMaps.NullToEmpty().Select(i => i.Name).ToString(", ")}");
+                var sql = IndexMaps.NullToEmpty().Select(i =>
                     string.Format(@"
     IF NOT EXISTS(SELECT * FROM sys.columns
             WHERE Name = N'{1}{2}' AND Object_ID = Object_ID(N'{0}'))
     BEGIN
         ALTER TABLE {0} ADD [{1}{2}] NVARCHAR(2048)
         CREATE INDEX [IX_{1}{2}] ON {0} ([{1}{2}] ASC)
-    END ", tableName, i.Name.ToLower(), _sqlBuilder.IndexColumnNameSuffix));
+    END ", tableName, i.Name.ToLower(), SqlBuilder.IndexColumnNameSuffix));
                 sql.ForEach(s => conn.Execute(s));
             }
             // sqlite check column exists: http://stackoverflow.com/questions/18920136/check-if-a-column-exists-in-sqlite
@@ -338,14 +337,14 @@ namespace Xtricate.DocSet
             {
                 conn.Open();
                 Trace.WriteLine($"drop table [{conn.Database}].{tableName}");
-                var sql = _indexMaps.NullToEmpty().Select(i =>
+                var sql = IndexMaps.NullToEmpty().Select(i =>
                     string.Format(@"
     IF EXISTS(SELECT * FROM sys.columns
             WHERE Name = N'{1}{2}' AND Object_ID = Object_ID(N'{0}'))
     BEGIN
         DROP INDEX {0}.[IX_{1}{2}]
         ALTER TABLE {0} DROP COLUMN [{1}{2}]
-    END ", tableName, i.Name.ToLower(), _sqlBuilder.IndexColumnNameSuffix));
+    END ", tableName, i.Name.ToLower(), SqlBuilder.IndexColumnNameSuffix));
                 sql.ForEach(s => conn.Execute(s));
             }
         }

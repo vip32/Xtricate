@@ -32,7 +32,7 @@ namespace Xtricate.DocSet
         public int DefaultTakeSize { get; set; }
         public int MaxTakeSize { get; set; }
 
-        public string GetDocTableName<T>(string suffix = null)
+        public virtual string GetTableName<T>(string suffix = null)
         {
             var tableName = string.IsNullOrEmpty(TableName) ? typeof (T).Name.Pluralize() : TableName;
             if (!string.IsNullOrEmpty(TableNamePrefix))

@@ -64,5 +64,12 @@ namespace Xtricate.DocSet
             //TODO: use the _options.DefaultTakeSize & _options.MaxTakeSize
             return "";
         }
+
+        public virtual string TableNamesSelect()
+        {
+            return @"
+    SELECT QUOTENAME(TABLE_SCHEMA) + '.' + QUOTENAME(TABLE_NAME) AS Name
+    FROM INFORMATION_SCHEMA.TABLES";
+        }
     }
 }

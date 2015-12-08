@@ -193,10 +193,10 @@ namespace Xtricate.IntegrationTests
         [Test]
         public void InitializeTest_Sqlite()
         {
-            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqliteDb"), "StorageTests");
+            var options = new SqliteStorageOptions(new ConnectionStrings().Get("XtricateTestSqliteDb"), "StorageTests");
             var connectionFactory = new SqliteConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new SqliteDocStorage<TestDocument>(connectionFactory, options, new SqliteBuilder(options),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             storage.Reset();
