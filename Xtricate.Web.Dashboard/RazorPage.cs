@@ -36,13 +36,17 @@ namespace Xtricate.Web.Dashboard
         public string Title { get; set; }
         public string AppPath { get; internal set; }
         public Stopwatch GenerationTime { get; private set; }
-
-        internal IOwinRequest Request { private get; set; }
-        internal IOwinResponse Response { private get; set; }
+        public IOwinRequest Request { private get; set; }
+        public IOwinResponse Response { private get; set; }
 
         public string RequestPath
         {
             get { return Request.Path.Value; }
+        }
+
+        public string RequestAbsolutePath
+        {
+            get { return Request.Uri.AbsolutePath; }
         }
 
         public string Parameter(string key)

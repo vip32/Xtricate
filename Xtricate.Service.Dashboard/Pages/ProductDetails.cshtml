@@ -4,8 +4,8 @@
 @inherits Xtricate.Web.Dashboard.RazorPage
 @{
     Layout = new LayoutPage();
-    Scripts = new[] { Url.To("/js-treegrid") };
-    Stylesheets = new[] { Url.To("/css-treegrid") };
+    Scripts = new[] { Url.ToPage("/js-treegrid") };
+    Stylesheets = new[] { Url.ToPage("/css-treegrid") };
     Title = "Product Details " + Parameters["id"];
 }
 

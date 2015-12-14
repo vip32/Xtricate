@@ -14,14 +14,15 @@ namespace Xtricate.Web.Dashboard
             _context = new OwinContext(owinContext);
         }
 
-        public string To(string relativePath)
+        public string ToPage(string relativePath)
         {
-            return _context.Request.PathBase + relativePath;
+            if (string.IsNullOrEmpty(relativePath)) return _context.Request.PathBase.ToString();
+            return _context.Request.PathBase + "/" + relativePath.TrimStart('/');
         }
 
         public string Home()
         {
-            return To("/");
+            return ToPage("/");
         }
     }
 }
