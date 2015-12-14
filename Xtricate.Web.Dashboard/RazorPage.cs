@@ -36,8 +36,8 @@ namespace Xtricate.Web.Dashboard
         public string Title { get; set; }
         public string AppPath { get; internal set; }
         public Stopwatch GenerationTime { get; private set; }
-        public IOwinRequest Request { private get; set; }
-        public IOwinResponse Response { private get; set; }
+        public IOwinRequest Request { get; set; }
+        public IOwinResponse Response { get; set; }
 
         public string RequestPath
         {

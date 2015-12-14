@@ -5,8 +5,8 @@
 @inherits Xtricate.Web.Dashboard.RazorPage
 @{
     Layout = new LayoutPage();
-    Scripts = new[] { Url.ToPage("/js-treegrid") };
-    Stylesheets = new[] { Url.ToPage("/css-treegrid") };
+    Scripts = new[] { Url.To("/js-treegrid") };
+    Stylesheets = new[] { Url.To("/css-treegrid") };
     Title = "Products";
 }
 
@@ -28,7 +28,7 @@
     <tbody data-bind="template: { foreach: products }">
     <tr>
         <td>Category</td>
-        <td><a data-bind="attr: { href:'@Url.ToPage("/products")/'+id}, text: id"></a></td>
+        <td><a data-bind="attr: { href:'@Url.To("/products")/'+id}, text: id"></a></td>
         <td data-bind="text: name"></td>
         <td data-bind="text: sku"></td>
     </tr>

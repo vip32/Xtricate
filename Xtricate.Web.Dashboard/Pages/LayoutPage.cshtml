@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="@Url.ToPage("/css")" />
+    <link rel="stylesheet" href="@Url.To("/css")" />
     @if (Stylesheets != null && Stylesheets.Any())
     {
         foreach (var stylesheet in Stylesheets)
@@ -15,7 +15,7 @@
             <link rel="stylesheet" href="@stylesheet" />
         }
     }
-    <script src="@Url.ToPage("/js")" type="application/javascript"></script>
+    <script src="@Url.To("/js")" type="application/javascript"></script>
     @if (Scripts != null && Scripts.Any())
     {
         foreach (var script in Scripts)
@@ -37,7 +37,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="@Url.Home()">
-                        <img class="logo" alt="" src="@Url.ToPage("/img/logo")" />
+                        <img class="logo" alt="" src="@Url.To("/img/logo")" />
                         <span>@Name</span>
                     </a>
                 </div>
@@ -66,7 +66,7 @@
             <ul class="list-inline credit">
                 <li>
                     <span>
-                        <a href="@Url.ToPage("/info")">
+                        <a href="@Url.To("/info")">
                             @Name
                             @{
                                 var version = GetType().Assembly.GetName().Version;

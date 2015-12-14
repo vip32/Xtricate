@@ -14,7 +14,7 @@ namespace Xtricate.Web.Dashboard
             _context = new OwinContext(owinContext);
         }
 
-        public string ToPage(string relativePath)
+        public string To(string relativePath)
         {
             if (string.IsNullOrEmpty(relativePath)) return _context.Request.PathBase.ToString();
             return _context.Request.PathBase + "/" + relativePath.TrimStart('/');
@@ -22,7 +22,7 @@ namespace Xtricate.Web.Dashboard
 
         public string Home()
         {
-            return ToPage("/");
+            return To("/");
         }
     }
 }

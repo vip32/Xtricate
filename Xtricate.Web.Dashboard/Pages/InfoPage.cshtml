@@ -11,7 +11,7 @@
 <ul>
     @foreach (var route in Model.Routes)
     {
-        <li><a href="@Url.ToPage(route)">@route</a></li>
+        <li><a href="@Url.To(route)">@route</a></li>
     }
 </ul>
 <h4>Javascripts</h4>
