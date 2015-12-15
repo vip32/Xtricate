@@ -11,5 +11,6 @@ namespace Xtricate.DocSet
         bool UseTransactions { get; set; }
         string GetTableName<T>(string suffix = null);
         int DefaultTakeSize { get; set; }
+        int MaxTakeSize { get; set; }
     }
 }

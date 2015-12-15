@@ -304,6 +304,38 @@ namespace Xtricate.IntegrationTests
             Trace.WriteLine($"trace: {mp.RenderPlainText()}");
             MiniProfiler.Stop();
         }
+
+        [Test]
+        public void PagingTest()
+        {
+            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests")
+            {
+                DefaultTakeSize = 3,
+                MaxTakeSize = 5
+            };
+            var connectionFactory = new SqlConnectionFactory();
+            var indexMap = TestDocumentIndexMap;
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+                new JsonNetSerializer(), new Md5Hasher(), indexMap);
+
+            MiniProfiler.Start();
+            var mp = MiniProfiler.Current;
+
+            MassInsertTest(20, true);
+
+            var docs1 = storage.Load(new[] { "en-US" }).ToList();
+            Assert.That(docs1, Is.Not.Null);
+            Assert.That(docs1.Any(), Is.True);
+            Assert.That(docs1.Count(), Is.EqualTo(options.DefaultTakeSize));
+
+            var docs2 = storage.Load(new[] { "en-US" }, skip:1, take:10).ToList();
+            Assert.That(docs2, Is.Not.Null);
+            Assert.That(docs2.Any(), Is.True);
+            Assert.That(docs2.Count(), Is.EqualTo(options.MaxTakeSize));
+
+            Trace.WriteLine($"trace: {mp.RenderPlainText()}");
+            MiniProfiler.Stop();
+        }
     }
 
     public class TestDocument : Expando

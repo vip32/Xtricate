@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Xtricate.DocSet
 {
@@ -61,8 +62,11 @@ namespace Xtricate.DocSet
 
         public virtual string BuildPagingSelect(int skip = 0, int take = 0)
         {
-            //TODO: use the _options.DefaultTakeSize & _options.MaxTakeSize
-            return "";
+            if (skip <= 0 && take <= 0) return $" ORDER BY [KEY] OFFSET {skip} ROWS FETCH NEXT {Options.DefaultTakeSize} ROWS ONLY; ";
+            if (skip <= 0) skip = 0;
+            if (take <= 0) take = Options.DefaultTakeSize;
+            if (take > Options.MaxTakeSize) take = Options.MaxTakeSize;
+            return $" ORDER BY [KEY] OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY; ";
         }
 
         public virtual string TableNamesSelect()

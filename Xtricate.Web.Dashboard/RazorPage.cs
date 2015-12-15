@@ -39,15 +39,9 @@ namespace Xtricate.Web.Dashboard
         public IOwinRequest Request { get; set; }
         public IOwinResponse Response { get; set; }
 
-        public string RequestPath
-        {
-            get { return Request.Path.Value; }
-        }
+        public string RequestPath => Request.Path.Value;
 
-        public string RequestAbsolutePath
-        {
-            get { return Request.Uri.AbsolutePath; }
-        }
+        public string RequestFullPath => Request.Uri.ToString();
 
         public string Parameter(string key)
         {
