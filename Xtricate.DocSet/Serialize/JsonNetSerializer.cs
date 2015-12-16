@@ -26,7 +26,16 @@ namespace Xtricate.DocSet
         public T FromJson<T>(string value)
         {
             if (value == null) return default(T);
-            return JsonConvert.DeserializeObject<T>(value, _settings);
+            try
+            {
+                return JsonConvert.DeserializeObject<T>(value, _settings);
+            }
+            catch (JsonException ex)
+            {
+                throw new JsonException(string.Format(
+                    "Json deserialization failed. The Json data (value) does not conform to the target entity '{0}' format. See innerexception for details.",
+                    typeof(T).Name), ex);
+            }
         }
     }
 }
