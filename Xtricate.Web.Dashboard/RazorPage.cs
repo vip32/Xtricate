@@ -41,7 +41,8 @@ namespace Xtricate.Web.Dashboard
 
         public string RequestPath => Request.Path.Value;
 
-        public string RequestFullPath => Request.Uri.ToString();
+        public string RequestFullPath =>
+            $"{Request.Scheme}://{Request.Uri.Host}{(Request.Uri.IsDefaultPort ? string.Empty : ":" + Request.Uri.Port.ToString())}{Request.Uri.AbsolutePath}";
 
         public string Parameter(string key)
         {
@@ -67,7 +68,7 @@ namespace Xtricate.Web.Dashboard
             Request = parentPage.Request;
             Response = parentPage.Response;
             Name = !string.IsNullOrEmpty(parentPage.Title)
-                ? string.Format("{0} - {1}", parentPage.Name, parentPage.Title)
+                ? $"{parentPage.Name} - {parentPage.Title}"
                 : parentPage.Name;
             AppPath = parentPage.AppPath;
             Url = parentPage.Url;
