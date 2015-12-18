@@ -25,13 +25,11 @@ namespace Xtricate.Web.Dashboard
         }
 
         public IDictionary<string, string> Parameters { get; set; }
-
         public string[] Scripts { get; set; }
         public string[] Stylesheets { get; set; }
         public RazorPage Layout { get; protected set; }
         public HtmlHelper Html { get; private set; }
         public UrlHelper Url { get; private set; }
-
         public string Name { get; private set; }
         public string Title { get; set; }
         public string AppPath { get; internal set; }
@@ -46,22 +44,16 @@ namespace Xtricate.Web.Dashboard
 
         public string Parameter(string key)
         {
-            var value = "";
+            string value;
             Parameters.TryGetValue(key, out value);
             return value;
         }
 
         public abstract void Execute();
 
-        public string Query(string key)
-        {
-            return Request.Query[key];
-        }
+        public string Query(string key) => Request.Query[key];
 
-        public override string ToString()
-        {
-            return TransformText(null);
-        }
+        public override string ToString() => TransformText(null);
 
         public void Assign(RazorPage parentPage)
         {
@@ -97,8 +89,7 @@ namespace Xtricate.Web.Dashboard
 
         protected void WriteLiteral(string textToAppend)
         {
-            if (string.IsNullOrEmpty(textToAppend))
-                return;
+            if (string.IsNullOrEmpty(textToAppend)) return;
             _content.Append(textToAppend);
         }
 
@@ -112,24 +103,17 @@ namespace Xtricate.Web.Dashboard
                 value = token3.Item2.Item1;
             else
                 value = string.Empty;
-
-            var output = token1.Item1 + value + token2.Item1;
-
-            _content.Append(output);
+            _content.Append(token1.Item1 + value + token2.Item1);
         }
 
         protected virtual void Write(object value)
         {
-            if (value == null)
-                return;
+            if (value == null) return;
             var html = value as NonEscapedString;
             WriteLiteral(html != null ? html.ToString() : Encode(value.ToString()));
         }
 
-        protected virtual object RenderBody()
-        {
-            return new NonEscapedString(_body);
-        }
+        protected virtual object RenderBody() => new NonEscapedString(_body);
 
         private string TransformText(string body)
         {
