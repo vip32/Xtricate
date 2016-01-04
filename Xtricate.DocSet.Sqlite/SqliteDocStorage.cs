@@ -10,8 +10,8 @@ namespace Xtricate.DocSet.Sqlite
     public class SqliteDocStorage<TDoc> : DocStorage<TDoc>
     {
         public SqliteDocStorage(IDbConnectionFactory connectionFactory, IStorageOptions options, ISqlBuilder sqlBuilder,
-            ISerializer serializer, IHasher hasher = null, IEnumerable<IIndexMap<TDoc>> indexMaps = null)
-            : base(connectionFactory, options, sqlBuilder, serializer, hasher, indexMaps)
+            ISerializer serializer, IHasher hasher = null, IEnumerable<IIndexMap<TDoc>> indexMap = null)
+            : base(connectionFactory, options, sqlBuilder, serializer, hasher, indexMap)
         {
         }
 

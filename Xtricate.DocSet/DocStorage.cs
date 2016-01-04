@@ -20,20 +20,19 @@ namespace Xtricate.DocSet
         protected string TableName;
 
         public DocStorage(IDbConnectionFactory connectionFactory, IStorageOptions options, ISqlBuilder sqlBuilder,
-            ISerializer serializer, IHasher hasher = null, IEnumerable<IIndexMap<TDoc>> indexMaps = null)
+            ISerializer serializer = null, IHasher hasher = null, IEnumerable<IIndexMap<TDoc>> indexMap = null)
         {
             if (connectionFactory == null) throw new ArgumentNullException(nameof(connectionFactory));
             if (options == null) throw new ArgumentNullException(nameof(options));
             if (sqlBuilder == null) throw new ArgumentNullException(nameof(sqlBuilder));
-            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
             ConnectionFactory = connectionFactory;
             Options = options;
             SqlBuilder = sqlBuilder;
-            Serializer = serializer;
-            Hasher = hasher;
+            Serializer = serializer ?? new JsonNetSerializer();
+            Hasher = hasher ?? new Md5Hasher();
             TableName = options.GetTableName<TDoc>();
-            IndexMaps = indexMaps.NullToEmpty().ToList().Where(im => im != null).OrderBy(i => i.Name);
+            IndexMaps = indexMap.NullToEmpty().ToList().Where(im => im != null).OrderBy(i => i.Name);
 
             Trace.WriteLine($"table: {TableName}");
             IndexMaps.ForEach(im => Trace.WriteLine($"index map: {typeof (TDoc).Name} > {im.Name} [{im.Description}]"));
