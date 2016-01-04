@@ -202,6 +202,22 @@ namespace Xtricate.DocSet
             }
         }
 
+        public virtual StorageAction Delete(IEnumerable<string> tags,
+            IEnumerable<Criteria> criterias = null)
+        {
+            Trace.WriteLine($"document delete: tags={tags?.ToString("||")}");
+            if (tags.IsNullOrEmpty()) return StorageAction.None;
+            using (var conn = CreateConnection())
+            {
+                var sql = $@"DELETE FROM {TableName} WHERE ";
+                tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                conn.Open();
+                var num = conn.Execute(sql);
+                return num > 0 ? StorageAction.Deleted : StorageAction.None;
+            }
+        }
+
         private IDbConnection CreateConnection() => ConnectionFactory.CreateConnection(Options.ConnectionString);
 
         public void Initialize()
