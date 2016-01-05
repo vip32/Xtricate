@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace Xtricate.DocSet
 {
@@ -8,13 +9,14 @@ namespace Xtricate.DocSet
         private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
         {
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            //TypeNameHandling = TypeNameHandling.All,
-            //ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            NullValueHandling = NullValueHandling.Ignore,
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
             Converters = new JsonConverter[]
             {
                 new StringEnumConverter(),
                 new IsoDateTimeConverter()
             }
+            //TypeNameHandling = TypeNameHandling.All,
         };
 
         public string ToJson(object value)
