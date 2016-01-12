@@ -7,7 +7,7 @@ namespace Xtricate.DocSet
     {
         public StorageOptions(string connectionString, string schemaName = null, string tableName = null,
             string tableNamePrefix = null, string tableNameSuffix = null, bool useTransactions = false,
-            bool bufferedLoad = false, int defaultTakeSize = 1000, int maxTakeSize = 1000)
+            bool bufferedLoad = false, int defaultTakeSize = 1000, int maxTakeSize = 5000)
         {
             if (string.IsNullOrEmpty(connectionString)) throw new ArgumentException(nameof(connectionString));
 
