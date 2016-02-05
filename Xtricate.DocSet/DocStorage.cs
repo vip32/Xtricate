@@ -20,20 +20,19 @@ namespace Xtricate.DocSet
         protected string TableName;
 
         public DocStorage(IDbConnectionFactory connectionFactory, IStorageOptions options, ISqlBuilder sqlBuilder,
-            ISerializer serializer, IHasher hasher = null, IEnumerable<IIndexMap<TDoc>> indexMaps = null)
+            ISerializer serializer = null, IHasher hasher = null, IEnumerable<IIndexMap<TDoc>> indexMap = null)
         {
             if (connectionFactory == null) throw new ArgumentNullException(nameof(connectionFactory));
             if (options == null) throw new ArgumentNullException(nameof(options));
             if (sqlBuilder == null) throw new ArgumentNullException(nameof(sqlBuilder));
-            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
             ConnectionFactory = connectionFactory;
             Options = options;
             SqlBuilder = sqlBuilder;
-            Serializer = serializer;
-            Hasher = hasher;
+            Serializer = serializer ?? new JsonNetSerializer();
+            Hasher = hasher ?? new Md5Hasher();
             TableName = options.GetTableName<TDoc>();
-            IndexMaps = indexMaps.NullToEmpty().ToList().Where(im => im != null).OrderBy(i => i.Name);
+            IndexMaps = indexMap.NullToEmpty().ToList().Where(im => im != null).OrderBy(i => i.Name);
 
             Trace.WriteLine($"table: {TableName}");
             IndexMaps.ForEach(im => Trace.WriteLine($"index map: {typeof (TDoc).Name} > {im.Name} [{im.Description}]"));
@@ -85,7 +84,7 @@ namespace Xtricate.DocSet
                 StorageAction result;
                 if (!forceInsert && Exists(key, tags))
                 {
-                    Trace.WriteLine($"document update: key={key},tags={tags?.ToString("||")}");
+                    Trace.WriteLine($"{TableName} update: key={key},tags={tags?.ToString("||")}");
                     sql =
                         $@"
     UPDATE {TableName
@@ -104,7 +103,7 @@ namespace Xtricate.DocSet
                 }
                 else
                 {
-                    Trace.WriteLine($"document insert: key={key},tags={tags?.ToString("||")}");
+                    Trace.WriteLine($"{TableName} insert: key={key},tags={tags?.ToString("||")}");
                     sql =
                         $@"
     INSERT INTO {TableName
@@ -136,7 +135,7 @@ namespace Xtricate.DocSet
 
         public virtual long Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null)
         {
-            Trace.WriteLine($"document count: tags={tags?.ToString("||")}");
+            Trace.WriteLine($"{TableName} count: tags={tags?.ToString("||")}");
 
             using (var conn = CreateConnection())
             {
@@ -152,7 +151,7 @@ namespace Xtricate.DocSet
             IEnumerable<Criteria> criterias = null, int skip = 0, int take = 0)
         {
             Trace.WriteLine(
-                $"document load: key={key}, tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
+                $"{TableName} load: key={key}, tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
 
             using (var conn = CreateConnection())
             {
@@ -172,7 +171,7 @@ namespace Xtricate.DocSet
             IEnumerable<Criteria> criterias = null, int skip = 0, int take = 0)
         {
             Trace.WriteLine(
-                $"document load: tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
+                $"{TableName} load: tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
 
             using (var conn = CreateConnection())
             {
@@ -191,7 +190,7 @@ namespace Xtricate.DocSet
         public virtual StorageAction Delete(object key, IEnumerable<string> tags = null,
             IEnumerable<Criteria> criterias = null)
         {
-            Trace.WriteLine($"document delete: key={key},tags={tags?.ToString("||")}");
+            Trace.WriteLine($"{TableName} delete: key={key},tags={tags?.ToString("||")}");
             using (var conn = CreateConnection())
             {
                 var sql = $@"DELETE FROM {TableName} WHERE [key]='{key}'";
@@ -199,6 +198,22 @@ namespace Xtricate.DocSet
                 criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 conn.Open();
                 var num = conn.Execute(sql, new {key});
+                return num > 0 ? StorageAction.Deleted : StorageAction.None;
+            }
+        }
+
+        public virtual StorageAction Delete(IEnumerable<string> tags,
+            IEnumerable<Criteria> criterias = null)
+        {
+            Trace.WriteLine($"{TableName} delete: tags={tags?.ToString("||")}");
+            if (tags.IsNullOrEmpty()) return StorageAction.None;
+            using (var conn = CreateConnection())
+            {
+                var sql = $@"DELETE FROM {TableName} WHERE ";
+                tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                conn.Open();
+                var num = conn.Execute(sql);
                 return num > 0 ? StorageAction.Deleted : StorageAction.None;
             }
         }
@@ -237,7 +252,7 @@ namespace Xtricate.DocSet
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                Trace.WriteLine($"exists [{conn.Database}].{tableName}");
+                Trace.WriteLine($"{tableName} exists [{conn.Database}]");
                 return
                     conn.Query<string>(SqlBuilder.TableNamesSelect())
                         .Any(t => t.Equals(tableName, StringComparison.InvariantCultureIgnoreCase));
@@ -250,6 +265,7 @@ namespace Xtricate.DocSet
             using (var conn = CreateConnection())
             {
                 conn.Open();
+                Trace.WriteLine($"{options.SchemaName} ensure schema [{conn.Database}]");
                 if (conn.Query<string>(@"
     SELECT QUOTENAME(TABLE_SCHEMA) AS Name
     FROM INFORMATION_SCHEMA.TABLES")
@@ -274,7 +290,7 @@ namespace Xtricate.DocSet
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                Trace.WriteLine($"seed db table [{conn.Database}].{tableName}");
+                Trace.WriteLine($"{tableName} ensure table [{conn.Database}]");
                 // http://stackoverflow.com/questions/11938044/what-are-the-best-practices-for-using-a-guid-as-a-primary-key-specifically-rega
                 var sql = string.Format(@"
     CREATE TABLE {0}(
@@ -303,7 +319,7 @@ namespace Xtricate.DocSet
             {
                 conn.Open();
                 Trace.WriteLine(
-                    $"seed db table=[{conn.Database}].{tableName}, index={IndexMaps.NullToEmpty().Select(i => i.Name).ToString(", ")}");
+                    $"{tableName} ensure index [{conn.Database}], index={IndexMaps.NullToEmpty().Select(i => i.Name).ToString(", ")}");
                 var sql = IndexMaps.NullToEmpty().Select(i =>
                     string.Format(@"
     IF NOT EXISTS(SELECT * FROM sys.columns
@@ -324,7 +340,7 @@ namespace Xtricate.DocSet
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                Trace.WriteLine($"drop table [{conn.Database}].{tableName}");
+                Trace.WriteLine($"{tableName} drop table [{conn.Database}]");
                 var sql = string.Format(@"DROP TABLE {0}", tableName);
                 conn.Execute(sql);
             }
@@ -336,7 +352,7 @@ namespace Xtricate.DocSet
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                Trace.WriteLine($"drop table [{conn.Database}].{tableName}");
+                Trace.WriteLine($"{tableName} drop table [{conn.Database}]");
                 var sql = IndexMaps.NullToEmpty().Select(i =>
                     string.Format(@"
     IF EXISTS(SELECT * FROM sys.columns

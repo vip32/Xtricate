@@ -16,5 +16,6 @@ namespace Xtricate.DocSet
         IEnumerable<TDoc> Load(IEnumerable<string> tags = null,
             IEnumerable<Criteria> criterias = null, int skip = 0, int take = 0);
         StorageAction Delete(object key, IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null);
+        StorageAction Delete(IEnumerable<string> tags, IEnumerable<Criteria> criterias = null);
     }
 }
