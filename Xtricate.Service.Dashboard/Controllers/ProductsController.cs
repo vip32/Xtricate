@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Http;
 using Ploeh.AutoFixture;
+using Serilog;
 
 namespace Xtricate.Service.Dashboard.Controllers
 {
@@ -19,6 +20,7 @@ namespace Xtricate.Service.Dashboard.Controllers
         // GET: api/Products
         public IEnumerable<Product> Get()
         {
+            Log.Debug("amount of products {ProductCount}", Products.Count());
             return Products;
         }
 

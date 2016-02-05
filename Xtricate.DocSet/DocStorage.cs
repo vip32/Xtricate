@@ -76,14 +76,14 @@ namespace Xtricate.DocSet
             }
         }
 
-        public virtual StorageAction Upsert(object key, TDoc document, IEnumerable<string> tags = null)
+        public virtual StorageAction Upsert(object key, TDoc document, IEnumerable<string> tags = null, bool forceInsert = false)
         {
             // http://www.databasejournal.com/features/mssql/using-the-merge-statement-to-perform-an-upsert.html
             using (var conn = CreateConnection())
             {
                 string sql;
                 StorageAction result;
-                if (Exists(key, tags))
+                if (!forceInsert && Exists(key, tags))
                 {
                     Trace.WriteLine($"document update: key={key},tags={tags?.ToString("||")}");
                     sql =

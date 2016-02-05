@@ -4,6 +4,8 @@ using System.Net.Http.Formatting;
 using System.Web.Http;
 using Newtonsoft.Json.Serialization;
 using Owin;
+using Serilog;
+using Xtricate.DocSet.Serilog;
 using Xtricate.Service.Dashboard;
 using Xtricate.Service.Dashboard.Pages;
 using Xtricate.Web.Dashboard;
@@ -17,6 +19,16 @@ namespace Xtricate.Service.Sample
             var httpConfig = new HttpConfiguration();
 
             ConfigureWebApi(httpConfig);
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .WriteTo.Trace()
+                .WriteTo.DocSet("XtricateTestSqlDb", "StorageTests")
+                .Enrich.WithProperty("App", "Sample")
+                .Enrich.FromLogContext()
+                .CreateLogger();
+
+            Log.Debug("started");
 
             app.UseDashboard(new RouteCollectionBuilder(
                 new Dictionary<string, IRequestDispatcher>
