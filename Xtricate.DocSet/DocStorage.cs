@@ -30,7 +30,7 @@ namespace Xtricate.DocSet
             Options = options;
             SqlBuilder = sqlBuilder;
             Serializer = serializer ?? new JsonNetSerializer();
-            Hasher = hasher ?? new Md5Hasher();
+            Hasher = hasher;// ?? new Md5Hasher();
             TableName = options.GetTableName<TDoc>();
             IndexMaps = indexMap.NullToEmpty().ToList().Where(im => im != null).OrderBy(i => i.Name);
 

@@ -24,7 +24,7 @@ namespace Xtricate.Service.Sample
                 .MinimumLevel.Verbose()
                 .WriteTo.Trace()
                 .WriteTo.DocSet("XtricateTestSqlDb", "StorageTests")
-                .Enrich.WithProperty("App", "Sample")
+                .Enrich.WithProperty("App", "SampleApp")
                 .Enrich.FromLogContext()
                 .CreateLogger();
 
