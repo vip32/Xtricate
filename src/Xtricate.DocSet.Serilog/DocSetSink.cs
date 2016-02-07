@@ -28,14 +28,15 @@ namespace Xtricate.DocSet.Serilog
         {
             foreach (var logEvent in events.NullToEmpty())
             {
+                if (logEvent == null) continue;
+                var key = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
                 logEvent.AddOrUpdateProperty(new LogEventProperty("Message",
                     new ScalarValue(logEvent.RenderMessage(_formatProvider))));
+                logEvent.AddOrUpdateProperty(new LogEventProperty("DocSetKey", new ScalarValue(key)));
                 IEnumerable<string> tags = null;
                 if(!logEvent.Properties.IsNullOrEmpty() && !_propertiesAsTags.IsNullOrEmpty())
                     tags = logEvent.Properties.Where(p => _propertiesAsTags.Contains(p.Key)).Select(p => p.Value.ToString());
-                _storage.Upsert(
-                    Guid.NewGuid().ToString().Replace("-", "").ToUpper(),
-                    logEvent, tags, forceInsert: true, timestamp: logEvent.Timestamp.DateTime);
+                _storage.Upsert(key, logEvent, tags, forceInsert: true, timestamp: logEvent.Timestamp.DateTime);
             }
         }
     }

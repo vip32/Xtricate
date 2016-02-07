@@ -10,17 +10,20 @@ namespace Xtricate.Service.Dashboard.Controllers
     public class ProductsController : ApiController
     {
         private static readonly IEnumerable<Product> Products;
+        private static readonly ILogger Logger;
 
         static ProductsController()
         {
-            Products = new Fixture().CreateMany<Product>(2500).OrderBy(p => p.Id);
+            Logger = Log.ForContext<ProductsController>();
+            Products = new Fixture().CreateMany<Product>(500).OrderBy(p => p.Id).ToList();
+            Logger.Debug("created the products {ProductCount}", Products.Count());
         }
 
         [Route("")]
         // GET: api/Products
         public IEnumerable<Product> Get()
         {
-            Log.Debug("amount of products {ProductCount}", Products.Count());
+            Logger.Debug("amount of products {ProductCount}", Products.Count());
             return Products;
         }
 
@@ -28,7 +31,9 @@ namespace Xtricate.Service.Dashboard.Controllers
         // GET: api/Products/5
         public Product Get(int id)
         {
-            return Products.FirstOrDefault(p => p.Id == id);
+            var product = Products.FirstOrDefault(p => p.Id == id);
+            Logger.Debug("product with id {id} {@Product}", id, product);
+            return product;
         }
 
         // POST: api/Products
