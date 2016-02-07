@@ -94,7 +94,7 @@
     <Compile Include="DocStorage.cs" />
     <Compile Include="Criteria\ICriteria.cs" />
     <Compile Include="IIndexMap.cs" />
-    <Compile Include="IStorage.cs" />
+    <Compile Include="IDocStorage.cs" />
     <Compile Include="Serialize\ISerializer.cs" />
     <Compile Include="IDocSet.cs" />
     <Compile Include="Serialize\JsonNetSerializer.cs" />

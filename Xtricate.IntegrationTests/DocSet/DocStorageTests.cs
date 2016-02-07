@@ -171,6 +171,15 @@ namespace Xtricate.IntegrationTests
                     Assert.That(result.FirstOrDefault().Skus.FirstOrDefault().Sku, Is.EqualTo(sku));
                 }
             });
+            5.Times(i =>
+            {
+                using (mp.Step("find by timestamp " + i))
+                {
+                    var result = storage.Load(new[] { "en-US" }, fromDateTime:DateTime.Now.AddMonths(-1), tillDateTime:DateTime.Now).ToList();
+                    Assert.That(result, Is.Not.Null);
+                    Assert.That(result.Any(), Is.True);
+                }
+            });
 
             Trace.WriteLine($"trace: {mp.RenderPlainText()}");
             MiniProfiler.Stop();

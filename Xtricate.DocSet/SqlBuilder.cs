@@ -69,6 +69,16 @@ namespace Xtricate.DocSet
             return $" ORDER BY [KEY] OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY; ";
         }
 
+        public string BuildFromTillDateTimeSelect(DateTime? fromDateTime = null, DateTime? tillDateTime = null)
+        {
+            var result = "";
+            if (fromDateTime.HasValue)
+                result += $" AND [timestamp] >= '{fromDateTime.Value.ToString("yyyy-MM-dd HH:mm:ss")}'";
+            if (tillDateTime.HasValue)
+                result += $" AND [timestamp] < '{tillDateTime.Value.ToString("yyyy-MM-dd HH:mm:ss")}'";
+            return result;
+        }
+
         public virtual string TableNamesSelect()
         {
             return @"

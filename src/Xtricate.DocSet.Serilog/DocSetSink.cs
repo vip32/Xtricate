@@ -10,10 +10,10 @@ namespace Xtricate.DocSet.Serilog
     {
         public static readonly TimeSpan DefaultPeriod = TimeSpan.FromSeconds(5);
         private readonly IFormatProvider _formatProvider;
-        private readonly IStorage<LogEvent> _storage;
+        private readonly IDocStorage<LogEvent> _storage;
         private readonly IEnumerable<string> _propertiesAsTags;
 
-        public DocSetSink(IStorage<LogEvent> storage, int batchSizeLimit, TimeSpan period,
+        public DocSetSink(IDocStorage<LogEvent> storage, int batchSizeLimit, TimeSpan period,
             IFormatProvider formatProvider, IEnumerable<string>  propertiesAsTags = null)
             : base(batchSizeLimit, period)
         {

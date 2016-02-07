@@ -9,7 +9,7 @@ using Dapper;
 
 namespace Xtricate.DocSet
 {
-    public class DocStorage<TDoc> : IStorage<TDoc>
+    public class DocStorage<TDoc> : IDocStorage<TDoc>
     {
         protected readonly IDbConnectionFactory ConnectionFactory;
         protected readonly IHasher Hasher;
@@ -149,7 +149,9 @@ namespace Xtricate.DocSet
         }
 
         public virtual IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null,
-            IEnumerable<Criteria> criterias = null, int skip = 0, int take = 0)
+            IEnumerable<Criteria> criterias = null,
+            DateTime? fromDateTime = null, DateTime? tillDateTime = null,
+            int skip = 0, int take = 0)
         {
             Trace.WriteLine(
                 $"{TableName} load: key={key}, tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
@@ -159,6 +161,7 @@ namespace Xtricate.DocSet
                 var sql = $@"SELECT [value] FROM {TableName} WHERE [key]='{key}'";
                 tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
                 criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                sql += SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime);
                 sql += SqlBuilder.BuildPagingSelect(skip, take);
                 conn.Open();
                 var documents = conn.Query<string>(sql, new {key}, buffered: Options.BufferedLoad);
@@ -169,7 +172,9 @@ namespace Xtricate.DocSet
         }
 
         public virtual IEnumerable<TDoc> Load(IEnumerable<string> tags = null,
-            IEnumerable<Criteria> criterias = null, int skip = 0, int take = 0)
+            IEnumerable<Criteria> criterias = null,
+            DateTime? fromDateTime = null, DateTime? tillDateTime = null,
+            int skip = 0, int take = 0)
         {
             Trace.WriteLine(
                 $"{TableName} load: tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
@@ -179,6 +184,7 @@ namespace Xtricate.DocSet
                 var sql = $@"SELECT [value] FROM {TableName} WHERE [id]>0";
                 tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
                 criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                sql += SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime);
                 sql += SqlBuilder.BuildPagingSelect(skip, take);
                 conn.Open();
                 var documents = conn.Query<string>(sql, buffered: Options.BufferedLoad);
