@@ -33,7 +33,9 @@ namespace Xtricate.DocSet.Serilog
                 IEnumerable<string> tags = null;
                 if(!logEvent.Properties.IsNullOrEmpty() && !_propertiesAsTags.IsNullOrEmpty())
                     tags = logEvent.Properties.Where(p => _propertiesAsTags.Contains(p.Key)).Select(p => p.Value.ToString());
-                _storage.Upsert(Guid.NewGuid().ToString().Replace("-", "").ToUpper(), logEvent, tags, forceInsert: true);
+                _storage.Upsert(
+                    Guid.NewGuid().ToString().Replace("-", "").ToUpper(),
+                    logEvent, tags, forceInsert: true, timestamp: logEvent.Timestamp.DateTime);
             }
         }
     }

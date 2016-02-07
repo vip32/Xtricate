@@ -75,7 +75,8 @@ namespace Xtricate.DocSet
             }
         }
 
-        public virtual StorageAction Upsert(object key, TDoc document, IEnumerable<string> tags = null, bool forceInsert = false)
+        public virtual StorageAction Upsert(object key, TDoc document, IEnumerable<string> tags = null,
+            bool forceInsert = false, DateTime? timestamp = null)
         {
             // http://www.databasejournal.com/features/mssql/using-the-merge-statement-to-perform-an-upsert.html
             using (var conn = CreateConnection())
@@ -123,7 +124,7 @@ namespace Xtricate.DocSet
                 parameters.Add("key", key.ToString());
                 parameters.Add("tags", $"||{tags.ToString("||")}||");
                 parameters.Add("hash", Hasher?.Compute(document));
-                parameters.Add("timestamp", DateTime.UtcNow);
+                parameters.Add("timestamp", timestamp ?? DateTime.UtcNow);
                 parameters.Add("value", Serializer.ToJson(document));
                 AddIndexParameters(document, parameters);
 
