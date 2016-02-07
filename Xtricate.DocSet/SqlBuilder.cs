@@ -73,9 +73,9 @@ namespace Xtricate.DocSet
         {
             var result = "";
             if (fromDateTime.HasValue)
-                result += $" AND [timestamp] >= '{fromDateTime.Value.ToString("yyyy-MM-ddTHH:mm:ss.000")}'";
+                result += $" AND [timestamp] >= '{fromDateTime.Value.ToString("s")}'";
             if (tillDateTime.HasValue)
-                result += $" AND [timestamp] < '{tillDateTime.Value.ToString("yyyy-MM-ddTHH:mm:ss.000")}'";
+                result += $" AND [timestamp] < '{tillDateTime.Value.ToString("s")}'";
             return result;
         }
 
