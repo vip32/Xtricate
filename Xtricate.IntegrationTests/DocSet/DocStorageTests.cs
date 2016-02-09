@@ -10,7 +10,7 @@ using Serilog;
 using StackExchange.Profiling;
 using Xtricate.Configuration;
 using Xtricate.DocSet;
-using Xtricate.DocSet.Sqlite;
+//using Xtricate.DocSet.Sqlite;
 using Xtricate.Dynamic;
 using Xtricate.UnitTests.TestHelpers;
 using SqlBuilder = Xtricate.DocSet.SqlBuilder;
