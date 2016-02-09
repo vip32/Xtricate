@@ -7,7 +7,7 @@ namespace Xtricate.DocSet
     {
         public StorageOptions(string connectionString, string schemaName = null, string tableName = null,
             string tableNamePrefix = null, string tableNameSuffix = null, bool useTransactions = false,
-            bool bufferedLoad = false, int defaultTakeSize = 1000, int maxTakeSize = 5000)
+            bool bufferedLoad = false, int defaultTakeSize = 1000, int maxTakeSize = 5000, bool enableTracing = true)
         {
             if (string.IsNullOrEmpty(connectionString)) throw new ArgumentException(nameof(connectionString));
 
@@ -20,7 +20,9 @@ namespace Xtricate.DocSet
             BufferedLoad = bufferedLoad;
             DefaultTakeSize = defaultTakeSize > maxTakeSize ? maxTakeSize : defaultTakeSize;
             MaxTakeSize = maxTakeSize;
+            EnableTracing = enableTracing;
         }
+
 
         public string ConnectionString { get; set; }
         public string SchemaName { get; set; }
@@ -31,6 +33,7 @@ namespace Xtricate.DocSet
         public bool UseTransactions { get; set; }
         public int DefaultTakeSize { get; set; }
         public int MaxTakeSize { get; set; }
+        public bool EnableTracing { get; set; }
 
         public virtual string GetTableName<T>(string suffix = null)
         {

@@ -12,5 +12,6 @@ namespace Xtricate.DocSet
         string GetTableName<T>(string suffix = null);
         int DefaultTakeSize { get; set; }
         int MaxTakeSize { get; set; }
+        bool EnableTracing { get; set; }
     }
 }

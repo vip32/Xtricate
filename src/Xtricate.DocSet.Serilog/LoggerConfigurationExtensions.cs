@@ -40,7 +40,10 @@ namespace Xtricate.DocSet.Serilog
             if (loggerConfiguration == null) throw new ArgumentNullException(nameof(loggerConfiguration));
             if (connectionsStringName == null) throw new ArgumentNullException(nameof(connectionsStringName));
 
-            var options = new StorageOptions(new ConnectionStrings().Get(connectionsStringName), schemaName);
+            var options = new StorageOptions(
+                new ConnectionStrings().Get(connectionsStringName), 
+                schemaName,
+                enableTracing: false);
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = new List<IIndexMap<LogEvent>>
             {
