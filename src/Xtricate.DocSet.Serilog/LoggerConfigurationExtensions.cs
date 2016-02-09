@@ -43,7 +43,7 @@ namespace Xtricate.DocSet.Serilog
             var options = new StorageOptions(
                 new ConnectionStrings().Get(connectionsStringName), 
                 schemaName,
-                enableTracing: false);
+                enableLogging: false);
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = new List<IIndexMap<LogEvent>>
             {

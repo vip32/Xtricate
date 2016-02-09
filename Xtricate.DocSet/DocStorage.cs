@@ -6,11 +6,13 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using Dapper;
+using Xtricate.DocSet.Logging;
 
 namespace Xtricate.DocSet
 {
     public class DocStorage<TDoc> : IDocStorage<TDoc>
     {
+        private static readonly ILog Log = LogProvider.GetLogger(typeof(DocStorage<TDoc>));
         protected readonly IDbConnectionFactory ConnectionFactory;
         protected readonly IHasher Hasher;
         protected readonly IEnumerable<IIndexMap<TDoc>> IndexMaps;
@@ -34,12 +36,12 @@ namespace Xtricate.DocSet
             TableName = options.GetTableName<TDoc>();
             IndexMaps = indexMap.NullToEmpty().ToList().Where(im => im != null).OrderBy(i => i.Name);
 
-            if (Options.EnableTracing)
+            if (Options.EnableLogging)
             {
-                Trace.WriteLine($"table: {TableName}");
+                Log.Debug($"table: {TableName}");
                 IndexMaps.ForEach(
-                    im => Trace.WriteLine($"index map: {typeof (TDoc).Name} > {im.Name} [{im.Description}]"));
-                Trace.WriteLine($"connection: {Options.ConnectionString}");
+                    im => Log.Debug($"index map: {typeof (TDoc).Name} > {im.Name} [{im.Description}]"));
+                Log.Debug($"connection: {Options.ConnectionString}");
             }
             Initialize();
         }
@@ -66,7 +68,7 @@ namespace Xtricate.DocSet
 
         public virtual bool Exists(object key, IEnumerable<string> tags = null)
         {
-            //Trace.WriteLine($"document exists: key={key},tags={tags?.ToString("||")}");
+            //Log.Debug($"document exists: key={key},tags={tags?.ToString("||")}");
             var sql = $@"
     SELECT [id] FROM {TableName} WHERE [key]='{key}'";
             tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
@@ -88,8 +90,8 @@ namespace Xtricate.DocSet
                 StorageAction result;
                 if (!forceInsert && Exists(key, tags))
                 {
-                    if (Options.EnableTracing)
-                        Trace.WriteLine($"{TableName} update: key={key},tags={tags?.ToString("||")}");
+                    if (Options.EnableLogging)
+                        Log.Debug($"{TableName} update: key={key},tags={tags?.ToString("||")}");
                     sql =
                         $@"
     UPDATE {TableName
@@ -108,8 +110,8 @@ namespace Xtricate.DocSet
                 }
                 else
                 {
-                    if (Options.EnableTracing)
-                        Trace.WriteLine($"{TableName} insert: key={key},tags={tags?.ToString("||")}");
+                    if (Options.EnableLogging)
+                        Log.Debug($"{TableName} insert: key={key},tags={tags?.ToString("||")}");
                     sql =
                         $@"
     INSERT INTO {TableName
@@ -141,8 +143,8 @@ namespace Xtricate.DocSet
 
         public virtual long Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null)
         {
-            if (Options.EnableTracing)
-                Trace.WriteLine($"{TableName} count: tags={tags?.ToString("||")}");
+            if (Options.EnableLogging)
+                Log.Debug($"{TableName} count: tags={tags?.ToString("||")}");
 
             using (var conn = CreateConnection())
             {
@@ -159,8 +161,8 @@ namespace Xtricate.DocSet
             DateTime? fromDateTime = null, DateTime? tillDateTime = null,
             int skip = 0, int take = 0)
         {
-            if (Options.EnableTracing)
-                Trace.WriteLine(
+            if (Options.EnableLogging)
+                Log.Debug(
                 $"{TableName} load: key={key}, tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
 
             using (var conn = CreateConnection())
@@ -183,8 +185,8 @@ namespace Xtricate.DocSet
             DateTime? fromDateTime = null, DateTime? tillDateTime = null,
             int skip = 0, int take = 0)
         {
-            if (Options.EnableTracing)
-                Trace.WriteLine(
+            if (Options.EnableLogging)
+                Log.Debug(
                 $"{TableName} load: tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
 
             using (var conn = CreateConnection())
@@ -205,8 +207,8 @@ namespace Xtricate.DocSet
         public virtual StorageAction Delete(object key, IEnumerable<string> tags = null,
             IEnumerable<Criteria> criterias = null)
         {
-            if (Options.EnableTracing)
-                Trace.WriteLine($"{TableName} delete: key={key},tags={tags?.ToString("||")}");
+            if (Options.EnableLogging)
+                Log.Debug($"{TableName} delete: key={key},tags={tags?.ToString("||")}");
             using (var conn = CreateConnection())
             {
                 var sql = $@"DELETE FROM {TableName} WHERE [key]='{key}'";
@@ -221,8 +223,8 @@ namespace Xtricate.DocSet
         public virtual StorageAction Delete(IEnumerable<string> tags,
             IEnumerable<Criteria> criterias = null)
         {
-            if (Options.EnableTracing)
-                Trace.WriteLine($"{TableName} delete: tags={tags?.ToString("||")}");
+            if (Options.EnableLogging)
+                Log.Debug($"{TableName} delete: tags={tags?.ToString("||")}");
             if (tags.IsNullOrEmpty()) return StorageAction.None;
             using (var conn = CreateConnection())
             {
@@ -269,8 +271,8 @@ namespace Xtricate.DocSet
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                if (Options.EnableTracing)
-                    Trace.WriteLine($"{tableName} exists [{conn.Database}]");
+                if (Options.EnableLogging)
+                    Log.Debug($"{tableName} exists [{conn.Database}]");
                 return
                     conn.Query<string>(SqlBuilder.TableNamesSelect())
                         .Any(t => t.Equals(tableName, StringComparison.InvariantCultureIgnoreCase));
@@ -283,8 +285,8 @@ namespace Xtricate.DocSet
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                if (Options.EnableTracing)
-                    Trace.WriteLine($"{options.SchemaName} ensure schema [{conn.Database}]");
+                if (Options.EnableLogging)
+                    Log.Debug($"{options.SchemaName} ensure schema [{conn.Database}]");
                 if (conn.Query<string>(@"
     SELECT QUOTENAME(TABLE_SCHEMA) AS Name
     FROM INFORMATION_SCHEMA.TABLES")
@@ -299,8 +301,8 @@ namespace Xtricate.DocSet
                 catch (SqlException e)
                 {
                     // swallog
-                    if (Options.EnableTracing)
-                        Trace.WriteLine($"create schema: {e.Message}: ");
+                    if (Options.EnableLogging)
+                        Log.Warn($"create schema: {e.Message}: ");
                 }
             }
         }
@@ -311,8 +313,8 @@ namespace Xtricate.DocSet
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                if (Options.EnableTracing)
-                    Trace.WriteLine($"{tableName} ensure table [{conn.Database}]");
+                if (Options.EnableLogging)
+                    Log.Debug($"{tableName} ensure table [{conn.Database}]");
                 // http://stackoverflow.com/questions/11938044/what-are-the-best-practices-for-using-a-guid-as-a-primary-key-specifically-rega
                 var sql = string.Format(@"
     CREATE TABLE {0}(
@@ -340,8 +342,8 @@ namespace Xtricate.DocSet
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                if (Options.EnableTracing)
-                    Trace.WriteLine(
+                if (Options.EnableLogging)
+                    Log.Debug(
                     $"{tableName} ensure index [{conn.Database}], index={IndexMaps.NullToEmpty().Select(i => i.Name).ToString(", ")}");
                 var sql = IndexMaps.NullToEmpty().Select(i =>
                     string.Format(@"
@@ -363,8 +365,8 @@ namespace Xtricate.DocSet
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                if (Options.EnableTracing)
-                    Trace.WriteLine($"{tableName} drop table [{conn.Database}]");
+                if (Options.EnableLogging)
+                    Log.Debug($"{tableName} drop table [{conn.Database}]");
                 var sql = string.Format(@"DROP TABLE {0}", tableName);
                 conn.Execute(sql);
             }
@@ -376,8 +378,8 @@ namespace Xtricate.DocSet
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                if (Options.EnableTracing)
-                    Trace.WriteLine($"{tableName} drop table [{conn.Database}]");
+                if (Options.EnableLogging)
+                    Log.Debug($"{tableName} drop table [{conn.Database}]");
                 var sql = IndexMaps.NullToEmpty().Select(i =>
                     string.Format(@"
     IF EXISTS(SELECT * FROM sys.columns
