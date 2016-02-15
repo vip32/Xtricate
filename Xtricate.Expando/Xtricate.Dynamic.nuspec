@@ -22,8 +22,5 @@
     <copyright></copyright>
     <references></references>
     <tags>dynamic, expando, objects, xtricate</tags>
-    <dependencies>
-      <dependency id="Xtricate.DocSet" version="1.0.0" />
-    </dependencies>
   </metadata>
 </package>
