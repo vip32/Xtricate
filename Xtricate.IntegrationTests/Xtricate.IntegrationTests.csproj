@@ -106,6 +106,10 @@
       <Project>{0cb26ac0-76e4-4688-8cf9-a1526fea32b2}</Project>
       <Name>Xtricate.Configuration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Xtricate.DocSet.Extras\Xtricate.DocSet.Extras.csproj">
+      <Project>{8dfe7740-4263-4895-b2b1-2da25de2d9d4}</Project>
+      <Name>Xtricate.DocSet.Extras</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Xtricate.DocSet.Sqlite\Xtricate.DocSet.Sqlite.csproj">
       <Project>{1932db30-fcec-43d7-ace5-6c0f8cafdfd0}</Project>
       <Name>Xtricate.DocSet.Sqlite</Name>

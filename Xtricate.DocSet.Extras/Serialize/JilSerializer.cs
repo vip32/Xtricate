@@ -1,6 +1,6 @@
 using Jil;
 
-namespace Xtricate.DocSet
+namespace Xtricate.DocSet.Extras
 {
     public class JilSerializer : ISerializer
     {

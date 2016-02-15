@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Ploeh.AutoFixture;
 using StackExchange.Profiling;
 using Xtricate.DocSet;
+using Xtricate.DocSet.Extras;
 using Xtricate.UnitTests.TestHelpers;
 
 namespace Xtricate.IntegrationTests

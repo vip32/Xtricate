@@ -49,20 +49,8 @@
       <HintPath>..\packages\Humanizer.1.37.7\lib\portable-win+net40+sl50+wp8+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Humanizer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Jil, Version=2.13.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jil.2.13.0\lib\net45\Jil.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ServiceStack.Text, Version=4.0.52.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ServiceStack.Text.4.0.52\lib\net40\ServiceStack.Text.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Sigil, Version=4.5.1.0, Culture=neutral, PublicKeyToken=2d06c3494341c8ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Sigil.4.5.1\lib\net45\Sigil.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -82,12 +70,10 @@
     </Compile>
     <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
     <Compile Include="ISqlBuilder.cs" />
-    <Compile Include="Serialize\BsonSerializer.cs" />
     <Compile Include="Criteria\Criteria.cs" />
     <Compile Include="Criteria\CriteriaOperator.cs" />
     <Compile Include="IndexMap.cs" />
     <Compile Include="DocSet.cs" />
-    <Compile Include="Serialize\JilSerializer.cs" />
     <Compile Include="Hash\Md5Hasher.cs" />
     <Compile Include="Hash\IHasher.cs" />
     <Compile Include="IStorageOptions.cs" />
@@ -96,12 +82,11 @@
     <Compile Include="Criteria\ICriteria.cs" />
     <Compile Include="IIndexMap.cs" />
     <Compile Include="IDocStorage.cs" />
-    <Compile Include="Serialize\ISerializer.cs" />
     <Compile Include="IDocSet.cs" />
-    <Compile Include="Serialize\JsonNetSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serialize\ServiceStackTextSerializer.cs" />
     <Compile Include="Hash\Sha1Hasher.cs" />
+    <Compile Include="Serialize\ISerializer.cs" />
+    <Compile Include="Serialize\JsonNetSerializer.cs" />
     <Compile Include="SqlBuilder.cs" />
     <Compile Include="StorageAction.cs" />
     <Compile Include="StorageOptions.cs" />

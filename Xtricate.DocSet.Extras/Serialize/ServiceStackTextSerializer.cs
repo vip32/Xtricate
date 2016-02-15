@@ -1,6 +1,6 @@
 using ServiceStack.Text;
 
-namespace Xtricate.DocSet
+namespace Xtricate.DocSet.Extras
 {
     public class ServiceStackTextSerializer : ISerializer
     {
