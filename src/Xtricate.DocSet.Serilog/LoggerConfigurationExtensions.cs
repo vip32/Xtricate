@@ -41,7 +41,7 @@ namespace Xtricate.DocSet.Serilog
             if (connectionsStringName == null) throw new ArgumentNullException(nameof(connectionsStringName));
 
             var options = new StorageOptions(
-                new ConnectionStrings().Get(connectionsStringName), 
+                new ConnectionStrings().Get(connectionsStringName),
                 schemaName,
                 enableLogging: false);
             var connectionFactory = new SqlConnectionFactory();
@@ -50,7 +50,7 @@ namespace Xtricate.DocSet.Serilog
                 new IndexMap<LogEvent>(nameof(LogEvent.Level), i => i.Level),
                 new IndexMap<LogEvent>(nameof(LogEvent.Timestamp), i => i.Timestamp.ToString("s"))
             };
-            var storage = new DocStorage<LogEvent>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new DocStorage<LogEvent>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), null /*new Md5Hasher()*/, indexMap);
 
             var defaultedPeriod = period ?? DocSetSink.DefaultPeriod;

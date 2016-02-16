@@ -1,20 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace Xtricate.DocSet
 {
     public class SqlBuilder : ISqlBuilder
     {
-        protected readonly IStorageOptions Options;
-
-        public SqlBuilder(IStorageOptions options)
-        {
-            if (options == null) throw new ArgumentNullException(nameof(options));
-
-            Options = options;
-        }
         public virtual string IndexColumnNameSuffix => "_idx";
 
         public virtual string BuildTagSelect(string tag)
@@ -60,12 +51,12 @@ namespace Xtricate.DocSet
             return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] = '||{value}||' ";
         }
 
-        public virtual string BuildPagingSelect(int skip = 0, int take = 0)
+        public virtual string BuildPagingSelect(int skip = 0, int take = 0, int defaultTakeSize = 1000, int maxTakeSize = 5000)
         {
-            if (skip <= 0 && take <= 0) return $" ORDER BY [KEY] OFFSET {skip} ROWS FETCH NEXT {Options.DefaultTakeSize} ROWS ONLY; ";
+            if (skip <= 0 && take <= 0) return $" ORDER BY [KEY] OFFSET {skip} ROWS FETCH NEXT {defaultTakeSize} ROWS ONLY; ";
             if (skip <= 0) skip = 0;
-            if (take <= 0) take = Options.DefaultTakeSize;
-            if (take > Options.MaxTakeSize) take = Options.MaxTakeSize;
+            if (take <= 0) take = defaultTakeSize;
+            if (take > maxTakeSize) take = maxTakeSize;
             return $" ORDER BY [KEY] OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY; ";
         }
 

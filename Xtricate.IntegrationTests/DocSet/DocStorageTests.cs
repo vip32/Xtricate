@@ -49,13 +49,13 @@ namespace Xtricate.IntegrationTests
             MiniProfiler.Settings.ProfilerProvider = new MiniPofilerInMemoryProvider();
         }
 
-        [TestCase(1000, false)]
+        [TestCase(100, false)]
         public void MassInsertTest(int docCount, bool reset)
         {
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             MiniProfiler.Start();
@@ -82,7 +82,7 @@ namespace Xtricate.IntegrationTests
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             storage.Initialize();
@@ -123,7 +123,7 @@ namespace Xtricate.IntegrationTests
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests") {BufferedLoad = false};
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             MiniProfiler.Start();
@@ -199,7 +199,7 @@ namespace Xtricate.IntegrationTests
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             storage.Reset();
@@ -227,7 +227,7 @@ namespace Xtricate.IntegrationTests
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             MiniProfiler.Start();
@@ -290,7 +290,7 @@ namespace Xtricate.IntegrationTests
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             MiniProfiler.Start();
@@ -333,7 +333,7 @@ namespace Xtricate.IntegrationTests
             };
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             MiniProfiler.Start();
