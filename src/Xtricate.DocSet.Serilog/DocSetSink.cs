@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure.Annotations;
 using System.Linq;
 using Serilog.Events;
 using Serilog.Sinks.PeriodicBatching;
@@ -36,43 +37,70 @@ namespace Xtricate.DocSet.Serilog
             _propertiesFilter = propertiesFiler;
         }
 
-        protected override void EmitBatch(IEnumerable<LogEvent> events)
+        protected override void EmitBatch(IEnumerable<global::Serilog.Events.LogEvent> events)
         {
             foreach (var logEvent in events.NullToEmpty())
             {
                 if (logEvent == null) continue;
                 var key = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
 
-                UpdateProperties(logEvent, key);
-                var tags = GetTags(logEvent);
+                //UpdateProperties(logEvent, key);
                 //FilterProperties(logEvent);
 
-                _storage.Upsert(key, logEvent, tags, forceInsert: true, timestamp: logEvent.Timestamp.DateTime);
+                _storage.Upsert(key, new LogEvent
+                {
+                    Key = key,
+                    CorrelationId = GetCorrelationId(logEvent),
+                    Level = logEvent.Level.ToString(),
+                    Message = logEvent.RenderMessage(_formatProvider),
+                    Timestamp = logEvent.Timestamp.DateTime,
+                    Properties = GetProperties(logEvent)
+                }, GetTags(logEvent), forceInsert: true, timestamp: logEvent.Timestamp.DateTime);
             }
         }
 
-        private void UpdateProperties(LogEvent logEvent, string key)
+        private static string GetCorrelationId(global::Serilog.Events.LogEvent logEvent)
         {
-            logEvent.AddOrUpdateProperty(new LogEventProperty("Message",
-                new ScalarValue(logEvent.RenderMessage(_formatProvider))));
-            logEvent.AddOrUpdateProperty(new LogEventProperty("DocSetKey",
-                new ScalarValue(key)));
+            LogEventPropertyValue correlationProp;
+            logEvent.Properties.TryGetValue("CorrelationId", out correlationProp);
+            var correlationId = "";
+            if (correlationProp != null)
+                correlationId = correlationProp.ToString();
+            return correlationId;
         }
 
-        private IEnumerable<string> GetTags(LogEvent logEvent)
+        //private void UpdateProperties(global::Serilog.Events.LogEvent logEvent, string key)
+        //{
+        //    logEvent.AddOrUpdateProperty(new LogEventProperty("Message",
+        //        new ScalarValue(logEvent.RenderMessage(_formatProvider))));
+        //    logEvent.AddOrUpdateProperty(new LogEventProperty("DocSetKey",
+        //        new ScalarValue(key)));
+        //}
+
+        private IEnumerable<string> GetTags(global::Serilog.Events.LogEvent logEvent)
         {
             if (!logEvent.Properties.IsNullOrEmpty() && !_propertiesAsTags.IsNullOrEmpty())
                 return logEvent.Properties.Where(p => _propertiesAsTags.Contains(p.Key)).Select(p => p.Value.ToString());
             return null;
         }
 
-        private void FilterProperties(LogEvent logEvent)
+        //private void FilterProperties(global::Serilog.Events.LogEvent logEvent)
+        //{
+        //    if (_propertiesFilter == null || !_propertiesFilter.Any()) return;
+        //    foreach (var prop in logEvent.Properties.Where(prop => !_propertiesFilter.Contains(prop.Key)))
+        //    {
+        //        logEvent.RemovePropertyIfPresent(prop.Key);
+        //    }
+        //}
+
+        private Dictionary<string, string> GetProperties(global::Serilog.Events.LogEvent logEvent)
         {
-            if (_propertiesFilter == null || !_propertiesFilter.Any()) return;
-            foreach (var prop in logEvent.Properties.Where(prop => !_propertiesFilter.Contains(prop.Key)))
-            {
-                logEvent.RemovePropertyIfPresent(prop.Key);
-            }
+            if (logEvent.Properties == null || !logEvent.Properties.Any()) return null;
+            if(_propertiesFilter == null || !_propertiesFilter.Any())
+                return logEvent.Properties.ToDictionary(prop => prop.Key, prop => prop.Value.ToString());
+
+            return logEvent.Properties.Where(prop => _propertiesFilter.Contains(prop.Key))
+                .ToDictionary(prop => prop.Key, prop => prop.Value.ToString());
         }
     }
 }

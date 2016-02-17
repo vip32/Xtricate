@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using Ploeh.AutoFixture;
@@ -23,7 +24,7 @@ namespace Xtricate.Service.Dashboard.Controllers
         // GET: api/Products
         public IEnumerable<Product> Get()
         {
-            Logger.Debug("amount of products {ProductCount}", Products.Count());
+            Logger.Debug("amount of products {ProductCount}, {CorrelationId}, {Unk}", Products.Count(), Guid.NewGuid().ToString(), 123);
             return Products;
         }
 
