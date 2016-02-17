@@ -21,7 +21,7 @@ namespace Xtricate.DocSet.Serilog
         /// <param name="period">The time to wait between checking for event batches.</param>
         /// <param name="formatProvider">Supplies culture-specific formatting information, or null.</param>
         /// <param name="propertiesAsTags">The properties as tags.</param>
-        /// <param name="propertiesFilter">The properties filter.</param>
+        /// <param name="propertiesWhiteList">The properties filter.</param>
         /// <returns>
         /// Logger configuration, allowing configuration to continue.
         /// </returns>
@@ -37,7 +37,7 @@ namespace Xtricate.DocSet.Serilog
             TimeSpan? period = null,
             IFormatProvider formatProvider = null,
             IEnumerable<string> propertiesAsTags = null,
-            IEnumerable<string> propertiesFilter = null)
+            IEnumerable<string> propertiesWhiteList = null)
         {
             if (loggerConfiguration == null) throw new ArgumentNullException(nameof(loggerConfiguration));
             if (connectionsStringName == null) throw new ArgumentNullException(nameof(connectionsStringName));
@@ -63,7 +63,7 @@ namespace Xtricate.DocSet.Serilog
                     defaultedPeriod,
                     formatProvider,
                     propertiesAsTags ?? new[] {"CorrelationId", "App" /*, "SourceContext"*/ },
-                    propertiesFilter ?? new[] { "CorrelationId", "App", "SourceContext", "Message", "DocSetKey" }),
+                    propertiesWhiteList ?? new[] { /*"CorrelationId",*/ "App", "SourceContext", /*"Message", "DocSetKey"*/ }),
                 restrictedToMinimumLevel);
         }
     }

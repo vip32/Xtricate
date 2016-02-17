@@ -13,7 +13,7 @@ namespace Xtricate.DocSet.Serilog
         private readonly IFormatProvider _formatProvider;
         private readonly IDocStorage<LogEvent> _storage;
         private readonly IEnumerable<string> _propertiesAsTags;
-        private readonly IEnumerable<string> _propertiesFilter;
+        private readonly IEnumerable<string> _propertiesWhiteList;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DocSetSink"/> class.
@@ -23,10 +23,11 @@ namespace Xtricate.DocSet.Serilog
         /// <param name="period">The period.</param>
         /// <param name="formatProvider">The format provider.</param>
         /// <param name="propertiesAsTags">The properties as tags.</param>
-        /// <param name="propertiesFiler">The properties filer.</param>
+        /// <param name="propertiesWhiteList">The properties filer.</param>
         /// <exception cref="System.ArgumentNullException"></exception>
         public DocSetSink(IDocStorage<LogEvent> storage, int batchSizeLimit, TimeSpan period,
-            IFormatProvider formatProvider, IEnumerable<string>  propertiesAsTags = null, IEnumerable<string> propertiesFiler = null)
+            IFormatProvider formatProvider, IEnumerable<string>  propertiesAsTags = null,
+            IEnumerable<string> propertiesWhiteList = null)
             : base(batchSizeLimit, period)
         {
             if (storage == null) throw new ArgumentNullException(nameof(storage));
@@ -34,7 +35,7 @@ namespace Xtricate.DocSet.Serilog
             _storage = storage;
             _formatProvider = formatProvider;
             _propertiesAsTags = propertiesAsTags;
-            _propertiesFilter = propertiesFiler;
+            _propertiesWhiteList = propertiesWhiteList;
         }
 
         protected override void EmitBatch(IEnumerable<global::Serilog.Events.LogEvent> events)
@@ -86,8 +87,8 @@ namespace Xtricate.DocSet.Serilog
 
         //private void FilterProperties(global::Serilog.Events.LogEvent logEvent)
         //{
-        //    if (_propertiesFilter == null || !_propertiesFilter.Any()) return;
-        //    foreach (var prop in logEvent.Properties.Where(prop => !_propertiesFilter.Contains(prop.Key)))
+        //    if (_propertiesWhiteList == null || !_propertiesWhiteList.Any()) return;
+        //    foreach (var prop in logEvent.Properties.Where(prop => !_propertiesWhiteList.Contains(prop.Key)))
         //    {
         //        logEvent.RemovePropertyIfPresent(prop.Key);
         //    }
@@ -96,10 +97,10 @@ namespace Xtricate.DocSet.Serilog
         private Dictionary<string, string> GetProperties(global::Serilog.Events.LogEvent logEvent)
         {
             if (logEvent.Properties == null || !logEvent.Properties.Any()) return null;
-            if(_propertiesFilter == null || !_propertiesFilter.Any())
+            if(_propertiesWhiteList == null || !_propertiesWhiteList.Any())
                 return logEvent.Properties.ToDictionary(prop => prop.Key, prop => prop.Value.ToString());
 
-            return logEvent.Properties.Where(prop => _propertiesFilter.Contains(prop.Key))
+            return logEvent.Properties.Where(prop => _propertiesWhiteList.Contains(prop.Key))
                 .ToDictionary(prop => prop.Key, prop => prop.Value.ToString());
         }
     }
