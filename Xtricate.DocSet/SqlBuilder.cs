@@ -10,6 +10,7 @@ namespace Xtricate.DocSet
 
         public virtual string BuildTagSelect(string tag)
         {
+            if (string.IsNullOrEmpty(tag)) return "";
             return $" AND [tags] LIKE '%||{tag}||%'";
         }
 
@@ -17,7 +18,6 @@ namespace Xtricate.DocSet
         {
             if (indexMaps == null || !indexMaps.Any()) return null;
             if (criteria == null) return null;
-
 
             var indexMap = indexMaps.FirstOrDefault(i =>
                 i.Name.Equals(criteria.Name, StringComparison.InvariantCultureIgnoreCase));
