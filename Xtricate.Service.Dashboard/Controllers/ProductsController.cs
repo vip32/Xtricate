@@ -17,14 +17,16 @@ namespace Xtricate.Service.Dashboard.Controllers
         {
             Logger = Log.ForContext<ProductsController>();
             Products = new Fixture().CreateMany<Product>(500).OrderBy(p => p.Id).ToList();
-            Logger.Debug("created the products {ProductCount}", Products.Count());
+
+
+            Logger.Information("created the products {ProductCount}", Products.Count());
         }
 
         [Route("")]
         // GET: api/Products
         public IEnumerable<Product> Get()
         {
-            Logger.Debug("amount of products {ProductCount}, {CorrelationId}, {Unk}", Products.Count(), Guid.NewGuid().ToString(), 123);
+            Logger.Information("amount of products {ProductCount}, {CorrelationId}, {Unk}", Products.Count(), Guid.NewGuid().ToString(), 123);
             return Products;
         }
 

@@ -64,7 +64,7 @@ namespace Xtricate.DocSet.Serilog
         {
             LogEventPropertyValue correlationProp;
             logEvent.Properties.TryGetValue("CorrelationId", out correlationProp);
-            var correlationId = "";
+            string correlationId = null;
             if (correlationProp != null)
                 correlationId = correlationProp.ToString().Trim('"');
             return correlationId;
@@ -80,11 +80,10 @@ namespace Xtricate.DocSet.Serilog
 
         private IEnumerable<string> GetTags(global::Serilog.Events.LogEvent logEvent)
         {
-            if (!logEvent.Properties.IsNullOrEmpty() && !_propertiesAsTags.IsNullOrEmpty())
-                return
-                    logEvent.Properties.Where(p => _propertiesAsTags.Contains(p.Key))
-                        .Select(p => p.Value?.ToString().Trim('"') ?? "");
-            return null;
+            if (logEvent.Properties.IsNullOrEmpty() || _propertiesAsTags.IsNullOrEmpty()) return null;
+            return
+                logEvent.Properties.Where(p => _propertiesAsTags.Contains(p.Key))
+                    .Select(p => p.Value != null ? p.Value.ToString().Trim('"') : "");
         }
 
         //private void FilterProperties(global::Serilog.Events.LogEvent logEvent)
@@ -98,12 +97,12 @@ namespace Xtricate.DocSet.Serilog
 
         private Dictionary<string, string> GetProperties(global::Serilog.Events.LogEvent logEvent)
         {
-            if (logEvent.Properties == null || !logEvent.Properties.Any()) return null;
+            if (logEvent.Properties.IsNullOrEmpty()) return null;
             if(_propertiesWhiteList == null || !_propertiesWhiteList.Any())
-                return logEvent.Properties.ToDictionary(p => p.Key, p => p.Value?.ToString().Trim('"') ?? "");
+                return logEvent.Properties.ToDictionary(p => p.Key, p => p.Value != null ? p.Value.ToString().Trim('"') : "");
 
             return logEvent.Properties.Where(prop => _propertiesWhiteList.Contains(prop.Key))
-                .ToDictionary(prop => prop.Key, p => p.Value?.ToString().Trim('"') ?? "");
+                .ToDictionary(prop => prop.Key, p => p.Value != null ? p.Value.ToString().Trim('"') : "");
         }
     }
 }

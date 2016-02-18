@@ -23,7 +23,6 @@ namespace Xtricate.DocSet
             EnableLogging = enableLogging;
         }
 
-
         public string ConnectionString { get; set; }
         public string SchemaName { get; set; }
         public bool BufferedLoad { get; set; }

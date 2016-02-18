@@ -22,6 +22,9 @@ namespace Xtricate.DocSet.Serilog
         /// <param name="formatProvider">Supplies culture-specific formatting information, or null.</param>
         /// <param name="propertiesAsTags">The properties as tags.</param>
         /// <param name="propertiesWhiteList">The properties filter.</param>
+        /// <param name="options">The options.</param>
+        /// <param name="indexMap">The index map.</param>
+        /// <param name="enableDocSetLogging">if set to <c>true</c> [enable document set logging].</param>
         /// <returns>
         /// Logger configuration, allowing configuration to continue.
         /// </returns>
@@ -37,33 +40,37 @@ namespace Xtricate.DocSet.Serilog
             TimeSpan? period = null,
             IFormatProvider formatProvider = null,
             IEnumerable<string> propertiesAsTags = null,
-            IEnumerable<string> propertiesWhiteList = null)
+            IEnumerable<string> propertiesWhiteList = null,
+            IStorageOptions options = null,
+            List<IIndexMap<LogEvent>> indexMap = null,
+            bool enableDocSetLogging = false)
         {
             if (loggerConfiguration == null) throw new ArgumentNullException(nameof(loggerConfiguration));
             if (connectionsStringName == null) throw new ArgumentNullException(nameof(connectionsStringName));
 
-            var options = new StorageOptions(
-                new ConnectionStrings().Get(connectionsStringName),
-                schemaName,
-                enableLogging: false);
-            var connectionFactory = new SqlConnectionFactory();
-            var indexMap = new List<IIndexMap<LogEvent>>
-            {
-                new IndexMap<LogEvent>(nameof(LogEvent.Level), i => i.Level),
-                new IndexMap<LogEvent>(nameof(LogEvent.Timestamp), i => i.Timestamp.ToString("s"))
-            };
-            var storage = new DocStorage<LogEvent>(connectionFactory, options, new SqlBuilder(),
-                new JsonNetSerializer(), null /*new Md5Hasher()*/, indexMap);
+            if(options == null)
+                options = new StorageOptions(
+                    new ConnectionStrings().Get(connectionsStringName),
+                    schemaName,
+                    enableLogging: enableDocSetLogging);
 
-            var defaultedPeriod = period ?? DocSetSink.DefaultPeriod;
+            if(indexMap == null)
+                indexMap = new List<IIndexMap<LogEvent>>
+                {
+                    new IndexMap<LogEvent>(nameof(LogEvent.Level), i => i.Level),
+                    new IndexMap<LogEvent>(nameof(LogEvent.Timestamp), i => i.Timestamp.ToString("s"))
+                };
+
             return loggerConfiguration.Sink(
                 new DocSetSink(
-                    storage,
+                    new DocStorage<LogEvent>(new SqlConnectionFactory(), options, new SqlBuilder(),
+                        new JsonNetSerializer(), null /*new Md5Hasher()*/, indexMap),
                     batchPostingLimit,
-                    defaultedPeriod,
+                    period ?? DocSetSink.DefaultPeriod,
                     formatProvider,
-                    propertiesAsTags ?? new[] {"CorrelationId", "App" /*, "SourceContext"*/ },
-                    propertiesWhiteList ?? new[] { /*"CorrelationId",*/ "App", "SourceContext", /*"Message", "DocSetKey"*/ }),
+                    propertiesAsTags ?? new[] {"CorrelationId", "App" /*, "SourceContext"*/},
+                    propertiesWhiteList ??
+                    new[] {/*"CorrelationId",*/ "App", "SourceContext", /*"Message", "DocSetKey"*/}),
                 restrictedToMinimumLevel);
         }
     }

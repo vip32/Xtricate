@@ -5,6 +5,7 @@ using System.Web.Http;
 using Newtonsoft.Json.Serialization;
 using Owin;
 using Serilog;
+using Serilog.Events;
 using Xtricate.DocSet.Serilog;
 using Xtricate.Service.Dashboard;
 using Xtricate.Service.Dashboard.Pages;
@@ -21,9 +22,10 @@ namespace Xtricate.Service.Sample
             ConfigureWebApi(httpConfig);
 
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Verbose()
-                .WriteTo.Trace()
-                .WriteTo.DocSet("XtricateTestSqlDb", "StorageTests")
+                .MinimumLevel.Debug()
+                .WriteTo.Trace(LogEventLevel.Debug)
+                .WriteTo.LiterateConsole(LogEventLevel.Debug)
+                .WriteTo.DocSet("XtricateTestSqlDb", "StorageTests", LogEventLevel.Information)
                 .Enrich.WithProperty("App", "SampleApp")
                 .Enrich.FromLogContext()
                 .CreateLogger();
