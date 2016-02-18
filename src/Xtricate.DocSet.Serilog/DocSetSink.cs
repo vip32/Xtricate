@@ -66,7 +66,7 @@ namespace Xtricate.DocSet.Serilog
             logEvent.Properties.TryGetValue("CorrelationId", out correlationProp);
             var correlationId = "";
             if (correlationProp != null)
-                correlationId = correlationProp.ToString();
+                correlationId = correlationProp.ToString().Trim('"');
             return correlationId;
         }
 
@@ -81,7 +81,9 @@ namespace Xtricate.DocSet.Serilog
         private IEnumerable<string> GetTags(global::Serilog.Events.LogEvent logEvent)
         {
             if (!logEvent.Properties.IsNullOrEmpty() && !_propertiesAsTags.IsNullOrEmpty())
-                return logEvent.Properties.Where(p => _propertiesAsTags.Contains(p.Key)).Select(p => p.Value.ToString());
+                return
+                    logEvent.Properties.Where(p => _propertiesAsTags.Contains(p.Key))
+                        .Select(p => p.Value?.ToString().Trim('"') ?? "");
             return null;
         }
 
@@ -98,10 +100,10 @@ namespace Xtricate.DocSet.Serilog
         {
             if (logEvent.Properties == null || !logEvent.Properties.Any()) return null;
             if(_propertiesWhiteList == null || !_propertiesWhiteList.Any())
-                return logEvent.Properties.ToDictionary(prop => prop.Key, prop => prop.Value.ToString());
+                return logEvent.Properties.ToDictionary(p => p.Key, p => p.Value?.ToString().Trim('"') ?? "");
 
             return logEvent.Properties.Where(prop => _propertiesWhiteList.Contains(prop.Key))
-                .ToDictionary(prop => prop.Key, prop => prop.Value.ToString());
+                .ToDictionary(prop => prop.Key, p => p.Value?.ToString().Trim('"') ?? "");
         }
     }
 }
