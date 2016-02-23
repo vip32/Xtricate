@@ -326,7 +326,7 @@ namespace Xtricate.IntegrationTests
         }
 
         [Test]
-        public void PagingTest()
+        public void PagingAndSortingTest()
         {
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests")
             {
