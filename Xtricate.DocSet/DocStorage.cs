@@ -171,6 +171,7 @@ namespace Xtricate.DocSet
                 tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
                 criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 sql += SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime);
+                sql += SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn);
                 sql += SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize);
                 conn.Open();
                 var documents = conn.Query<string>(sql, new {key}, buffered: Options.BufferedLoad);
@@ -195,6 +196,7 @@ namespace Xtricate.DocSet
                 tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
                 criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 sql += SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime);
+                sql += SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn);
                 sql += SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize);
                 conn.Open();
                 var documents = conn.Query<string>(sql, buffered: Options.BufferedLoad);

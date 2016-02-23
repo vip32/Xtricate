@@ -14,7 +14,9 @@ namespace Xtricate.DocSet
             return $" AND [tags] LIKE '%||{tag}||%'";
         }
 
-        public virtual string BuildCriteriaSelect<TDoc>(IEnumerable<IIndexMap<TDoc>> indexMaps = null, ICriteria criteria = null)
+        public virtual string BuildCriteriaSelect<TDoc>(
+            IEnumerable<IIndexMap<TDoc>> indexMaps = null,
+            ICriteria criteria = null)
         {
             if (indexMaps == null || !indexMaps.Any()) return null;
             if (criteria == null) return null;
@@ -51,16 +53,35 @@ namespace Xtricate.DocSet
             return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] = '||{value}||' ";
         }
 
-        public virtual string BuildPagingSelect(int skip = 0, int take = 0, int defaultTakeSize = 1000, int maxTakeSize = 5000)
+        public virtual string BuildPagingSelect(int skip = 0, int take = 0,
+            int defaultTakeSize = 1000, int maxTakeSize = 5000)
         {
-            if (skip <= 0 && take <= 0) return $" ORDER BY [KEY] OFFSET {skip} ROWS FETCH NEXT {defaultTakeSize} ROWS ONLY; ";
+            if (skip <= 0 && take <= 0)
+                return $" OFFSET {skip} ROWS FETCH NEXT {defaultTakeSize} ROWS ONLY; ";
             if (skip <= 0) skip = 0;
             if (take <= 0) take = defaultTakeSize;
             if (take > maxTakeSize) take = maxTakeSize;
-            return $" ORDER BY [KEY] OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY; ";
+            return $" OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY; ";
         }
 
-        public string BuildFromTillDateTimeSelect(DateTime? fromDateTime = null, DateTime? tillDateTime = null)
+        public virtual string BuildSortingSelect(SortColumn sorting = SortColumn.Id)
+        {
+            if (sorting == SortColumn.IdDescending)
+                return $" ORDER BY [id] DESC ";
+            if (sorting == SortColumn.Key)
+                return $" ORDER BY [key] ";
+            if (sorting == SortColumn.KeyDescending)
+                return $" ORDER BY [key] DESC ";
+            if (sorting == SortColumn.Timestamp)
+                return $" ORDER BY [timestamp] ";
+            if (sorting == SortColumn.TimestampDescending)
+                return $" ORDER BY [timestamp] DESC ";
+            return $" ORDER BY [id] ";
+        }
+
+        public string BuildFromTillDateTimeSelect(
+            DateTime? fromDateTime = null,
+            DateTime? tillDateTime = null)
         {
             var result = "";
             if (fromDateTime.HasValue)

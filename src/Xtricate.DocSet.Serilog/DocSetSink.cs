@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure.Annotations;
 using System.Linq;
 using Serilog.Events;
 using Serilog.Sinks.PeriodicBatching;

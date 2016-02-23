@@ -68,7 +68,9 @@ namespace Xtricate.IntegrationTests
             for (var i = 1; i <= docCount; i++)
             {
                 Log.Debug($"+{i}");
-                storage.Upsert(key + i, new Fixture().Create<TestDocument>(), new[] {"en-US"});
+                var doc = new Fixture().Create<TestDocument>();
+                doc.Id = i;
+                storage.Upsert(key + i, doc, new[] {"en-US"}, timestamp: DateTime.Now.AddMinutes(i));
             }
 
             Log.Debug($"post count: {storage.Count(new[] {"en-US"})}");
@@ -329,7 +331,8 @@ namespace Xtricate.IntegrationTests
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests")
             {
                 DefaultTakeSize = 3,
-                MaxTakeSize = 5
+                MaxTakeSize = 5,
+                DefaultSortColumn = SortColumn.TimestampDescending
             };
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
@@ -344,12 +347,16 @@ namespace Xtricate.IntegrationTests
             var docs1 = storage.Load(new[] { "en-US" }).ToList();
             Assert.That(docs1, Is.Not.Null);
             Assert.That(docs1.Any(), Is.True);
-            Assert.That(docs1.Count(), Is.EqualTo(options.DefaultTakeSize));
+            Assert.That(docs1.Count, Is.EqualTo(options.DefaultTakeSize));
+            foreach(var doc in docs1)
+                Log.Debug($"doc1: {doc.Id}, {doc.Name}");
 
-            var docs2 = storage.Load(new[] { "en-US" }, skip:1, take:10).ToList();
+            var docs2 = storage.Load(new[] { "en-US" }, skip:0, take:10).ToList();
             Assert.That(docs2, Is.Not.Null);
             Assert.That(docs2.Any(), Is.True);
-            Assert.That(docs2.Count(), Is.EqualTo(options.MaxTakeSize));
+            Assert.That(docs2.Count, Is.EqualTo(options.MaxTakeSize));
+            foreach (var doc in docs2)
+                Log.Debug($"doc2: {doc.Id}, {doc.Name}");
 
             Log.Debug($"trace: {mp.RenderPlainText()}");
             MiniProfiler.Stop();
