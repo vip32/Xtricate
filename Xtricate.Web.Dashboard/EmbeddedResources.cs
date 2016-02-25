@@ -17,7 +17,8 @@ namespace Xtricate.Web.Dashboard
         {
             "bootstrap.min.css",
             //"bootstrap-theme.min.css",
-            "dashboard.css"
+            "dashboard-dark.css"
+            //"dashboard.css"
         };
 
         public EmbeddedResources(
