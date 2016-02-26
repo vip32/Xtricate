@@ -10,6 +10,7 @@ namespace Xtricate.Web.Dashboard
             AppPath = "/";
             //AuthorizationFilters = new[] { new LocalRequestsOnlyAuthorizationFilter() };
             AuthorizationFilters = new[] {new NoAuthorizationFilter()};
+            MenuRoutes = new List<string>();
         }
 
         public string Name { get; set; }
@@ -17,5 +18,7 @@ namespace Xtricate.Web.Dashboard
         public string AppPath { get; set; }
 
         public IEnumerable<IAuthorizationFilter> AuthorizationFilters { get; set; }
+
+        public IEnumerable<string> MenuRoutes { get; set; }
     }
 }

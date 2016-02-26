@@ -19,6 +19,7 @@ namespace Xtricate.Web.Dashboard
             var owinContext = new OwinContext(context.OwinEnvironment);
             owinContext.Response.ContentType = "text/html";
 
+            // execute the page
             var page = _pageFunc(context.UriMatch);
             page.Assign(context);
 

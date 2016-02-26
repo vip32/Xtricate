@@ -105,6 +105,8 @@
     <EmbeddedResource Include="Content\fonts\glyphicons-halflings-regular.woff" />
     <EmbeddedResource Include="Content\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="packages.config" />
+    <None Include="Pages\Header.cshtml" />
+    <None Include="Pages\Footer.cshtml" />
     <None Include="Pages\HomePage.cshtml">
       <!--<Generator>RazorGenerator</Generator>
       <LastGenOutput>HomePage.generated.cs</LastGenOutput>-->

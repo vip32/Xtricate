@@ -35,7 +35,7 @@ namespace Xtricate.Web.Dashboard
                 _routes.AddRazorPage("/info", x => new InfoPage
                 {
                     Model =
-                        new DashboardInfoViewModel(Routes, _resources.JavascriptEmbeddedResources,
+                        new DashboardInfoViewModel(_routes, _resources.JavascriptEmbeddedResources,
                             _resources.StylesheetEmbeddedResources)
                 });
 

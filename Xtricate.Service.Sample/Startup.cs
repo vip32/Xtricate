@@ -32,37 +32,42 @@ namespace Xtricate.Service.Sample
 
             Log.Debug("started");
 
-            app.UseDashboard(new RouteCollectionBuilder(
-                new Dictionary<string, IRequestDispatcher>
+            app.UseDashboard(
+                options: new DashboardOptions()
                 {
+                    MenuRoutes = new[] {"/products"}
+                },
+                routes: new RouteCollectionBuilder(
+                    new Dictionary<string, IRequestDispatcher>
                     {
-                        "/products", new RazorPageDispatcher(x => new ProductIndex())
-                    },
-                    {
-                        "/products/(?<PageId>\\d+)",
-                        new RazorPageDispatcher(x => new ProductDetails
                         {
-                            Parameters = new Dictionary<string, string>
+                            "/products", new RazorPageDispatcher(x => new ProductIndex())
+                        },
+                        {
+                            "/products/(?<PageId>\\d+)",
+                            new RazorPageDispatcher(x => new ProductDetails
                             {
-                                {"id", x.Groups["PageId"].Value}
-                            }
-                        })
-                    },
-                    {
-                        "/js-treegrid", new CombinedResourceDispatcher(
-                            "application/javascript",
-                            typeof (Root).Assembly,
-                            RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "js"),
-                            "jquery.treegrid.min.js", "jquery.treegrid.bootstrap3.js")
-                    },
-                    {
-                        "/css-treegrid", new CombinedResourceDispatcher(
-                            "text/css",
-                            typeof (Root).Assembly,
-                            RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "css"),
-                            "jquery.treegrid.css")
-                    }
-                }).Routes);
+                                Parameters = new Dictionary<string, string>
+                                {
+                                    {"id", x.Groups["PageId"].Value}
+                                }
+                            })
+                        },
+                        {
+                            "/js-treegrid", new CombinedResourceDispatcher(
+                                "application/javascript",
+                                typeof (Root).Assembly,
+                                RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "js"),
+                                "jquery.treegrid.min.js", "jquery.treegrid.bootstrap3.js")
+                        },
+                        {
+                            "/css-treegrid", new CombinedResourceDispatcher(
+                                "text/css",
+                                typeof (Root).Assembly,
+                                RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "css"),
+                                "jquery.treegrid.css")
+                        }
+                    }).Routes);
             app.UseWebApi(httpConfig);
         }
 

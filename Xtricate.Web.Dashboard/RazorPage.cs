@@ -30,6 +30,7 @@ namespace Xtricate.Web.Dashboard
         public RazorPage Layout { get; protected set; }
         public HtmlHelper Html { get; private set; }
         public UrlHelper Url { get; private set; }
+        public DashboardOptions Options { get; private set; }
         public string Name { get; private set; }
         public string Title { get; set; }
         public string AppPath { get; internal set; }
@@ -59,6 +60,7 @@ namespace Xtricate.Web.Dashboard
         {
             Request = parentPage.Request;
             Response = parentPage.Response;
+            Options = parentPage.Options;
             Name = !string.IsNullOrEmpty(parentPage.Title)
                 ? $"{parentPage.Name} - {parentPage.Title}"
                 : parentPage.Name;
@@ -66,17 +68,17 @@ namespace Xtricate.Web.Dashboard
             Url = parentPage.Url;
             Scripts = parentPage.Scripts;
             Stylesheets = parentPage.Stylesheets;
-
             GenerationTime = parentPage.GenerationTime;
+
             OnAssigned();
         }
 
         internal void Assign(RequestDispatcherContext context)
         {
             var owinContext = new OwinContext(context.OwinEnvironment);
-
             Request = owinContext.Request;
             Response = owinContext.Response;
+            Options = context.Options;
             Name = context.Name;
             AppPath = context.AppPath;
             Url = new UrlHelper(context.OwinEnvironment);

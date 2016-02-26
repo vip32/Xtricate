@@ -1,0 +1,50 @@
+﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
+
+@using Xtricate.Web.Dashboard.Pages
+@inherits Xtricate.Web.Dashboard.RazorPage
+
+<div id="pbafooter" class="pbfooter">
+    <div class="container">
+        <div class="col-md-6 col-xs-4 col-sm-4 text-left">
+            <a href="@Url.To("/info")" style="color: white;">
+                <span class="glyphicon glyphicon-th"></span>
+                @Name
+                @{
+                    var version = GetType().Assembly.GetName().Version;
+                }
+                @string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build)
+            </a>
+        </div>
+        @*<div class="col-md-3 col-xs-4 col-sm-4 text-left" style="color: white;">
+                &nbsp;
+            </div>*@
+        <div class="col-md-3 col-xs-4 col-sm-4 text-left" style="color: white;">
+            <span class="glyphicon glyphicon-time"></span>
+            @DateTime.Now
+        </div>
+        <div class="col-md-3 col-xs-4 col-sm-4 text-right" style="color: white;">
+            <span class="glyphicon glyphicon-hourglass"></span>
+            @(GenerationTime.Elapsed.TotalMilliseconds.ToString("N"))ms
+        </div>
+    </div>
+</div>
+
+<style>
+    .pbfooter {
+        width: 100%;
+        height: 50px;
+        background-color: #F58723;
+        color: white;
+        position: fixed;
+        top: auto;
+        left: 0;
+        bottom: 0px;
+        z-index: 1200;
+        padding-top: 15px;
+    }
+
+    body {
+        padding-bottom: 50px;
+    }
+</style>
+

@@ -1,4 +1,5 @@
 ﻿@* Generator: Template TypeVisibility: Public GeneratePrettyNames: True *@
+@using Xtricate.Web.Dashboard.Pages
 @inherits Xtricate.Web.Dashboard.RazorPage
 <!DOCTYPE html>
 <html lang="en">
@@ -26,114 +27,11 @@
 </head>
 <body>
     <div id="wrapper">
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="@Url.Home()">
-                    <span class="glyphicon glyphicon-dashboard"></span>
-                    &nbsp;@Name
-                </a>
-            </div>
-            <div class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul id="active" class="nav navbar-nav side-nav">
-                    <li class="selected"><a href="@Url.To("/")"><i class="fa fa-bullseye"></i> Dashboard</a></li>
-                    <li><a href="@Url.To("/info")"><i class="fa fa-tasks"></i> Info</a></li>
-                </ul>
-                @*<ul class="nav navbar-nav navbar-right navbar-user">
-                        <li class="dropdown messages-dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> Messages <span class="badge">2</span> <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li class="dropdown-header">2 New Messages</li>
-                                <li class="message-preview">
-                                    <a href="#">
-                                        <span class="avatar"><i class="fa fa-bell"></i></span>
-                                        <span class="message">Security alert</span>
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
-                                <li class="message-preview">
-                                    <a href="#">
-                                        <span class="avatar"><i class="fa fa-bell"></i></span>
-                                        <span class="message">Security alert</span>
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
-                                <li><a href="#">Go to Inbox <span class="badge">2</span></a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown user-dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Steve Miller<b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
-                                <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#"><i class="fa fa-power-off"></i> Log Out</a></li>
-
-                            </ul>
-                        </li>
-                        <li class="divider-vertical"></li>
-                        <li>
-                            <form class="navbar-search">
-                                <input type="text" placeholder="Search" class="form-control">
-                            </form>
-                        </li>
-                    </ul>*@
-            </div>
-        </nav>
-
+        @Html.RenderPartial(new Header())
         <div id="page-wrapper">
             @RenderBody()
         </div>
     </div>
-
-    <div id="pbafooter" class="pbfooter">
-        <div class="container">
-            <div class="col-md-6 col-xs-4 col-sm-4 text-left">
-                <a href="@Url.To("/info")" style="color: white;">
-                    <span class="glyphicon glyphicon-th"></span>
-                    @Name
-                    @{
-                        var version = GetType().Assembly.GetName().Version;
-                    }
-                    @string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build)
-                </a>
-            </div>
-            @*<div class="col-md-3 col-xs-4 col-sm-4 text-left" style="color: white;">
-                    &nbsp;
-                </div>*@
-            <div class="col-md-3 col-xs-4 col-sm-4 text-left" style="color: white;">
-                <span class="glyphicon glyphicon-time"></span>
-                @DateTime.Now
-            </div>
-            <div class="col-md-3 col-xs-4 col-sm-4 text-right" style="color: white;">
-                <span class="glyphicon glyphicon-hourglass"></span>
-                @(GenerationTime.Elapsed.TotalMilliseconds.ToString("N"))ms
-            </div>
-        </div>
-    </div>
-
-    <style>
-        .pbfooter {
-            width: 100%;
-            height: 50px;
-            background-color: #F58723;
-            color: white;
-            position: fixed;
-            top: auto;
-            left: 0;
-            bottom: 0px;
-            z-index: 1200;
-            padding-top: 15px;
-        }
-
-        body {
-            padding-bottom: 50px;
-        }
-    </style>
+    @Html.RenderPartial(new Footer())
 </body>
 </html>

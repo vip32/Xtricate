@@ -13,7 +13,7 @@ namespace Xtricate.Web.Dashboard.Models
             if (routes.Dispatchers == null) throw new ArgumentNullException("routes.Dispatchers");
 
             Routes = routes.Dispatchers.Select(route => route.Item1);
-            ;
+
             Javascripts = javascripts ?? new List<string>();
             Stylesheets = stylesheets ?? new List<string>();
         }

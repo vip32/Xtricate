@@ -1,12 +1,18 @@
 ﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
 
+@using System.Reflection
 @using Xtricate.Web.Dashboard.Pages
 @inherits Xtricate.Web.Dashboard.RazorPage
 @{
     Layout = new LayoutPage();
     Title = "Home";
 }
-<h3>Welcome to the dashboard!</h3>
+
+<!-- body goes here -->
+<ul>
+    <li>AppDomain: @AppDomain.CurrentDomain.FriendlyName</li>
+    <li>Assembly: @Assembly.GetExecutingAssembly().FullName</li>
+</ul>
 
 <script type="text/javascript">
     console.log("@RequestFullPath");
