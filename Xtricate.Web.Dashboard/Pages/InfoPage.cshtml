@@ -2,6 +2,7 @@
 
 @using System.Reflection
 @using System.Web
+@using Xtricate.Dynamic
 @using Xtricate.Web.Dashboard.Pages
 @inherits Xtricate.Web.Dashboard.RazorPage<Xtricate.Web.Dashboard.Models.DashboardInfoViewModel>
 @{
@@ -14,7 +15,7 @@
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    <i class="fa fa-bar-chart-o"></i>Routes
+                    <i class="fa fa-bar-chart-o"></i>Routes @Model.ToExpando().DynProp
                 </h3>
             </div>
             <div class="panel-body">

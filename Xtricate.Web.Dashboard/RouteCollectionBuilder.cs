@@ -30,13 +30,14 @@ namespace Xtricate.Web.Dashboard
             {
                 if (_routes != null) return _routes;
 
+
                 _routes = new RouteCollection();
                 _routes.AddRazorPage("/", x => new HomePage());
                 _routes.AddRazorPage("/info", x => new InfoPage
                 {
-                    Model =
-                        new DashboardInfoViewModel(_routes, _resources.JavascriptEmbeddedResources,
-                            _resources.StylesheetEmbeddedResources)
+                    Model = new DashboardInfoViewModel(_routes,
+                    _resources.JavascriptEmbeddedResources,
+                    _resources.StylesheetEmbeddedResources, new { DynProp = " |dynamic prop test|" })
                 });
 
                 _routes.Add("/img/logo", new EmbeddedResourceDispatcher(
