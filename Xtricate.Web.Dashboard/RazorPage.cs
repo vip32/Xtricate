@@ -89,13 +89,7 @@ namespace Xtricate.Web.Dashboard
         {
         }
 
-        public void WriteLiteral(string textToAppend)
-        {
-            if (string.IsNullOrEmpty(textToAppend)) return;
-            _content.Append(textToAppend);
-        }
-
-        public string WriteLiteral2(string textToAppend)
+        public string WriteLiteral(string textToAppend)
         {
             if (string.IsNullOrEmpty(textToAppend)) return "";
             _content.Append(textToAppend);
