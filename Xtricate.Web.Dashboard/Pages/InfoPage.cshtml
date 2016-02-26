@@ -1,5 +1,7 @@
 ﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
 
+@using System.Reflection
+@using System.Web
 @using Xtricate.Web.Dashboard.Pages
 @inherits Xtricate.Web.Dashboard.RazorPage<Xtricate.Web.Dashboard.Models.DashboardInfoViewModel>
 @{
@@ -7,25 +9,90 @@
     Title = "Info";
 }
 
-<h4>Routes</h4>
-<ul>
-    @foreach (var route in Model.Routes)
-    {
-        <li><a href="@Url.To(route)">@route</a></li>
-    }
-</ul>
-<h4>Javascripts</h4>
-<ul>
-    @foreach (var name in Model.Javascripts)
-    {
-        <li>@name</li>
-    }
-</ul>
-<h4>Stylesheets</h4>
-<ul>
-    @foreach (var name in Model.Stylesheets)
-    {
-        <li>@name</li>
-    }
-</ul>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-bar-chart-o"></i>Routes
+                </h3>
+            </div>
+            <div class="panel-body">
+                @foreach (var route in Model.Routes)
+                {
+                    <li><a href="@Url.To(route)">@route</a></li>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-bar-chart-o"></i>Resources
+                </h3>
+            </div>
+            <div class="panel-body">
+                <h4>Javascripts</h4>
+                <ul>
+                    @foreach (var name in Model.Javascripts)
+                    {
+                        <li>@name</li>
+                    }
+                </ul>
+                <h4>Stylesheets</h4>
+                <ul>
+                    @foreach (var name in Model.Stylesheets)
+                    {
+                        <li>@name</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-bar-chart-o"></i>Application
+                </h3>
+            </div>
+            <div class="panel-body">
+                <ul>
+                    <li>AppDomain: @AppDomain.CurrentDomain.FriendlyName</li>
+                    <li>Assembly: @Assembly.GetExecutingAssembly().FullName</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-bar-chart-o"></i>Server
+                </h3>
+            </div>
+            <div class="panel-body">
+                @WriteLiteral2(System.Web.Helpers.ServerInfo.GetHtml().ToString());
+                <style>
+                    table.server-info tbody tr:nth-child(even) {
+                        background-color: #222222;
+                    }
+                </style>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
