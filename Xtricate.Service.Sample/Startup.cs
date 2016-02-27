@@ -41,11 +41,11 @@ namespace Xtricate.Service.Sample
                     new Dictionary<string, IRequestDispatcher>
                     {
                         {
-                            "/products", new WebTemplateDispatcher(x => new ProductIndex {Culture = "de-DE"})
+                            "/products", new RequestDispatcher(x => new ProductIndex {Culture = "de-DE"})
                         },
                         {
                             "/products/(?<PageId>\\d+)",
-                            new WebTemplateDispatcher(x => new ProductDetails
+                            new RequestDispatcher(x => new ProductDetails
                             {
                                 Culture = "de-DE",
                                 Parameters = new Dictionary<string, string>
@@ -58,14 +58,14 @@ namespace Xtricate.Service.Sample
                             "/js-treegrid", new CombinedResourceDispatcher(
                                 "application/javascript",
                                 typeof (Root).Assembly,
-                                RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "js"),
+                                RouteCollectionBuilder.GetResourceFolderNamespace(typeof (Root), "js"),
                                 "jquery.treegrid.min.js", "jquery.treegrid.bootstrap3.js")
                         },
                         {
                             "/css-treegrid", new CombinedResourceDispatcher(
                                 "text/css",
                                 typeof (Root).Assembly,
-                                RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "css"),
+                                RouteCollectionBuilder.GetResourceFolderNamespace(typeof (Root), "css"),
                                 "jquery.treegrid.css")
                         }
                     }).Routes);

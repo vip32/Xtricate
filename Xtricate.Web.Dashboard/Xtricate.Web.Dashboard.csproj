@@ -92,17 +92,17 @@
     <Compile Include="NoAuthorizationFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebTemplate.cs" />
-    <Compile Include="WebTemplateDispatcher.cs" />
+    <Compile Include="RequestDispatcher.cs" />
     <Compile Include="RequestDispatcherContext.cs" />
     <Compile Include="RouteCollection.cs" />
     <Compile Include="RouteCollectionExtensions.cs" />
     <Compile Include="UrlHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\fonts\glyphicons-halflings-regular.eot" />
-    <EmbeddedResource Include="Content\fonts\glyphicons-halflings-regular.ttf" />
-    <EmbeddedResource Include="Content\fonts\glyphicons-halflings-regular.woff" />
-    <EmbeddedResource Include="Content\fonts\glyphicons-halflings-regular.woff2" />
+    <EmbeddedResource Include="Resources\fonts\glyphicons-halflings-regular.eot" />
+    <EmbeddedResource Include="Resources\fonts\glyphicons-halflings-regular.ttf" />
+    <EmbeddedResource Include="Resources\fonts\glyphicons-halflings-regular.woff" />
+    <EmbeddedResource Include="Resources\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="packages.config" />
     <None Include="Templates\HeaderPartial.cshtml" />
     <None Include="Templates\FooterPartial.cshtml" />
@@ -123,31 +123,31 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\css\bootstrap.min.css" />
+    <EmbeddedResource Include="Resources\css\bootstrap.min.css" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <EmbeddedResource Include="Resources\fonts\glyphicons-halflings-regular.svg" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\img\logo.png" />
+    <EmbeddedResource Include="Resources\img\logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\js\bootstrap.min.js" />
+    <EmbeddedResource Include="Resources\js\bootstrap.min.js" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\js\jquery.min.js" />
+    <EmbeddedResource Include="Resources\js\jquery.min.js" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\js\knockout.min.js" />
+    <EmbeddedResource Include="Resources\js\knockout.min.js" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\js\lodash.min.js" />
+    <EmbeddedResource Include="Resources\js\lodash.min.js" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\js\knockout.mapping.js" />
+    <EmbeddedResource Include="Resources\js\knockout.mapping.js" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\css\dashboard-dark.css" />
+    <EmbeddedResource Include="Resources\css\dashboard-dark.css" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Xtricate.Expando\Xtricate.Dynamic.csproj">
