@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 
-namespace Xtricate.Web.Dashboard
+namespace Xtricate.Templ
 {
     public abstract class Template<TModel> : Template
     {

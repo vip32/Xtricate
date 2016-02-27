@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xtricate.Web.Dashboard
+namespace Xtricate.Templ
 {
     public class HtmlHelper
     {

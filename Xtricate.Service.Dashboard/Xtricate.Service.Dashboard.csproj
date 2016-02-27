@@ -72,6 +72,10 @@
     <Compile Include="Root.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Xtricate.Templ\Xtricate.Templ.csproj">
+      <Project>{833b19e6-aee1-49d2-b825-659b42756c28}</Project>
+      <Name>Xtricate.Templ</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Xtricate.Web.Dashboard\Xtricate.Web.Dashboard.csproj">
       <Project>{3FC62E9E-BF9B-4F50-9A8F-5AA74E99B599}</Project>
       <Name>Xtricate.Web.Dashboard</Name>

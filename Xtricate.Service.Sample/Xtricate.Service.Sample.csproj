@@ -163,6 +163,10 @@
       <Project>{3a0bf571-f67c-4f59-aba7-d917884868e5}</Project>
       <Name>Xtricate.Service.Dashboard</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Xtricate.Templ\Xtricate.Templ.csproj">
+      <Project>{833b19e6-aee1-49d2-b825-659b42756c28}</Project>
+      <Name>Xtricate.Templ</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Xtricate.Web.Dashboard\Xtricate.Web.Dashboard.csproj">
       <Project>{3fc62e9e-bf9b-4f50-9a8f-5aa74e99b599}</Project>
       <Name>Xtricate.Web.Dashboard</Name>

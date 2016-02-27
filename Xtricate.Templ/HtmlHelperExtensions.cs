@@ -1,4 +1,4 @@
-namespace Xtricate.Web.Dashboard
+namespace Xtricate.Templ
 {
     public static class HtmlHelperExtensions
     {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Owin;
+using Xtricate.Templ;
 
 namespace Xtricate.Web.Dashboard
 {
