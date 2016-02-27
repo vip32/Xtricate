@@ -8,7 +8,7 @@ namespace Xtricate.Web.Dashboard
         public static void AddRazorPage(
             this RouteCollection routes,
             string pathTemplate,
-            Func<Match, RazorWebPage> pageFunc)
+            Func<Match, RazorWebTemplate> pageFunc)
         {
             if (routes == null) throw new ArgumentNullException(nameof(routes));
             if (pathTemplate == null) throw new ArgumentNullException(nameof(pathTemplate));

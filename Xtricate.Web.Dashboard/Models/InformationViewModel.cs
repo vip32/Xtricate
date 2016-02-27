@@ -5,9 +5,9 @@ using Xtricate.Dynamic;
 
 namespace Xtricate.Web.Dashboard.Models
 {
-    public class DashboardInfoViewModel : Expando
+    public class InformationViewModel : Expando
     {
-        public DashboardInfoViewModel(RouteCollection routes, IEnumerable<string> javascripts = null,
+        public InformationViewModel(RouteCollection routes, IEnumerable<string> javascripts = null,
             IEnumerable<string> stylesheets = null, object instance = null) : base(instance)
         {
             //if (routes == null) throw new ArgumentNullException(nameof(routes));

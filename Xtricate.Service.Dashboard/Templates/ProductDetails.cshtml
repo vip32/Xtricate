@@ -1,9 +1,9 @@
 ﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
 
-@using Xtricate.Web.Dashboard.Pages
-@inherits Xtricate.Web.Dashboard.RazorWebPage
+@using Xtricate.Web.Dashboard.Templates
+@inherits Xtricate.Web.Dashboard.RazorWebTemplate
 @{
-    Layout = new LayoutPage();
+    Layout = new DefaultLayout();
     Scripts = new[] { Url.To("/js-treegrid") };
     Stylesheets = new[] { Url.To("/css-treegrid") };
     Title = "Product Details " + Parameters["id"];

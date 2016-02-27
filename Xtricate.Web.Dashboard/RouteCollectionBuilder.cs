@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Xtricate.Web.Dashboard.Models;
-using Xtricate.Web.Dashboard.Pages;
+using Xtricate.Web.Dashboard.Templates;
 namespace Xtricate.Web.Dashboard
 {
     public class RouteCollectionBuilder
@@ -31,11 +31,11 @@ namespace Xtricate.Web.Dashboard
                 if (_routes != null) return _routes;
 
                 _routes = new RouteCollection();
-                _routes.AddRazorPage("/", x => new HomePage());
-                _routes.AddRazorPage("/info", x => new InfoPage
+                _routes.AddRazorPage("/", x => new HomeIndex());
+                _routes.AddRazorPage("/info", x => new InformationIndex
                 {
                     //Culture = "de-DE",
-                    Model = new DashboardInfoViewModel(_routes,
+                    Model = new InformationViewModel(_routes,
                     _resources.JavascriptEmbeddedResources,
                     _resources.StylesheetEmbeddedResources, new { DynProp = " |dynamic prop test|" })
                 });

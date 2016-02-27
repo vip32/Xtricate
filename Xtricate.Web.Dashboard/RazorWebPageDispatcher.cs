@@ -9,9 +9,9 @@ namespace Xtricate.Web.Dashboard
 {
     public class RazorWebPageDispatcher : IRequestDispatcher
     {
-        private readonly Func<Match, RazorWebPage> _pageFunc;
+        private readonly Func<Match, RazorWebTemplate> _pageFunc;
 
-        public RazorWebPageDispatcher(Func<Match, RazorWebPage> pageFunc)
+        public RazorWebPageDispatcher(Func<Match, RazorWebTemplate> pageFunc)
         {
             _pageFunc = pageFunc;
         }
@@ -20,7 +20,7 @@ namespace Xtricate.Web.Dashboard
         {
             var owinContext = new OwinContext(context.OwinEnvironment);
 
-            // execute the page
+            // execute the template
             var page = _pageFunc(context.UriMatch);
             page.Assign(context);
 

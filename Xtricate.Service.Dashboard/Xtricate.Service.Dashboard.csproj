@@ -80,11 +80,11 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="Pages\ProductDetails.cshtml">
+    <None Include="Templates\ProductDetails.cshtml">
       <!--<Generator>RazorGenerator</Generator>-->
       <!--<LastGenOutput>ProductDetails.generated.cs</LastGenOutput>-->
     </None>
-    <None Include="Pages\ProductIndex.cshtml">
+    <None Include="Templates\ProductIndex.cshtml">
       <!--<Generator>RazorGenerator</Generator>-->
       <!--<LastGenOutput>ProductIndex.generated.cs</LastGenOutput>-->
     </None>

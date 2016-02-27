@@ -8,20 +8,20 @@ using System.Threading;
 
 namespace Xtricate.Web.Dashboard
 {
-    public abstract class RazorPage<TModel> : RazorPage
+    public abstract class RazorTemplate<TModel> : RazorTemplate
     {
         public TModel Model { get; set; }
     }
 
-    public abstract class RazorPage
+    public abstract class RazorTemplate
     {
         protected readonly StringBuilder Content = new StringBuilder();
         protected string Body;
 
-        protected RazorPage()
+        protected RazorTemplate()
         {
             GenerationTime = Stopwatch.StartNew();
-            Html = new RazorPageHtmlHelper(this);
+            Html = new HtmlHelper(this);
             Parameters = new Dictionary<string, string>();
             ContentType = "text/html";
             Culture = Thread.CurrentThread.CurrentCulture.Name;
@@ -32,8 +32,8 @@ namespace Xtricate.Web.Dashboard
 
         public IDictionary<string, string> Parameters { get; set; }
         public Stopwatch GenerationTime { get; protected set; }
-        public RazorPageHtmlHelper Html { get; protected set; }
-        public RazorPage Layout { get; protected set; }
+        public HtmlHelper Html { get; protected set; }
+        public RazorTemplate Layout { get; protected set; }
 
         public string Name { get; protected set; }
         public string Title { get; protected set; }
@@ -109,16 +109,16 @@ namespace Xtricate.Web.Dashboard
         }
 
 
-        //public abstract void Assign(RazorPage parentPage);
-        public virtual void Assign(RazorPage parentPage)
+        //public abstract void Assign(RazorTemplate parentTemplate);
+        public virtual void Assign(RazorTemplate parentTemplate)
         {
-            if (parentPage != null)
+            if (parentTemplate != null)
             {
-                Culture = parentPage.Culture;
-                Name = !string.IsNullOrEmpty(parentPage.Title)
-                    ? $"{parentPage.Name} - {parentPage.Title}"
-                    : parentPage.Name;
-                GenerationTime = parentPage.GenerationTime;
+                Culture = parentTemplate.Culture;
+                Name = !string.IsNullOrEmpty(parentTemplate.Title)
+                    ? $"{parentTemplate.Name} - {parentTemplate.Title}"
+                    : parentTemplate.Name;
+                GenerationTime = parentTemplate.GenerationTime;
             }
 
             OnAssigned();

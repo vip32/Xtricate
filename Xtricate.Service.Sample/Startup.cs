@@ -8,7 +8,7 @@ using Serilog;
 using Serilog.Events;
 using Xtricate.DocSet.Serilog;
 using Xtricate.Service.Dashboard;
-using Xtricate.Service.Dashboard.Pages;
+using Xtricate.Service.Dashboard.Templates;
 using Xtricate.Web.Dashboard;
 
 namespace Xtricate.Service.Sample

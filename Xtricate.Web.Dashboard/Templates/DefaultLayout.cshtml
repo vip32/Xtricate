@@ -1,7 +1,7 @@
 ﻿@* Generator: Template TypeVisibility: Public GeneratePrettyNames: True *@
 
-@using Xtricate.Web.Dashboard.Pages
-@inherits Xtricate.Web.Dashboard.RazorWebPage
+@using Xtricate.Web.Dashboard.Templates
+@inherits Xtricate.Web.Dashboard.RazorWebTemplate
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,11 +28,11 @@
 </head>
 <body>
     <div id="wrapper">
-        @Html.RenderPartial(new Header())
+        @Html.RenderPartial(new HeaderPartial())
         <div id="page-wrapper">
             @RenderBody()
         </div>
     </div>
-    @Html.RenderPartial(new Footer())
+    @Html.RenderPartial(new FooterPartial())
 </body>
 </html>
