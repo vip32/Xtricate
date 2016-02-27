@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Net;
 using System.Text;
+using System.Threading;
 
 namespace Xtricate.Web.Dashboard
 {
@@ -19,18 +21,22 @@ namespace Xtricate.Web.Dashboard
         protected RazorPage()
         {
             GenerationTime = Stopwatch.StartNew();
-            Html = new HtmlHelper(this);
+            Html = new RazorPageHtmlHelper(this);
             Parameters = new Dictionary<string, string>();
+            ContentType = "text/html";
+            Culture = Thread.CurrentThread.CurrentCulture.Name;
         }
 
-        public IDictionary<string, string> Parameters { get; set; }
-        public Stopwatch GenerationTime { get; set; }
-        public HtmlHelper Html { get; protected set; }
-        public RazorPage Layout { get; protected set; }
-        public UrlHelper Url { get; protected set; }
+        public string Culture { get; set; }
+        public string ContentType { get; set; }
 
-        public string Name { get; set; }
-        public string Title { get; set; }
+        public IDictionary<string, string> Parameters { get; set; }
+        public Stopwatch GenerationTime { get; protected set; }
+        public RazorPageHtmlHelper Html { get; protected set; }
+        public RazorPage Layout { get; protected set; }
+
+        public string Name { get; protected set; }
+        public string Title { get; protected set; }
 
         public string Parameter(string key)
         {
@@ -40,16 +46,25 @@ namespace Xtricate.Web.Dashboard
         }
 
         public abstract void Execute();
-        public override string ToString() => TransformText(null);
+        public override string ToString()
+        {
+            if (string.IsNullOrEmpty(Culture) || Thread.CurrentThread.CurrentCulture.Name.Equals(Culture))
+                return TransformText(null);
+            var culture = Thread.CurrentThread.CurrentCulture.Name;
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(Culture);
+            var result = TransformText(null);
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(culture);
+            return result;
+        }
 
-        public string WriteLiteral(string textToAppend)
+        protected string WriteLiteral(string textToAppend)
         {
             if (string.IsNullOrEmpty(textToAppend)) return "";
             Content.Append(textToAppend);
             return "";
         }
 
-        public virtual void WriteAttribute(string attr,
+        protected virtual void WriteAttribute(string attr,
             Tuple<string, int> token1,
             Tuple<string, int> token2,
             Tuple<Tuple<string, int>, Tuple<object, int>, bool> token3)
@@ -71,7 +86,7 @@ namespace Xtricate.Web.Dashboard
 
         protected virtual object RenderBody() => new NonEscapedString(Body);
 
-        public string TransformText(string body)
+        protected string TransformText(string body)
         {
             Body = body;
 
@@ -93,27 +108,24 @@ namespace Xtricate.Web.Dashboard
                 : WebUtility.HtmlEncode(text);
         }
 
+
         //public abstract void Assign(RazorPage parentPage);
         public virtual void Assign(RazorPage parentPage)
         {
-            Name = !string.IsNullOrEmpty(parentPage.Title)
-                ? $"{parentPage.Name} - {parentPage.Title}"
-                : parentPage.Name;
-            Url = parentPage.Url;
-            GenerationTime = parentPage.GenerationTime;
+            if (parentPage != null)
+            {
+                Culture = parentPage.Culture;
+                Name = !string.IsNullOrEmpty(parentPage.Title)
+                    ? $"{parentPage.Name} - {parentPage.Title}"
+                    : parentPage.Name;
+                GenerationTime = parentPage.GenerationTime;
+            }
 
             OnAssigned();
         }
 
         public virtual void OnAssigned()
         {
-        }
-
-        public virtual void Assign(RequestDispatcherContext context)
-        {
-            Name = context.Name;
-            Url = new UrlHelper(context.OwinEnvironment);
-            OnAssigned();
         }
     }
 }

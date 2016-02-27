@@ -34,6 +34,7 @@ namespace Xtricate.Web.Dashboard
                 _routes.AddRazorPage("/", x => new HomePage());
                 _routes.AddRazorPage("/info", x => new InfoPage
                 {
+                    //Culture = "de-DE",
                     Model = new DashboardInfoViewModel(_routes,
                     _resources.JavascriptEmbeddedResources,
                     _resources.StylesheetEmbeddedResources, new { DynProp = " |dynamic prop test|" })

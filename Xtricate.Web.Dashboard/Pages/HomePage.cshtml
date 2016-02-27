@@ -1,5 +1,6 @@
 ﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
 
+@using Xtricate.Web.Dashboard
 @using Xtricate.Web.Dashboard.Pages
 @inherits Xtricate.Web.Dashboard.RazorWebPage
 @{
@@ -12,8 +13,7 @@
     <div class="col-lg-12">
         <div class="alert alert-dismissable alert-success">
             <button data-dismiss="alert" class="close" type="button">×</button>
-            Welcome to the dashboard! Tincidunt integer eu augue augue nunc elit dolor, luctus placerat scelerisque euismod, iaculis eu lacus nunc mi elit, vehicula ut laoreet ac, aliquam sit amet justo nunc tempor, metus vel.
-            Scelerisque euismod, iaculis eu lacus nunc mi elit, vehicula ut laoreet ac, aliquam sit amet justo nunc tempor, metus vel.
+            Welcome to the dashboard! @Html.LoremIpsum()
         </div>
     </div>
 </div>
@@ -25,7 +25,8 @@
                 </h3>
             </div>
             <div class="panel-body">
-
+                @Html.LoremIpsum()
+                @Html.LoremIpsum()
             </div>
         </div>
     </div>

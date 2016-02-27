@@ -2,11 +2,11 @@
 
 namespace Xtricate.Web.Dashboard
 {
-    public class HtmlHelper
+    public class RazorPageHtmlHelper
     {
         private readonly RazorPage _page;
 
-        public HtmlHelper(RazorPage page)
+        public RazorPageHtmlHelper(RazorPage page)
         {
             if (page == null) throw new ArgumentNullException(nameof(page));
             _page = page;

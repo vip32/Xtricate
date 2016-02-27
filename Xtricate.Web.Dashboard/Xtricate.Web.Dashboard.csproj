@@ -83,9 +83,10 @@
     <Compile Include="DashboardOptions.cs" />
     <Compile Include="EmbeddedResources.cs" />
     <Compile Include="RazorPage.cs" />
+    <Compile Include="RazorPageHtmlHelperExtensions.cs" />
     <Compile Include="RouteCollectionBuilder.cs" />
     <Compile Include="EmbeddedResourceDispatcher.cs" />
-    <Compile Include="HtmlHelper.cs" />
+    <Compile Include="RazorPageHtmlHelper.cs" />
     <Compile Include="IAuthorizationFilter.cs" />
     <Compile Include="IRequestDispatcher.cs" />
     <Compile Include="LocalRequestsOnlyAuthorizationFilter.cs" />
@@ -124,13 +125,7 @@
     <None Include="Xtricate.Web.Dashboard.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\css\bootstrap-theme.min.css" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Content\css\bootstrap.min.css" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Content\css\dashboard.css" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\fonts\glyphicons-halflings-regular.svg" />

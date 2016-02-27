@@ -18,7 +18,6 @@ namespace Xtricate.Service.Dashboard.Controllers
             Logger = Log.ForContext<ProductsController>();
             Products = new Fixture().CreateMany<Product>(500).OrderBy(p => p.Id).ToList();
 
-
             Logger.Information("created the products {ProductCount}", Products.Count());
         }
 
@@ -61,5 +60,6 @@ namespace Xtricate.Service.Dashboard.Controllers
         public string Name { get; set; }
         public string Description { get; set; }
         public string Sku { get; set; }
+        public DateTime Created { get; set; }
     }
 }

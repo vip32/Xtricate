@@ -12,7 +12,7 @@
                 @{
                     var version = GetType().Assembly.GetName().Version;
                 }
-                @string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build)
+                @string.Format("{0}.{1}.{2} [{3}]", version.Major, version.Minor, version.Build, Culture)
             </a>
         </div>
         @*<div class="col-md-3 col-xs-4 col-sm-4 text-left" style="color: white;">

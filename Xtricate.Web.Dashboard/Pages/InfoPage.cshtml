@@ -1,6 +1,7 @@
 ﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
 
 @using System.Reflection
+@using System.Threading
 @using System.Web
 @using Xtricate.Dynamic
 @using Xtricate.Web.Dashboard.Pages
@@ -66,8 +67,10 @@
             </div>
             <div class="panel-body">
                 <ul>
+                    <li>DateTime UTC: @DateTime.UtcNow</li>
                     <li>AppDomain: @AppDomain.CurrentDomain.FriendlyName</li>
                     <li>Assembly: @Assembly.GetExecutingAssembly().FullName</li>
+                    <li>Thread Culture: @Thread.CurrentThread.CurrentCulture.Name / @Thread.CurrentThread.CurrentCulture.DisplayName</li>
                 </ul>
             </div>
         </div>

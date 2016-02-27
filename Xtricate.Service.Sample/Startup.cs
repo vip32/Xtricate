@@ -41,12 +41,13 @@ namespace Xtricate.Service.Sample
                     new Dictionary<string, IRequestDispatcher>
                     {
                         {
-                            "/products", new RazorWebPageDispatcher(x => new ProductIndex())
+                            "/products", new RazorWebPageDispatcher(x => new ProductIndex {Culture = "de-DE"})
                         },
                         {
                             "/products/(?<PageId>\\d+)",
                             new RazorWebPageDispatcher(x => new ProductDetails
                             {
+                                Culture = "de-DE",
                                 Parameters = new Dictionary<string, string>
                                 {
                                     {"id", x.Groups["PageId"].Value}
