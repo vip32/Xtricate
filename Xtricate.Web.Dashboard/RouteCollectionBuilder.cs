@@ -30,7 +30,6 @@ namespace Xtricate.Web.Dashboard
             {
                 if (_routes != null) return _routes;
 
-
                 _routes = new RouteCollection();
                 _routes.AddRazorPage("/", x => new HomePage());
                 _routes.AddRazorPage("/info", x => new InfoPage

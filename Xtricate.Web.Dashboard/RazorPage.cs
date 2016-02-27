@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Text;
-using Microsoft.Owin;
 
 namespace Xtricate.Web.Dashboard
 {
@@ -14,8 +13,8 @@ namespace Xtricate.Web.Dashboard
 
     public abstract class RazorPage
     {
-        private readonly StringBuilder _content = new StringBuilder();
-        private string _body;
+        protected readonly StringBuilder Content = new StringBuilder();
+        protected string Body;
 
         protected RazorPage()
         {
@@ -25,23 +24,13 @@ namespace Xtricate.Web.Dashboard
         }
 
         public IDictionary<string, string> Parameters { get; set; }
-        public string[] Scripts { get; set; }
-        public string[] Stylesheets { get; set; }
+        public Stopwatch GenerationTime { get; set; }
+        public HtmlHelper Html { get; protected set; }
         public RazorPage Layout { get; protected set; }
-        public HtmlHelper Html { get; private set; }
-        public UrlHelper Url { get; private set; }
-        public DashboardOptions Options { get; private set; }
-        public string Name { get; private set; }
+        public UrlHelper Url { get; protected set; }
+
+        public string Name { get; set; }
         public string Title { get; set; }
-        public string AppPath { get; internal set; }
-        public Stopwatch GenerationTime { get; private set; }
-        public IOwinRequest Request { get; set; }
-        public IOwinResponse Response { get; set; }
-
-        public string RequestPath => Request.Path.Value;
-
-        public string RequestFullPath =>
-            $"{Request.Scheme}://{Request.Uri.Host}{(Request.Uri.IsDefaultPort ? string.Empty : ":" + Request.Uri.Port)}{Request.Uri.AbsolutePath}";
 
         public string Parameter(string key)
         {
@@ -51,48 +40,12 @@ namespace Xtricate.Web.Dashboard
         }
 
         public abstract void Execute();
-
-        public string Query(string key) => Request.Query[key];
-
         public override string ToString() => TransformText(null);
-
-        public void Assign(RazorPage parentPage)
-        {
-            Request = parentPage.Request;
-            Response = parentPage.Response;
-            Options = parentPage.Options;
-            Name = !string.IsNullOrEmpty(parentPage.Title)
-                ? $"{parentPage.Name} - {parentPage.Title}"
-                : parentPage.Name;
-            AppPath = parentPage.AppPath;
-            Url = parentPage.Url;
-            Scripts = parentPage.Scripts;
-            Stylesheets = parentPage.Stylesheets;
-            GenerationTime = parentPage.GenerationTime;
-
-            OnAssigned();
-        }
-
-        internal void Assign(RequestDispatcherContext context)
-        {
-            var owinContext = new OwinContext(context.OwinEnvironment);
-            Request = owinContext.Request;
-            Response = owinContext.Response;
-            Options = context.Options;
-            Name = context.Name;
-            AppPath = context.AppPath;
-            Url = new UrlHelper(context.OwinEnvironment);
-            OnAssigned();
-        }
-
-        public virtual void OnAssigned()
-        {
-        }
 
         public string WriteLiteral(string textToAppend)
         {
             if (string.IsNullOrEmpty(textToAppend)) return "";
-            _content.Append(textToAppend);
+            Content.Append(textToAppend);
             return "";
         }
 
@@ -106,7 +59,7 @@ namespace Xtricate.Web.Dashboard
                 value = token3.Item2.Item1;
             else
                 value = string.Empty;
-            _content.Append(token1.Item1 + value + token2.Item1);
+            Content.Append(token1.Item1 + value + token2.Item1);
         }
 
         protected virtual void Write(object value)
@@ -116,21 +69,21 @@ namespace Xtricate.Web.Dashboard
             WriteLiteral(html != null ? html.ToString() : Encode(value.ToString()));
         }
 
-        protected virtual object RenderBody() => new NonEscapedString(_body);
+        protected virtual object RenderBody() => new NonEscapedString(Body);
 
-        private string TransformText(string body)
+        public string TransformText(string body)
         {
-            _body = body;
+            Body = body;
 
             Execute();
 
             if (Layout != null)
             {
                 Layout.Assign(this);
-                return Layout.TransformText(_content.ToString());
+                return Layout.TransformText(Content.ToString());
             }
 
-            return _content.ToString();
+            return Content.ToString();
         }
 
         private static string Encode(string text)
@@ -138,6 +91,29 @@ namespace Xtricate.Web.Dashboard
             return string.IsNullOrEmpty(text)
                 ? string.Empty
                 : WebUtility.HtmlEncode(text);
+        }
+
+        //public abstract void Assign(RazorPage parentPage);
+        public virtual void Assign(RazorPage parentPage)
+        {
+            Name = !string.IsNullOrEmpty(parentPage.Title)
+                ? $"{parentPage.Name} - {parentPage.Title}"
+                : parentPage.Name;
+            Url = parentPage.Url;
+            GenerationTime = parentPage.GenerationTime;
+
+            OnAssigned();
+        }
+
+        public virtual void OnAssigned()
+        {
+        }
+
+        public virtual void Assign(RequestDispatcherContext context)
+        {
+            Name = context.Name;
+            Url = new UrlHelper(context.OwinEnvironment);
+            OnAssigned();
         }
     }
 }

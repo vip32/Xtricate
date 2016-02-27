@@ -5,11 +5,11 @@ using Microsoft.Owin;
 
 namespace Xtricate.Web.Dashboard
 {
-    public class RazorPageDispatcher : IRequestDispatcher
+    public class RazorWebPageDispatcher : IRequestDispatcher
     {
-        private readonly Func<Match, RazorPage> _pageFunc;
+        private readonly Func<Match, RazorWebPage> _pageFunc;
 
-        public RazorPageDispatcher(Func<Match, RazorPage> pageFunc)
+        public RazorWebPageDispatcher(Func<Match, RazorWebPage> pageFunc)
         {
             _pageFunc = pageFunc;
         }

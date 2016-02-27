@@ -82,6 +82,7 @@
     <Compile Include="CombinedResourceDispatcher.cs" />
     <Compile Include="DashboardOptions.cs" />
     <Compile Include="EmbeddedResources.cs" />
+    <Compile Include="RazorPage.cs" />
     <Compile Include="RouteCollectionBuilder.cs" />
     <Compile Include="EmbeddedResourceDispatcher.cs" />
     <Compile Include="HtmlHelper.cs" />
@@ -93,8 +94,8 @@
     <Compile Include="NoAuthorizationFilter.cs" />
     <Compile Include="NonEscapedString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RazorPage.cs" />
-    <Compile Include="RazorPageDispatcher.cs" />
+    <Compile Include="RazorWebPage.cs" />
+    <Compile Include="RazorWebPageDispatcher.cs" />
     <Compile Include="RequestDispatcherContext.cs" />
     <Compile Include="RouteCollection.cs" />
     <Compile Include="RouteCollectionExtensions.cs" />

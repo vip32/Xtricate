@@ -33,7 +33,7 @@ namespace Xtricate.Service.Sample
             Log.Debug("started");
 
             app.UseDashboard(
-                options: new DashboardOptions()
+                options: new DashboardOptions
                 {
                     MenuRoutes = new[] {"/products"}
                 },
@@ -41,11 +41,11 @@ namespace Xtricate.Service.Sample
                     new Dictionary<string, IRequestDispatcher>
                     {
                         {
-                            "/products", new RazorPageDispatcher(x => new ProductIndex())
+                            "/products", new RazorWebPageDispatcher(x => new ProductIndex())
                         },
                         {
                             "/products/(?<PageId>\\d+)",
-                            new RazorPageDispatcher(x => new ProductDetails
+                            new RazorWebPageDispatcher(x => new ProductDetails
                             {
                                 Parameters = new Dictionary<string, string>
                                 {
