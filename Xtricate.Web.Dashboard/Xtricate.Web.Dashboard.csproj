@@ -82,8 +82,8 @@
     <Compile Include="CombinedResourceDispatcher.cs" />
     <Compile Include="DashboardOptions.cs" />
     <Compile Include="EmbeddedResources.cs" />
-    <Compile Include="RazorTemplate.cs" />
-    <Compile Include="RazorPageHtmlHelperExtensions.cs" />
+    <Compile Include="Template.cs" />
+    <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="RouteCollectionBuilder.cs" />
     <Compile Include="EmbeddedResourceDispatcher.cs" />
     <Compile Include="HtmlHelper.cs" />
@@ -95,8 +95,8 @@
     <Compile Include="NoAuthorizationFilter.cs" />
     <Compile Include="NonEscapedString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RazorWebTemplate.cs" />
-    <Compile Include="RazorWebPageDispatcher.cs" />
+    <Compile Include="WebTemplate.cs" />
+    <Compile Include="WebTemplateDispatcher.cs" />
     <Compile Include="RequestDispatcherContext.cs" />
     <Compile Include="RouteCollection.cs" />
     <Compile Include="RouteCollectionExtensions.cs" />
@@ -155,6 +155,10 @@
     <ProjectReference Include="..\Xtricate.Expando\Xtricate.Dynamic.csproj">
       <Project>{9C96D6F2-784A-400C-9306-180D413800BE}</Project>
       <Name>Xtricate.Dynamic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xtricate.Templ\Xtricate.Templ.csproj">
+      <Project>{833b19e6-aee1-49d2-b825-659b42756c28}</Project>
+      <Name>Xtricate.Templ</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

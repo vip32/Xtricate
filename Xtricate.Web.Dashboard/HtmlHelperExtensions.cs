@@ -1,6 +1,6 @@
 namespace Xtricate.Web.Dashboard
 {
-    public static class RazorPageHtmlHelperExtensions
+    public static class HtmlHelperExtensions
     {
         public static string LoremIpsum(this HtmlHelper source)
         {

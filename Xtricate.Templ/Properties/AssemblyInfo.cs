@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Xtricate.Web.Dashboard")]
+[assembly: AssemblyTitle("Xtricate.Templ")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Xtricate.Web.Dashboard")]
-[assembly: AssemblyCopyright("Copyright © 2015")]
+[assembly: AssemblyProduct("Xtricate.Templ")]
+[assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,5 +19,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-
-[assembly: Guid("3fc62e9e-bf9b-4f50-9a8f-5aa74e99b599")]
+[assembly: Guid("833b19e6-aee1-49d2-b825-659b42756c28")]

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Xtricate.Web.Dashboard</id>
+    <id>Xtricate.Templ</id>
     <version>$version$</version>
-    <title>Xtricate.Web.Dashboard</title>
+    <title>Xtricate.Templ</title>
     <authors>vip32</authors>
     <owners>vip32</owners>
     <description>
@@ -21,12 +21,6 @@
     <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
     <copyright></copyright>
     <references></references>
-    <tags>web, mvc, razor, middleware, owin, webpages</tags>
-    <dependencies>
-      <group>
-        <dependency id="Xtricate.Dynamic" version="1.0.0" />
-        <dependency id="Xtricate.Templ" version="1.0.0" />
-      </group>
-    </dependencies>
+    <tags>razor, templ, templating</tags>
   </metadata>
 </package>

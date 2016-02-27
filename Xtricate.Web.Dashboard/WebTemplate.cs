@@ -2,12 +2,12 @@
 
 namespace Xtricate.Web.Dashboard
 {
-    public abstract class RazorWebTemplate<TModel> : RazorWebTemplate
+    public abstract class WebTemplate<TModel> : WebTemplate
     {
         public TModel Model { get; set; }
     }
 
-    public abstract class RazorWebTemplate : RazorTemplate
+    public abstract class WebTemplate : Template
     {
         public string[] Scripts { get; set; }
         public string[] Stylesheets { get; set; }
@@ -26,9 +26,9 @@ namespace Xtricate.Web.Dashboard
 
         public string Query(string key) => Request.Query[key];
 
-        public override void Assign(RazorTemplate parentTemplate)
+        public override void Assign(Template parentTemplate)
         {
-            var webParentPage = parentTemplate as RazorWebTemplate;
+            var webParentPage = parentTemplate as WebTemplate;
             if (webParentPage != null)
             {
                 Culture = webParentPage.Culture;

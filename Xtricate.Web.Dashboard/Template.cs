@@ -8,17 +8,17 @@ using System.Threading;
 
 namespace Xtricate.Web.Dashboard
 {
-    public abstract class RazorTemplate<TModel> : RazorTemplate
+    public abstract class Template<TModel> : Template
     {
         public TModel Model { get; set; }
     }
 
-    public abstract class RazorTemplate
+    public abstract class Template
     {
         protected readonly StringBuilder Content = new StringBuilder();
         protected string Body;
 
-        protected RazorTemplate()
+        protected Template()
         {
             GenerationTime = Stopwatch.StartNew();
             Html = new HtmlHelper(this);
@@ -33,7 +33,7 @@ namespace Xtricate.Web.Dashboard
         public IDictionary<string, string> Parameters { get; set; }
         public Stopwatch GenerationTime { get; protected set; }
         public HtmlHelper Html { get; protected set; }
-        public RazorTemplate Layout { get; protected set; }
+        public Template Layout { get; protected set; }
 
         public string Name { get; protected set; }
         public string Title { get; protected set; }
@@ -109,8 +109,8 @@ namespace Xtricate.Web.Dashboard
         }
 
 
-        //public abstract void Assign(RazorTemplate parentTemplate);
-        public virtual void Assign(RazorTemplate parentTemplate)
+        //public abstract void Assign(Template parentTemplate);
+        public virtual void Assign(Template parentTemplate)
         {
             if (parentTemplate != null)
             {
