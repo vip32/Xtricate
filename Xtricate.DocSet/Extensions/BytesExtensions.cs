@@ -3,7 +3,7 @@ using System.IO.Compression;
 
 namespace Xtricate.DocSet
 {
-    public static class Extensions
+    public static class BytesExtensions
     {
         public static byte[] Compress(this byte[] data)
         {
@@ -15,13 +15,6 @@ namespace Xtricate.DocSet
                     srcStream.CopyTo(gzipStream);
                 return outStream.ToArray();
             }
-        }
-
-        public static void Compress(this Stream srcStream, Stream outStream)
-        {
-            if (srcStream == null) return;
-            using (var gzipStream = new GZipStream(outStream, CompressionMode.Compress))
-                srcStream.CopyTo(gzipStream);
         }
 
         public static byte[] Decompress(this byte[] data)
@@ -36,20 +29,5 @@ namespace Xtricate.DocSet
             }
         }
 
-        public static byte[] ToBytes(this Stream srcStream)
-        {
-            if (srcStream == null) return null;
-            srcStream.Position = 0;
-            var buffer = new byte[16 * 1024];
-            using (var ms = new MemoryStream())
-            {
-                int read;
-                while ((read = srcStream.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    ms.Write(buffer, 0, read);
-                }
-                return ms.ToArray();
-            }
-        }
     }
 }
