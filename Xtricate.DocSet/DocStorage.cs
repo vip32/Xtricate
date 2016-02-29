@@ -128,14 +128,20 @@ namespace Xtricate.DocSet
                     // INSERT ===
                     if (Options.EnableLogging)
                         Log.Debug($"{TableName} insert: key={key},tags={tags?.ToString("||")}");
+                    var insertColumns = "[value]";
+                    if (document != null && data != null) insertColumns += ",[data]";
+                    if (document == null && data != null) insertColumns = "[data]";
+                    var insertValues = "@value";
+                    if (document != null && data != null) insertValues += ",@data";
+                    if (document == null && data != null) insertValues = "@data";
                     sql =
                         $@"
     INSERT INTO {TableName}
-        ([key],[tags],[hash],[timestamp],[value],[data]{
+        ([key],[tags],[hash],[timestamp],{insertColumns}{
                             IndexMaps.NullToEmpty()
                                 .Select(i => ",[" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix + "]")
                                 .ToString("")})
-        VALUES(@key,@tags,@hash,@timestamp,@value,@data{
+        VALUES(@key,@tags,@hash,@timestamp,{insertValues}{
                             IndexMaps.NullToEmpty()
                                 .Select(i => ",@" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix)
                                 .ToString("")})";

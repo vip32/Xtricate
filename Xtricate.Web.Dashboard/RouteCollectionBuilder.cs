@@ -31,8 +31,8 @@ namespace Xtricate.Web.Dashboard
                 if (_routes != null) return _routes;
 
                 _routes = new RouteCollection();
-                _routes.AddRazorPage("/", x => new HomeIndex());
-                _routes.AddRazorPage("/info", x => new InformationIndex
+                _routes.Add("/", x => new HomeIndex());
+                _routes.Add("/info", x => new InformationIndex
                 {
                     //Culture = "de-DE",
                     Model = new InformationViewModel(_routes,

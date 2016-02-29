@@ -5,7 +5,7 @@ namespace Xtricate.Web.Dashboard
 {
     public static class RouteCollectionExtensions
     {
-        public static void AddRazorPage(
+        public static void Add(
             this RouteCollection routes,
             string pathTemplate,
             Func<Match, WebTemplate> pageFunc)
