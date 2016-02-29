@@ -55,14 +55,14 @@ namespace Xtricate.Service.Sample
                             })
                         },
                         {
-                            "/js-treegrid", new CombinedResourceDispatcher(
+                            "/js-treegrid", new ResourceCollectionDispatcher(
                                 "application/javascript",
                                 typeof (Root).Assembly,
                                 RouteCollectionBuilder.GetResourceFolderNamespace(typeof (Root), "js"),
                                 "jquery.treegrid.min.js", "jquery.treegrid.bootstrap3.js")
                         },
                         {
-                            "/css-treegrid", new CombinedResourceDispatcher(
+                            "/css-treegrid", new ResourceCollectionDispatcher(
                                 "text/css",
                                 typeof (Root).Assembly,
                                 RouteCollectionBuilder.GetResourceFolderNamespace(typeof (Root), "css"),

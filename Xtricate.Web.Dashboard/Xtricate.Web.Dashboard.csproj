@@ -79,11 +79,11 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AppBuilderExtensions.cs" />
-    <Compile Include="CombinedResourceDispatcher.cs" />
+    <Compile Include="ResourceCollectionDispatcher.cs" />
     <Compile Include="DashboardOptions.cs" />
     <Compile Include="EmbeddedResources.cs" />
     <Compile Include="RouteCollectionBuilder.cs" />
-    <Compile Include="EmbeddedResourceDispatcher.cs" />
+    <Compile Include="ResourceDispatcher.cs" />
     <Compile Include="IAuthorizationFilter.cs" />
     <Compile Include="IRequestDispatcher.cs" />
     <Compile Include="LocalRequestsOnlyAuthorizationFilter.cs" />

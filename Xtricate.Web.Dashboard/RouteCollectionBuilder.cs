@@ -40,44 +40,44 @@ namespace Xtricate.Web.Dashboard
                     _resources.StylesheetEmbeddedResources, new { DynProp = " |dynamic prop test|" })
                 });
 
-                _routes.Add("/img/logo", new EmbeddedResourceDispatcher(
+                _routes.Add("/img/logo", new ResourceDispatcher(
                     "image/png",
                     typeof (RouteCollectionBuilder).Assembly,
                     GetResourceName("img", "logo.png")));
 
-                _routes.Add("/js", new CombinedResourceDispatcher(
+                _routes.Add("/js", new ResourceCollectionDispatcher(
                     "application/javascript",
                     typeof (RouteCollectionBuilder).Assembly,
                     GetResourceFolderNamespace("js"),
                     _resources.JavascriptEmbeddedResources.ToArray()));
 
-                _routes.Add("/css", new CombinedResourceDispatcher(
+                _routes.Add("/css", new ResourceCollectionDispatcher(
                     "text/css",
                     typeof (RouteCollectionBuilder).Assembly,
                     GetResourceFolderNamespace("css"),
                     _resources.StylesheetEmbeddedResources.ToArray()));
 
-                _routes.Add("/fonts/glyphicons-halflings-regular/eot", new EmbeddedResourceDispatcher(
+                _routes.Add("/fonts/glyphicons-halflings-regular/eot", new ResourceDispatcher(
                     "application/vnd.ms-fontobject",
                     typeof (RouteCollectionBuilder).Assembly,
                     GetResourceName("fonts", "glyphicons-halflings-regular.eot")));
 
-                _routes.Add("/fonts/glyphicons-halflings-regular/svg", new EmbeddedResourceDispatcher(
+                _routes.Add("/fonts/glyphicons-halflings-regular/svg", new ResourceDispatcher(
                     "image/svg+xml",
                     typeof (RouteCollectionBuilder).Assembly,
                     GetResourceName("fonts", "glyphicons-halflings-regular.svg")));
 
-                _routes.Add("/fonts/glyphicons-halflings-regular/ttf", new EmbeddedResourceDispatcher(
+                _routes.Add("/fonts/glyphicons-halflings-regular/ttf", new ResourceDispatcher(
                     "application/octet-stream",
                     typeof (RouteCollectionBuilder).Assembly,
                     GetResourceName("fonts", "glyphicons-halflings-regular.ttf")));
 
-                _routes.Add("/fonts/glyphicons-halflings-regular/woff", new EmbeddedResourceDispatcher(
+                _routes.Add("/fonts/glyphicons-halflings-regular/woff", new ResourceDispatcher(
                     "application/font-woff",
                     typeof (RouteCollectionBuilder).Assembly,
                     GetResourceName("fonts", "glyphicons-halflings-regular.woff")));
 
-                _routes.Add("/fonts/glyphicons-halflings-regular/woff2", new EmbeddedResourceDispatcher(
+                _routes.Add("/fonts/glyphicons-halflings-regular/woff2", new ResourceDispatcher(
                     "application/font-woff2",
                     typeof (RouteCollectionBuilder).Assembly,
                     GetResourceName("fonts", "glyphicons-halflings-regular.woff2")));

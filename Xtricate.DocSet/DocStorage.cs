@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Dapper;
 using Xtricate.DocSet.Logging;
@@ -83,6 +84,17 @@ namespace Xtricate.DocSet
         public virtual StorageAction Upsert(object key, TDoc document, IEnumerable<string> tags = null,
             bool forceInsert = false, DateTime? timestamp = null)
         {
+            return UpsertInternal(key, document: document, tags: tags, forceInsert: forceInsert, timestamp: timestamp);
+        }
+
+        public virtual StorageAction Upsert(object key, Stream data, IEnumerable<string> tags = null,
+            bool forceInsert = false, DateTime? timestamp = null)
+        {
+            return UpsertInternal(key, data: data, tags: tags, forceInsert: forceInsert, timestamp: timestamp);
+        }
+
+        private StorageAction UpsertInternal(object key, TDoc document = default(TDoc), Stream data = null, IEnumerable<string> tags = null, bool forceInsert = false, DateTime? timestamp = null)
+        {
             // http://www.databasejournal.com/features/mssql/using-the-merge-statement-to-perform-an-upsert.html
             using (var conn = CreateConnection())
             {
@@ -90,13 +102,16 @@ namespace Xtricate.DocSet
                 StorageAction result;
                 if (!forceInsert && Exists(key, tags))
                 {
+                    // UPDATE ===
                     if (Options.EnableLogging)
                         Log.Debug($"{TableName} update: key={key},tags={tags?.ToString("||")}");
+                    var updateColumns = "[value]=@value";
+                    if (document != null && data != null) updateColumns += ",[data]=@data";
+                    if (document == null && data != null) updateColumns = "[data]=@data";
                     sql =
                         $@"
-    UPDATE {TableName
-                            }
-    SET [hash]=@hash,[timestamp]=@timestamp,[value]=@value
+    UPDATE {TableName}
+    SET [hash]=@hash,[timestamp]=@timestamp,{updateColumns}
         {
                             IndexMaps.NullToEmpty()
                                 .Select(
@@ -110,29 +125,31 @@ namespace Xtricate.DocSet
                 }
                 else
                 {
+                    // INSERT ===
                     if (Options.EnableLogging)
                         Log.Debug($"{TableName} insert: key={key},tags={tags?.ToString("||")}");
                     sql =
                         $@"
-    INSERT INTO {TableName
-                            }
-        ([key],[tags],[hash],[timestamp],[value]{
+    INSERT INTO {TableName}
+        ([key],[tags],[hash],[timestamp],[value],[data]{
                             IndexMaps.NullToEmpty()
                                 .Select(i => ",[" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix + "]")
                                 .ToString("")})
-        VALUES(@key,@tags,@hash,@timestamp,@value{
+        VALUES(@key,@tags,@hash,@timestamp,@value,@data{
                             IndexMaps.NullToEmpty()
                                 .Select(i => ",@" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix)
                                 .ToString("")})";
                     result = StorageAction.Inserted;
                 }
 
+                // PARAMS
                 var parameters = new DynamicParameters();
                 parameters.Add("key", key.ToString());
                 parameters.Add("tags", $"||{tags.ToString("||")}||");
                 parameters.Add("hash", Hasher?.Compute(document));
                 parameters.Add("timestamp", timestamp ?? DateTime.UtcNow);
                 parameters.Add("value", Serializer.ToJson(document));
+                parameters.Add("data", data.ToBytes().Compress(), DbType.Binary);
                 AddIndexParameters(document, parameters);
 
                 conn.Open();
@@ -174,10 +191,35 @@ namespace Xtricate.DocSet
                 sql += SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn);
                 sql += SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize);
                 conn.Open();
-                var documents = conn.Query<string>(sql, new {key}, buffered: Options.BufferedLoad);
-                if (documents == null) yield break;
-                foreach (var document in documents)
-                    yield return Serializer.FromJson<TDoc>(document);
+                var results = conn.Query<string>(sql, new {key}, buffered: Options.BufferedLoad);
+                if (results == null) yield break;
+                foreach (var result in results)
+                    yield return Serializer.FromJson<TDoc>(result);
+            }
+        }
+
+        public virtual IEnumerable<Stream> LoadData(object key, IEnumerable<string> tags = null,
+            IEnumerable<Criteria> criterias = null,
+            DateTime? fromDateTime = null, DateTime? tillDateTime = null,
+            int skip = 0, int take = 0)
+        {
+            if (Options.EnableLogging)
+                Log.Debug(
+                $"{TableName} load: key={key}, tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
+
+            using (var conn = CreateConnection())
+            {
+                var sql = $@"SELECT [data] FROM {TableName} WHERE [key]='{key}'";
+                tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                sql += SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime);
+                sql += SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn);
+                sql += SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize);
+                conn.Open();
+                var results = conn.Query<byte[]>(sql, new {key}, buffered: Options.BufferedLoad);
+                if (results == null) yield break;
+                foreach (var data in results.Where(data => data != null))
+                    yield return new MemoryStream(data.Decompress());
             }
         }
 
@@ -252,6 +294,11 @@ namespace Xtricate.DocSet
 
         private void AddIndexParameters(TDoc document, DynamicParameters parameters)
         {
+            if (document == null)
+            {
+                AddNullIndexParameters(parameters);
+                return;
+            }
             if (IndexMaps.IsNullOrEmpty()) return;
             if (parameters == null) parameters = new DynamicParameters();
             var indexColumnValues = IndexMaps.ToDictionary(i => i.Name,
@@ -265,6 +312,17 @@ namespace Xtricate.DocSet
                     indexColumnValues.FirstOrDefault(
                         i => i.Key.Equals(item.Name, StringComparison.InvariantCultureIgnoreCase))
                         .ValueOrDefault(i => i.Value));
+            }
+        }
+
+        private void AddNullIndexParameters(DynamicParameters parameters)
+        {
+            if (IndexMaps.IsNullOrEmpty()) return;
+            if (parameters == null) parameters = new DynamicParameters();
+
+            foreach (var item in IndexMaps)
+            {
+                parameters.Add(item.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix, null);
             }
         }
 
@@ -326,7 +384,8 @@ namespace Xtricate.DocSet
     [tags] NVARCHAR(1024) NOT NULL,
     [hash] NVARCHAR(128),
     [timestamp] DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    [value] TEXT);
+    [value] TEXT,
+    [data] VARBINARY(MAX));
 
     CREATE UNIQUE CLUSTERED INDEX [IX_id_{1}] ON {0} (id)
     CREATE INDEX [IX_key_{1}] ON {0} ([key] ASC);

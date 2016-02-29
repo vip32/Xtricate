@@ -5,13 +5,13 @@ using Microsoft.Owin;
 
 namespace Xtricate.Web.Dashboard
 {
-    public class EmbeddedResourceDispatcher : IRequestDispatcher
+    public class ResourceDispatcher : IRequestDispatcher
     {
         private readonly Assembly _assembly;
         private readonly string _contentType;
         private readonly string _resourceName;
 
-        public EmbeddedResourceDispatcher(
+        public ResourceDispatcher(
             string contentType,
             Assembly assembly,
             string resourceName)

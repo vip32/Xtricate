@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity.Infrastructure;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
@@ -222,6 +223,42 @@ namespace Xtricate.IntegrationTests
 
         //    Assert.That(storage.Count(), Is.EqualTo(0));
         //}
+
+
+        [Test]
+        public void InsertDataTest()
+        {
+            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
+            var connectionFactory = new SqlConnectionFactory();
+            var indexMap = TestDocumentIndexMap;
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
+                new JsonNetSerializer(), new Md5Hasher(), indexMap);
+
+            MiniProfiler.Start();
+            var mp = MiniProfiler.Current;
+
+            storage.Reset();
+            var preCount = storage.Count(new[] {"en-US"});
+            Log.Debug($"pre count: {preCount}");
+
+            var key1 = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
+            var inStream1 = File.OpenRead(@"c:\tmp\cat.jpg");
+            storage.Upsert(key1, inStream1, new[] { "en-US" });
+            var outStreams1 = storage.LoadData(key1, new[] {"en-US"});
+            foreach(var outStream in outStreams1)
+                File.WriteAllBytes($@"c:\tmp\cat_{key1}.jpg", outStream.ToBytes());
+            var result1 = storage.Upsert(key1, new Fixture().Create<TestDocument>(), new[] { "en-US" });
+            Assert.That(result1, Is.EqualTo(StorageAction.Updated));
+
+            var key2 = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
+            var inStream2 = File.OpenRead(@"c:\tmp\test.log");
+            storage.Upsert(key2, inStream2, new[] { "en-US" });
+            var outStreams2 = storage.LoadData(key2, new[] { "en-US" });
+            foreach (var outStream in outStreams2)
+                File.WriteAllBytes($@"c:\tmp\test_{key1}.log", outStream.ToBytes());
+            var result2 = storage.Upsert(key2, new Fixture().Create<TestDocument>(), new[] { "en-US" });
+            Assert.That(result2, Is.EqualTo(StorageAction.Updated));
+        }
 
         [Test]
         public void InsertTest()

@@ -3,13 +3,13 @@ using Microsoft.Owin;
 
 namespace Xtricate.Web.Dashboard
 {
-    public class CombinedResourceDispatcher : EmbeddedResourceDispatcher
+    public class ResourceCollectionDispatcher : ResourceDispatcher
     {
         private readonly Assembly _assembly;
         private readonly string _baseNamespace;
         private readonly string[] _resourceNames;
 
-        public CombinedResourceDispatcher(
+        public ResourceCollectionDispatcher(
             string contentType,
             Assembly assembly,
             string baseNamespace,
