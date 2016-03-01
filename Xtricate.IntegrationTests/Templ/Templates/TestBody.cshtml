@@ -1,0 +1,23 @@
+﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
+@using Xtricate.IntegrationTests.Templ.Templates
+@using Xtricate.Templ
+@inherits Xtricate.Templ.Template<Xtricate.IntegrationTests.Templ.PersonModel>
+@{
+    Layout = new TestLayout();
+    Title = "Test";
+}
+====== BODY
+@Html.Include(new HeaderPartial { Model = @Model })
+
+@Text("welcome"), @Model.FirstName @Model.LastName
+@OutProperty("subject", $"{Text("welcome")}: {Model.FirstName} {Model.LastName}")
+
+@Model.Created
+@Model["DynamicPropery"]
+
+@Html.LoremIpsum()
+@Html.LoremIpsum()
+@Html.LoremIpsum()
+
+@Html.Include(new FooterPartial { Model = @Model })
+====== BODY

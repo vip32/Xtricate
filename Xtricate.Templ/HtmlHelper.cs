@@ -12,7 +12,7 @@ namespace Xtricate.Templ
             _template = template;
         }
 
-        public NonEscapedString RenderPartial(Template partialTemplate)
+        public NonEscapedString Include(Template partialTemplate)
         {
             partialTemplate.Assign(_template);
             return new NonEscapedString(partialTemplate.ToString());

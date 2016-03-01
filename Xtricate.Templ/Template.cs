@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace Xtricate.Templ
@@ -23,20 +24,22 @@ namespace Xtricate.Templ
             GenerationTime = Stopwatch.StartNew();
             Html = new HtmlHelper(this);
             Parameters = new Dictionary<string, string>();
+            OutProperties = new Dictionary<string, string>();
+            Texts = new Dictionary<string, IDictionary<string, string>>();
             ContentType = "text/html";
             Culture = Thread.CurrentThread.CurrentCulture.Name;
         }
 
         public string Culture { get; set; }
         public string ContentType { get; set; }
-
         public IDictionary<string, string> Parameters { get; set; }
+        public IDictionary<string, string> OutProperties { get; set; }
+        public IDictionary<string, IDictionary<string, string>> Texts { get; set; }
         public Stopwatch GenerationTime { get; protected set; }
         public HtmlHelper Html { get; protected set; }
-        public Template Layout { get; protected set; }
-
-        public string Name { get; protected set; }
-        public string Title { get; protected set; }
+        public Template Layout { get; set; }
+        public string Name { get; set; }
+        public string Title { get; set; }
 
         public string Parameter(string key)
         {
@@ -45,7 +48,26 @@ namespace Xtricate.Templ
             return value;
         }
 
+        public string Text(string key)
+        {
+            if (string.IsNullOrEmpty(Culture)) return null;
+            IDictionary<string, string> values;
+            Texts.TryGetValue(Culture, out values);
+            if (values == null) return null;
+            string value;
+            values.TryGetValue(key, out value);
+            return value;
+        }
+
+        public string OutProperty(string key, string value, bool output = false)
+        {
+            if (OutProperties.ContainsKey(key)) OutProperties.Remove(key);
+            OutProperties.Add(key, value);
+            return output ? value : string.Empty;
+        }
+
         public abstract void Execute();
+
         public override string ToString()
         {
             if (string.IsNullOrEmpty(Culture) || Thread.CurrentThread.CurrentCulture.Name.Equals(Culture))
@@ -54,7 +76,7 @@ namespace Xtricate.Templ
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(Culture);
             var result = TransformText(null);
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(culture);
-            return result;
+            return Regex.Replace(result, @"^\s+$[\r\n]*", "", RegexOptions.Multiline); // remove empty lines
         }
 
         protected string WriteLiteral(string textToAppend)
@@ -114,6 +136,8 @@ namespace Xtricate.Templ
         {
             if (parentTemplate != null)
             {
+                Texts = parentTemplate.Texts;
+                Parameters = parentTemplate.Parameters;
                 Culture = parentTemplate.Culture;
                 Name = !string.IsNullOrEmpty(parentTemplate.Title)
                     ? $"{parentTemplate.Name} - {parentTemplate.Title}"
