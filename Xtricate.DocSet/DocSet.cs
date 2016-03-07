@@ -6,11 +6,11 @@ namespace Xtricate.DocSet
 {
     public class DocSet<TDoc, TKey> : IDocSet<TDoc, TKey>
     {
-        private readonly IStorage<TDoc> _docStorage;
+        private readonly IDocStorage<TDoc> _docStorage;
         private readonly Func<TDoc, TKey> _key;
         private readonly IEnumerable<Func<TDoc, string>> _tagMap;
 
-        public DocSet(Func<TDoc, TKey> key, IStorage<TDoc> docStorage,
+        public DocSet(Func<TDoc, TKey> key, IDocStorage<TDoc> docStorage,
             IEnumerable<Func<TDoc, string>> tagMap = null)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
@@ -26,16 +26,20 @@ namespace Xtricate.DocSet
             return _docStorage.Count(tags, criteria);
         }
 
-        public IEnumerable<TDoc> Load(TKey key, IEnumerable<string> tags = null, int skip = 0, int take = 0)
+        public IEnumerable<TDoc> Load(TKey key, IEnumerable<string> tags = null,
+            DateTime? fromDateTime = null, DateTime? tillDateTime = null,
+            int skip = 0, int take = 0)
         {
             if (key == null) return null;
-            return _docStorage.Load(key, tags, skip: skip, take: take);
+            return _docStorage.Load(key, tags, null, fromDateTime, tillDateTime, skip, take);
         }
 
         public IEnumerable<TDoc> Load(IEnumerable<string> tags = null,
-            IEnumerable<Criteria> criteria = null, int skip = 0, int take = 0)
+            IEnumerable<Criteria> criteria = null,
+            DateTime? fromDateTime = null, DateTime? tillDateTime = null,
+            int skip = 0, int take = 0)
         {
-            return _docStorage.Load(tags, criteria, skip, take);
+            return _docStorage.Load(tags, criteria, fromDateTime, tillDateTime, skip, take);
         }
 
         public IEnumerable<TDoc> Store(IEnumerable<TDoc> documents, IEnumerable<string> tags = null)

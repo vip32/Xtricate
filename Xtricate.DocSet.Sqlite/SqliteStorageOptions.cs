@@ -6,9 +6,10 @@ namespace Xtricate.DocSet.Sqlite
     {
         public SqliteStorageOptions(string connectionString, string schemaName = null, string tableName = null,
             string tableNamePrefix = null, string tableNameSuffix = null, bool useTransactions = false,
-            bool bufferedLoad = false, int defaultTakeSize = 0, int maxTakeSize = 0)
+            bool bufferedLoad = false, int defaultTakeSize = 1000, int maxTakeSize = 5000, bool enableLogging = true,
+            SortColumn defaultSortColumn = SortColumn.Id)
             : base(connectionString, schemaName, tableName, tableNamePrefix, tableNameSuffix, useTransactions, bufferedLoad,
-                defaultTakeSize, maxTakeSize)
+                defaultTakeSize, maxTakeSize, enableLogging, defaultSortColumn)
         {
         }
 

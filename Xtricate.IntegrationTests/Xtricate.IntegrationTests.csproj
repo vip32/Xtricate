@@ -57,6 +57,18 @@
       <HintPath>..\packages\AutoFixture.3.40.0\lib\net40\Ploeh.AutoFixture.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Serilog, Version=1.5.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.1.5.14\lib\net45\Serilog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Serilog.FullNetFx, Version=1.5.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.1.5.14\lib\net45\Serilog.FullNetFx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Literate, Version=1.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.Literate.1.2.0\lib\net45\Serilog.Sinks.Literate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -84,15 +96,25 @@
     <Compile Include="DocSet\DocStorageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DocSet\SerializerTests.cs" />
+    <Compile Include="Templ\TemplateTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Templ\Templates\FooterPartial.cshtml" />
+    <None Include="Templ\Templates\HeaderPartial.cshtml" />
+    <None Include="Templ\Templates\EmptyBody.cshtml" />
+    <None Include="Templ\Templates\TestLayout.cshtml" />
+    <None Include="Templ\Templates\TestBody.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Xtricate.Configuration\Xtricate.Configuration.csproj">
       <Project>{0cb26ac0-76e4-4688-8cf9-a1526fea32b2}</Project>
       <Name>Xtricate.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xtricate.DocSet.Extras\Xtricate.DocSet.Extras.csproj">
+      <Project>{8dfe7740-4263-4895-b2b1-2da25de2d9d4}</Project>
+      <Name>Xtricate.DocSet.Extras</Name>
     </ProjectReference>
     <ProjectReference Include="..\Xtricate.DocSet.Sqlite\Xtricate.DocSet.Sqlite.csproj">
       <Project>{1932db30-fcec-43d7-ace5-6c0f8cafdfd0}</Project>
@@ -106,6 +128,10 @@
       <Project>{9c96d6f2-784a-400c-9306-180d413800be}</Project>
       <Name>Xtricate.Dynamic</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Xtricate.Templ\Xtricate.Templ.csproj">
+      <Project>{833b19e6-aee1-49d2-b825-659b42756c28}</Project>
+      <Name>Xtricate.Templ</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Xtricate.UnitTests\Xtricate.UnitTests.csproj">
       <Project>{5ad6d818-43b6-468e-aa93-627b8b665d27}</Project>
       <Name>Xtricate.UnitTests</Name>
@@ -114,6 +140,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -121,7 +148,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\packages\RazorGenerator.MsBuild.2.4.1\build\RazorGenerator.MsBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\RazorGenerator.MsBuild.2.4.1\build\RazorGenerator.MsBuild.targets'))" />
   </Target>
+  <Import Project="..\packages\RazorGenerator.MsBuild.2.4.1\build\RazorGenerator.MsBuild.targets" Condition="Exists('..\packages\RazorGenerator.MsBuild.2.4.1\build\RazorGenerator.MsBuild.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -41,6 +41,14 @@
       <HintPath>..\packages\AutoFixture.3.40.0\lib\net40\Ploeh.AutoFixture.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Serilog, Version=1.5.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.1.5.14\lib\net45\Serilog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Serilog.FullNetFx, Version=1.5.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.1.5.14\lib\net45\Serilog.FullNetFx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -64,6 +72,10 @@
     <Compile Include="Root.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Xtricate.Templ\Xtricate.Templ.csproj">
+      <Project>{833b19e6-aee1-49d2-b825-659b42756c28}</Project>
+      <Name>Xtricate.Templ</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Xtricate.Web.Dashboard\Xtricate.Web.Dashboard.csproj">
       <Project>{3FC62E9E-BF9B-4F50-9A8F-5AA74E99B599}</Project>
       <Name>Xtricate.Web.Dashboard</Name>
@@ -72,11 +84,11 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="Pages\ProductDetails.cshtml">
+    <None Include="Templates\ProductDetails.cshtml">
       <!--<Generator>RazorGenerator</Generator>-->
       <!--<LastGenOutput>ProductDetails.generated.cs</LastGenOutput>-->
     </None>
-    <None Include="Pages\ProductIndex.cshtml">
+    <None Include="Templates\ProductIndex.cshtml">
       <!--<Generator>RazorGenerator</Generator>-->
       <!--<LastGenOutput>ProductIndex.generated.cs</LastGenOutput>-->
     </None>

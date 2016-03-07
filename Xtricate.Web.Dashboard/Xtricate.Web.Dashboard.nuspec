@@ -22,5 +22,11 @@
     <copyright></copyright>
     <references></references>
     <tags>web, mvc, razor, middleware, owin, webpages</tags>
+    <dependencies>
+      <group>
+        <dependency id="Xtricate.Dynamic" version="1.0.0" />
+        <dependency id="Xtricate.Templ" version="1.0.0" />
+      </group>
+    </dependencies>
   </metadata>
 </package>

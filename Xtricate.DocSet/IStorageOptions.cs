@@ -12,5 +12,17 @@ namespace Xtricate.DocSet
         string GetTableName<T>(string suffix = null);
         int DefaultTakeSize { get; set; }
         int MaxTakeSize { get; set; }
+        bool EnableLogging { get; set; }
+        SortColumn DefaultSortColumn { get; set; }
+    }
+
+    public enum SortColumn
+    {
+        Id,
+        IdDescending,
+        Key,
+        KeyDescending,
+        Timestamp,
+        TimestampDescending
     }
 }

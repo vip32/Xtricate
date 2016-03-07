@@ -4,8 +4,11 @@ using System.Net.Http.Formatting;
 using System.Web.Http;
 using Newtonsoft.Json.Serialization;
 using Owin;
+using Serilog;
+using Serilog.Events;
+using Xtricate.DocSet.Serilog;
 using Xtricate.Service.Dashboard;
-using Xtricate.Service.Dashboard.Pages;
+using Xtricate.Service.Dashboard.Templates;
 using Xtricate.Web.Dashboard;
 
 namespace Xtricate.Service.Sample
@@ -18,37 +21,54 @@ namespace Xtricate.Service.Sample
 
             ConfigureWebApi(httpConfig);
 
-            app.UseDashboard(new RouteCollectionBuilder(
-                new Dictionary<string, IRequestDispatcher>
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Trace(LogEventLevel.Debug)
+                .WriteTo.LiterateConsole(LogEventLevel.Debug)
+                .WriteTo.DocSet("XtricateTestSqlDb", "StorageTests", LogEventLevel.Information)
+                .Enrich.WithProperty("App", "SampleApp")
+                .Enrich.FromLogContext()
+                .CreateLogger();
+
+            Log.Debug("started");
+
+            app.UseDashboard(
+                options: new DashboardOptions
                 {
+                    MenuRoutes = new[] {"/products"}
+                },
+                routes: new RouteCollectionBuilder(
+                    new Dictionary<string, IRequestDispatcher>
                     {
-                        "/products", new RazorPageDispatcher(x => new ProductIndex())
-                    },
-                    {
-                        "/products/(?<PageId>\\d+)",
-                        new RazorPageDispatcher(x => new ProductDetails
                         {
-                            Parameters = new Dictionary<string, string>
+                            "/products", new RequestDispatcher(x => new ProductIndex {Culture = "de-DE"})
+                        },
+                        {
+                            "/products/(?<PageId>\\d+)",
+                            new RequestDispatcher(x => new ProductDetails
                             {
-                                {"id", x.Groups["PageId"].Value}
-                            }
-                        })
-                    },
-                    {
-                        "/js-treegrid", new CombinedResourceDispatcher(
-                            "application/javascript",
-                            typeof (Root).Assembly,
-                            RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "js"),
-                            "jquery.treegrid.min.js", "jquery.treegrid.bootstrap3.js")
-                    },
-                    {
-                        "/css-treegrid", new CombinedResourceDispatcher(
-                            "text/css",
-                            typeof (Root).Assembly,
-                            RouteCollectionBuilder.GetContentFolderNamespace(typeof (Root), "css"),
-                            "jquery.treegrid.css")
-                    }
-                }).Routes);
+                                Culture = "de-DE",
+                                Parameters = new Dictionary<string, string>
+                                {
+                                    {"id", x.Groups["PageId"].Value}
+                                }
+                            })
+                        },
+                        {
+                            "/js-treegrid", new ResourceCollectionDispatcher(
+                                "application/javascript",
+                                typeof (Root).Assembly,
+                                RouteCollectionBuilder.GetResourceFolderNamespace(typeof (Root), "js"),
+                                "jquery.treegrid.min.js", "jquery.treegrid.bootstrap3.js")
+                        },
+                        {
+                            "/css-treegrid", new ResourceCollectionDispatcher(
+                                "text/css",
+                                typeof (Root).Assembly,
+                                RouteCollectionBuilder.GetResourceFolderNamespace(typeof (Root), "css"),
+                                "jquery.treegrid.css")
+                        }
+                    }).Routes);
             app.UseWebApi(httpConfig);
         }
 

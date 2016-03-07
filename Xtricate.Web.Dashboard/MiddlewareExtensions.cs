@@ -64,6 +64,7 @@ namespace Xtricate.Web.Dashboard
                         }
 
                         var dispatcherContext = new RequestDispatcherContext(
+                            options,
                             options.Name,
                             options.AppPath,
                             context.Environment,

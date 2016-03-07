@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity.Infrastructure;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
+using Serilog;
 using StackExchange.Profiling;
 using Xtricate.Configuration;
 using Xtricate.DocSet;
-using Xtricate.DocSet.Sqlite;
+//using Xtricate.DocSet.Sqlite;
 using Xtricate.Dynamic;
 using Xtricate.UnitTests.TestHelpers;
 using SqlBuilder = Xtricate.DocSet.SqlBuilder;
@@ -37,34 +39,43 @@ namespace Xtricate.IntegrationTests
         [TestFixtureSetUp]
         public void Setup()
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .WriteTo.Trace()
+                //.WriteTo.LiterateConsole()
+                //.WriteTo.File(@"c:\tmp\test2.log")
+                .CreateLogger();
+
             MiniProfiler.Settings.Storage = new MiniPofilerInMemoryStorage();
             MiniProfiler.Settings.ProfilerProvider = new MiniPofilerInMemoryProvider();
         }
 
-        [TestCase(1000, false)]
+        [TestCase(100, false)]
         public void MassInsertTest(int docCount, bool reset)
         {
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             MiniProfiler.Start();
             var mp = MiniProfiler.Current;
 
             if (reset) storage.Reset();
-            Trace.WriteLine($"pre count: {storage.Count(new[] {"en-US"})}");
+            Log.Debug($"pre count: {storage.Count(new[] {"en-US"})}");
 
             var key = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
             for (var i = 1; i <= docCount; i++)
             {
-                Trace.WriteLine($"+{i}");
-                storage.Upsert(key + i, new Fixture().Create<TestDocument>(), new[] {"en-US"});
+                Log.Debug($"+{i}");
+                var doc = new Fixture().Create<TestDocument>();
+                doc.Id = i;
+                storage.Upsert(key + i, doc, new[] {"en-US"}, timestamp: DateTime.Now.AddMinutes(i));
             }
 
-            Trace.WriteLine($"post count: {storage.Count(new[] {"en-US"})}");
-            Trace.WriteLine($"trace: {mp.RenderPlainText()}");
+            Log.Debug($"post count: {storage.Count(new[] {"en-US"})}");
+            Log.Debug($"trace: {mp.RenderPlainText()}");
             MiniProfiler.Stop();
         }
 
@@ -74,7 +85,7 @@ namespace Xtricate.IntegrationTests
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             storage.Initialize();
@@ -115,13 +126,13 @@ namespace Xtricate.IntegrationTests
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests") {BufferedLoad = false};
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             MiniProfiler.Start();
             var mp = MiniProfiler.Current;
 
-            Trace.WriteLine($"pre count: {storage.Count(new[] {"en-US"})}");
+            Log.Debug($"pre count: {storage.Count(new[] {"en-US"})}");
             var key = DateTime.Now.Epoch() + new Random().Next(10000, 99999) + "c";
             var name = "NEWNAME" + key;
             var sku = "";
@@ -134,7 +145,7 @@ namespace Xtricate.IntegrationTests
                 dDocument.Dyn = "dynamic property";
                 var result1 = storage.Upsert(key, document, new[] {"en-US"});
                 Assert.That(result1, Is.EqualTo(StorageAction.Inserted));
-                Trace.WriteLine("newDoc: " + document.Name);
+                Log.Debug("newDoc: " + document.Name);
             }
 
             5.Times(i =>
@@ -171,8 +182,17 @@ namespace Xtricate.IntegrationTests
                     Assert.That(result.FirstOrDefault().Skus.FirstOrDefault().Sku, Is.EqualTo(sku));
                 }
             });
+            5.Times(i =>
+            {
+                using (mp.Step("find by timestamp " + i))
+                {
+                    var result = storage.Load(new[] { "en-US" }, fromDateTime:DateTime.Now.AddMonths(-1), tillDateTime:DateTime.Now).ToList();
+                    Assert.That(result, Is.Not.Null);
+                    Assert.That(result.Any(), Is.True);
+                }
+            });
 
-            Trace.WriteLine($"trace: {mp.RenderPlainText()}");
+            Log.Debug($"trace: {mp.RenderPlainText()}");
             MiniProfiler.Stop();
         }
 
@@ -182,7 +202,7 @@ namespace Xtricate.IntegrationTests
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             storage.Reset();
@@ -190,18 +210,54 @@ namespace Xtricate.IntegrationTests
             Assert.That(storage.Count(), Is.EqualTo(0));
         }
 
+        //[Test]
+        //public void InitializeTest_Sqlite()
+        //{
+        //    var options = new SqliteStorageOptions(new ConnectionStrings().Get("XtricateTestSqliteDb"), "StorageTests");
+        //    var connectionFactory = new SqliteConnectionFactory();
+        //    var indexMap = TestDocumentIndexMap;
+        //    var storage = new SqliteDocStorage<TestDocument>(connectionFactory, options, new SqliteBuilder(options),
+        //        new JsonNetSerializer(), new Md5Hasher(), indexMap);
+
+        //    storage.Reset();
+
+        //    Assert.That(storage.Count(), Is.EqualTo(0));
+        //}
+
+
         [Test]
-        public void InitializeTest_Sqlite()
+        public void InsertDataTest()
         {
-            var options = new SqliteStorageOptions(new ConnectionStrings().Get("XtricateTestSqliteDb"), "StorageTests");
-            var connectionFactory = new SqliteConnectionFactory();
+            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
+            var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new SqliteDocStorage<TestDocument>(connectionFactory, options, new SqliteBuilder(options),
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
-            storage.Reset();
+            MiniProfiler.Start();
+            var mp = MiniProfiler.Current;
 
-            Assert.That(storage.Count(), Is.EqualTo(0));
+            storage.Reset();
+            var preCount = storage.Count(new[] {"en-US"});
+            Log.Debug($"pre count: {preCount}");
+
+            var key1 = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
+            var inStream1 = File.OpenRead(@"c:\tmp\cat.jpg");
+            storage.Upsert(key1, inStream1, new[] { "en-US" });
+            var outStreams1 = storage.LoadData(key1, new[] {"en-US"});
+            foreach(var outStream in outStreams1)
+                File.WriteAllBytes($@"c:\tmp\cat_{key1}.jpg", outStream.ToBytes());
+            var result1 = storage.Upsert(key1, new Fixture().Create<TestDocument>(), new[] { "en-US" });
+            Assert.That(result1, Is.EqualTo(StorageAction.Updated));
+
+            var key2 = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
+            var inStream2 = File.OpenRead(@"c:\tmp\test.log");
+            storage.Upsert(key2, inStream2, new[] { "en-US" });
+            var outStreams2 = storage.LoadData(key2, new[] { "en-US" });
+            foreach (var outStream in outStreams2)
+                File.WriteAllBytes($@"c:\tmp\test_{key1}.log", outStream.ToBytes());
+            var result2 = storage.Upsert(key2, new Fixture().Create<TestDocument>(), new[] { "en-US" });
+            Assert.That(result2, Is.EqualTo(StorageAction.Updated));
         }
 
         [Test]
@@ -210,7 +266,7 @@ namespace Xtricate.IntegrationTests
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             MiniProfiler.Start();
@@ -218,12 +274,12 @@ namespace Xtricate.IntegrationTests
 
             storage.Reset();
             var preCount = storage.Count(new[] {"en-US"});
-            Trace.WriteLine($"pre count: {preCount}");
+            Log.Debug($"pre count: {preCount}");
 
             var key = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
             for (var i = 1; i < 100; i++)
             {
-                Trace.WriteLine($"+{i}");
+                Log.Debug($"+{i}");
                 using (mp.Step("insert " + i))
                 {
                     var result1 = storage.Upsert("key1", new Fixture().Create<TestDocument>(), new[] {"en-US"});
@@ -248,31 +304,32 @@ namespace Xtricate.IntegrationTests
                     var result = storage.Load(new[] {"en-US"}).Take(100);
                     //Assert.That(result, Is.Not.Null);
                     //Assert.That(result, Is.Not.Empty);
-                    Trace.WriteLine($"loaded count: {result.Count()}");
-                    Trace.WriteLine($"first: {result.FirstOrDefault().Id}");
+                    Log.Debug($"loaded count: {result.Count()}");
+                    Log.Debug($"first: {result.FirstOrDefault().Id}");
                     //result.ForEach(r => Trace.Write(r.Id));
                     //result.ForEach(r => Assert.That(r, Is.Not.Null));
-                    result.ForEach(r => Trace.WriteLine(r, r.Name));
+                    result.ForEach(r => Log.Debug(r.Name));
                 }
             }
 
             using (mp.Step("post count"))
             {
                 var postCount = storage.Count(new[] {"en-US"});
-                Trace.WriteLine($"post count: {postCount}");
+                Log.Debug($"post count: {postCount}");
                 //Assert.That(storage.Count(), Is.GreaterThan(preCount));
             }
-            Trace.WriteLine($"trace: {mp.RenderPlainText()}");
+            Log.Debug($"trace: {mp.RenderPlainText()}");
             MiniProfiler.Stop();
         }
 
         [Test]
-        public void UpdateTest()
+        public void UpsertTest()
         {
+            Log.Debug("UpsertTest");
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             MiniProfiler.Start();
@@ -286,12 +343,12 @@ namespace Xtricate.IntegrationTests
                 var newDoc = new Fixture().Create<TestDocument>();
                 var result1 = storage.Upsert(key, newDoc, new[] {"en-US"});
                 Assert.That(result1, Is.EqualTo(StorageAction.Inserted));
-                Trace.WriteLine("newDoc: " + newDoc.Name);
+                Log.Debug("newDoc: " + newDoc.Name);
 
                 newDoc.Name = Guid.NewGuid().ToString();
                 var result2 = storage.Upsert(key, newDoc, new[] {"en-US"});
                 Assert.That(result2, Is.EqualTo(StorageAction.Updated));
-                Trace.WriteLine("newDoc: " + newDoc.Name);
+                Log.Debug("newDoc: " + newDoc.Name);
 
                 var updatedDoc = storage.Load(key, new[] {"en-US"}).ToList();
                 Assert.That(updatedDoc, Is.Not.Null);
@@ -299,23 +356,24 @@ namespace Xtricate.IntegrationTests
                 Assert.That(updatedDoc.Count(), Is.EqualTo(1));
                 Assert.That(updatedDoc.First().Name, Is.Not.Null);
                 Assert.That(updatedDoc.First().Name, Is.EqualTo(newDoc.Name));
-                Trace.WriteLine("updatedDoc: " + updatedDoc.First().Name);
+                Log.Debug("updatedDoc: " + updatedDoc.First().Name);
             }
-            Trace.WriteLine($"trace: {mp.RenderPlainText()}");
+            Log.Debug($"trace: {mp.RenderPlainText()}");
             MiniProfiler.Stop();
         }
 
         [Test]
-        public void PagingTest()
+        public void PagingAndSortingTest()
         {
             var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests")
             {
                 DefaultTakeSize = 3,
-                MaxTakeSize = 5
+                MaxTakeSize = 5,
+                DefaultSortColumn = SortColumn.TimestampDescending
             };
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
-            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(options),
+            var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
                 new JsonNetSerializer(), new Md5Hasher(), indexMap);
 
             MiniProfiler.Start();
@@ -326,14 +384,18 @@ namespace Xtricate.IntegrationTests
             var docs1 = storage.Load(new[] { "en-US" }).ToList();
             Assert.That(docs1, Is.Not.Null);
             Assert.That(docs1.Any(), Is.True);
-            Assert.That(docs1.Count(), Is.EqualTo(options.DefaultTakeSize));
+            Assert.That(docs1.Count, Is.EqualTo(options.DefaultTakeSize));
+            foreach(var doc in docs1)
+                Log.Debug($"doc1: {doc.Id}, {doc.Name}");
 
-            var docs2 = storage.Load(new[] { "en-US" }, skip:1, take:10).ToList();
+            var docs2 = storage.Load(new[] { "en-US" }, skip:0, take:10).ToList();
             Assert.That(docs2, Is.Not.Null);
             Assert.That(docs2.Any(), Is.True);
-            Assert.That(docs2.Count(), Is.EqualTo(options.MaxTakeSize));
+            Assert.That(docs2.Count, Is.EqualTo(options.MaxTakeSize));
+            foreach (var doc in docs2)
+                Log.Debug($"doc2: {doc.Id}, {doc.Name}");
 
-            Trace.WriteLine($"trace: {mp.RenderPlainText()}");
+            Log.Debug($"trace: {mp.RenderPlainText()}");
             MiniProfiler.Stop();
         }
     }

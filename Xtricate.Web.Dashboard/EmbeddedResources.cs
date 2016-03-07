@@ -16,8 +16,7 @@ namespace Xtricate.Web.Dashboard
         public readonly List<string> StylesheetEmbeddedResources = new List<string>
         {
             "bootstrap.min.css",
-            //"bootstrap-theme.min.css",
-            "dashboard.css"
+            "dashboard-dark.css"
         };
 
         public EmbeddedResources(

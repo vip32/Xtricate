@@ -1,32 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace Xtricate.DocSet
 {
     public class SqlBuilder : ISqlBuilder
     {
-        protected readonly IStorageOptions Options;
-
-        public SqlBuilder(IStorageOptions options)
-        {
-            if (options == null) throw new ArgumentNullException(nameof(options));
-
-            Options = options;
-        }
         public virtual string IndexColumnNameSuffix => "_idx";
 
         public virtual string BuildTagSelect(string tag)
         {
+            if (string.IsNullOrEmpty(tag)) return "";
             return $" AND [tags] LIKE '%||{tag}||%'";
         }
 
-        public virtual string BuildCriteriaSelect<TDoc>(IEnumerable<IIndexMap<TDoc>> indexMaps = null, ICriteria criteria = null)
+        public virtual string BuildCriteriaSelect<TDoc>(
+            IEnumerable<IIndexMap<TDoc>> indexMaps = null,
+            ICriteria criteria = null)
         {
             if (indexMaps == null || !indexMaps.Any()) return null;
             if (criteria == null) return null;
-
 
             var indexMap = indexMaps.FirstOrDefault(i =>
                 i.Name.Equals(criteria.Name, StringComparison.InvariantCultureIgnoreCase));
@@ -60,13 +53,42 @@ namespace Xtricate.DocSet
             return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] = '||{value}||' ";
         }
 
-        public virtual string BuildPagingSelect(int skip = 0, int take = 0)
+        public virtual string BuildPagingSelect(int skip = 0, int take = 0,
+            int defaultTakeSize = 1000, int maxTakeSize = 5000)
         {
-            if (skip <= 0 && take <= 0) return $" ORDER BY [KEY] OFFSET {skip} ROWS FETCH NEXT {Options.DefaultTakeSize} ROWS ONLY; ";
+            if (skip <= 0 && take <= 0)
+                return $" OFFSET {skip} ROWS FETCH NEXT {defaultTakeSize} ROWS ONLY; ";
             if (skip <= 0) skip = 0;
-            if (take <= 0) take = Options.DefaultTakeSize;
-            if (take > Options.MaxTakeSize) take = Options.MaxTakeSize;
-            return $" ORDER BY [KEY] OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY; ";
+            if (take <= 0) take = defaultTakeSize;
+            if (take > maxTakeSize) take = maxTakeSize;
+            return $" OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY; ";
+        }
+
+        public virtual string BuildSortingSelect(SortColumn sorting = SortColumn.Id)
+        {
+            if (sorting == SortColumn.IdDescending)
+                return $" ORDER BY [id] DESC ";
+            if (sorting == SortColumn.Key)
+                return $" ORDER BY [key] ";
+            if (sorting == SortColumn.KeyDescending)
+                return $" ORDER BY [key] DESC ";
+            if (sorting == SortColumn.Timestamp)
+                return $" ORDER BY [timestamp] ";
+            if (sorting == SortColumn.TimestampDescending)
+                return $" ORDER BY [timestamp] DESC ";
+            return $" ORDER BY [id] ";
+        }
+
+        public string BuildFromTillDateTimeSelect(
+            DateTime? fromDateTime = null,
+            DateTime? tillDateTime = null)
+        {
+            var result = "";
+            if (fromDateTime.HasValue)
+                result += $" AND [timestamp] >= '{fromDateTime.Value.ToString("s")}'";
+            if (tillDateTime.HasValue)
+                result += $" AND [timestamp] < '{tillDateTime.Value.ToString("s")}'";
+            return result;
         }
 
         public virtual string TableNamesSelect()

@@ -69,6 +69,18 @@
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Serilog, Version=1.5.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.1.5.14\lib\net45\Serilog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Serilog.FullNetFx, Version=1.5.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.1.5.14\lib\net45\Serilog.FullNetFx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Literate, Version=1.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.Literate.1.2.0\lib\net45\Serilog.Sinks.Literate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -135,9 +147,25 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\src\Xtricate.DocSet.Serilog\Xtricate.DocSet.Serilog.csproj">
+      <Project>{4b3dc650-38a3-42bc-a650-c2be3b518144}</Project>
+      <Name>Xtricate.DocSet.Serilog</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xtricate.Configuration\Xtricate.Configuration.csproj">
+      <Project>{0cb26ac0-76e4-4688-8cf9-a1526fea32b2}</Project>
+      <Name>Xtricate.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xtricate.DocSet\Xtricate.DocSet.csproj">
+      <Project>{22fe1723-6131-49e4-b0f7-847419650b6a}</Project>
+      <Name>Xtricate.DocSet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Xtricate.Service.Dashboard\Xtricate.Service.Dashboard.csproj">
       <Project>{3a0bf571-f67c-4f59-aba7-d917884868e5}</Project>
       <Name>Xtricate.Service.Dashboard</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xtricate.Templ\Xtricate.Templ.csproj">
+      <Project>{833b19e6-aee1-49d2-b825-659b42756c28}</Project>
+      <Name>Xtricate.Templ</Name>
     </ProjectReference>
     <ProjectReference Include="..\Xtricate.Web.Dashboard\Xtricate.Web.Dashboard.csproj">
       <Project>{3fc62e9e-bf9b-4f50-9a8f-5aa74e99b599}</Project>
@@ -176,7 +204,9 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.1\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\RazorGenerator.MsBuild.2.4.1\build\RazorGenerator.MsBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\RazorGenerator.MsBuild.2.4.1\build\RazorGenerator.MsBuild.targets'))" />
   </Target>
+  <Import Project="..\packages\RazorGenerator.MsBuild.2.4.1\build\RazorGenerator.MsBuild.targets" Condition="Exists('..\packages\RazorGenerator.MsBuild.2.4.1\build\RazorGenerator.MsBuild.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

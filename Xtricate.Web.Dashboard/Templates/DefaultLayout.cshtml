@@ -1,0 +1,38 @@
+﻿@* Generator: Template TypeVisibility: Public GeneratePrettyNames: True *@
+
+@using Xtricate.Web.Dashboard.Templates
+@inherits Xtricate.Web.Dashboard.WebTemplate
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>@Name</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="@Url.To("/css")" />
+    @if (Stylesheets != null && Stylesheets.Any())
+    {
+        foreach (var stylesheet in Stylesheets)
+        {
+            <link rel="stylesheet" href="@stylesheet" />
+        }
+    }
+    <script src="@Url.To("/js")" type="application/javascript"></script>
+    @if (Scripts != null && Scripts.Any())
+    {
+        foreach (var script in Scripts)
+        {
+            <script src="@script" type="application/javascript"></script>
+        }
+    }
+</head>
+<body>
+    <div id="wrapper">
+        @Html.Include(new HeaderPartial())
+        <div id="page-wrapper">
+            @RenderBody()
+        </div>
+    </div>
+    @Html.Include(new FooterPartial())
+</body>
+</html>

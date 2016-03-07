@@ -1,0 +1,13 @@
+﻿@* Generator: Template TypeVisibility: Public GeneratePrettyNames: True *@
+@using Xtricate.IntegrationTests.Templ.Templates
+@using Xtricate.Templ
+@inherits Xtricate.Templ.Template
+<!DOCTYPE html>
+<html lang="en">
+<body>
+=== LAYOUT
+@RenderBody()
+=== LAYOUT
+took: @(GenerationTime.Elapsed.TotalMilliseconds.ToString("N"))ms
+</body>
+</html>

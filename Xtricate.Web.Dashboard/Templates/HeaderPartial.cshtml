@@ -1,0 +1,83 @@
+﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
+
+@using Xtricate.Web.Dashboard.Templates
+@inherits Xtricate.Web.Dashboard.WebTemplate
+
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="@Url.Home()">
+            <span class="glyphicon glyphicon-dashboard"></span>
+            &nbsp;@Name
+        </a>
+    </div>
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul id="active" class="nav navbar-nav side-nav">
+            <li>&nbsp;</li>
+            @if (Options != null && Options.MenuRoutes != null && Options.MenuRoutes.Any())
+            {
+                foreach (var menuRoute in Options.MenuRoutes)
+                {
+                    <li><a href="@Url.To(menuRoute)"><span class="glyphicon glyphicon-chevron-right"></span> @menuRoute</a></li>
+                }
+            }
+            <li>&nbsp;</li>
+            <li><a @*class="selected"*@ href="@Url.To("/info")"><span class="glyphicon glyphicon-info-sign"></span> Information</a></li>
+            <li><a href="@Url.To("/..")"><span class="glyphicon glyphicon-off"></span> Close</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right navbar-user">
+            @*<li class="dropdown messages-dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> Messages <span class="badge">2</span> <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-header">2 New Messages</li>
+                        <li class="message-preview">
+                            <a href="#">
+                                <span class="avatar"><i class="fa fa-bell"></i></span>
+                                <span class="message">Security alert</span>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li class="message-preview">
+                            <a href="#">
+                                <span class="avatar"><i class="fa fa-bell"></i></span>
+                                <span class="message">Security alert</span>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="#">Go to Inbox <span class="badge">2</span></a></li>
+                    </ul>
+                </li>*@
+            @*<li class="dropdown user-dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <span class="glyphicon glyphicon-tasks"></span>
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="@Url.To("/")"><span class="glyphicon glyphicon-dashboard"></span> Home</a></li>
+                    <li class="divider"></li>
+                    @if (Options != null && Options.MenuRoutes != null && Options.MenuRoutes.Any())
+                    {
+                        foreach (var menuRoute in Options.MenuRoutes)
+                        {
+                            <li><a href="@Url.To(menuRoute)"><span class="glyphicon glyphicon-chevron-right"></span> @menuRoute</a></li>
+                        }
+                    }
+                    <li class="divider"></li>
+                    <li><a href="@Url.To("/info")"><span class="glyphicon glyphicon-info-sign"></span> Information</a></li>
+                    <li><a href="@Url.To("/..")"><span class="glyphicon glyphicon-off"></span> Close</a></li>
+                </ul>
+            </li>*@
+            @*<li class="divider-vertical"></li>
+                <li>
+                    <form class="navbar-search">
+                        <input type="text" placeholder="Search" class="form-control">
+                    </form>
+                </li>*@
+        </ul>
+    </div>
+</nav>

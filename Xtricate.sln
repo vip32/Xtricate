@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.DocSet", "Xtricate.DocSet\Xtricate.DocSet.csproj", "{22FE1723-6131-49E4-B0F7-847419650B6A}"
 EndProject
@@ -30,6 +30,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.Service.Sample", "Xtricate.Service.Sample\Xtricate.Service.Sample.csproj", "{FF326FAC-2925-4B28-AC2A-1B5DDCFB6465}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.Service.Dashboard", "Xtricate.Service.Dashboard\Xtricate.Service.Dashboard.csproj", "{3A0BF571-F67C-4F59-ABA7-D917884868E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.DocSet.Serilog", "src\Xtricate.DocSet.Serilog\Xtricate.DocSet.Serilog.csproj", "{4B3DC650-38A3-42BC-A650-C2BE3B518144}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.DocSet.Extras", "Xtricate.DocSet.Extras\Xtricate.DocSet.Extras.csproj", "{8DFE7740-4263-4895-B2B1-2DA25DE2D9D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.Templ", "Xtricate.Templ\Xtricate.Templ.csproj", "{833B19E6-AEE1-49D2-B825-659B42756C28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +79,18 @@ Global
 		{3A0BF571-F67C-4F59-ABA7-D917884868E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A0BF571-F67C-4F59-ABA7-D917884868E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A0BF571-F67C-4F59-ABA7-D917884868E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B3DC650-38A3-42BC-A650-C2BE3B518144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B3DC650-38A3-42BC-A650-C2BE3B518144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B3DC650-38A3-42BC-A650-C2BE3B518144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B3DC650-38A3-42BC-A650-C2BE3B518144}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DFE7740-4263-4895-B2B1-2DA25DE2D9D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DFE7740-4263-4895-B2B1-2DA25DE2D9D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DFE7740-4263-4895-B2B1-2DA25DE2D9D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DFE7740-4263-4895-B2B1-2DA25DE2D9D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{833B19E6-AEE1-49D2-B825-659B42756C28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{833B19E6-AEE1-49D2-B825-659B42756C28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{833B19E6-AEE1-49D2-B825-659B42756C28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{833B19E6-AEE1-49D2-B825-659B42756C28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,5 +105,8 @@ Global
 		{3FC62E9E-BF9B-4F50-9A8F-5AA74E99B599} = {D296FD55-6AAD-472B-A725-B0296C3E2DE9}
 		{FF326FAC-2925-4B28-AC2A-1B5DDCFB6465} = {FF441F94-956A-46C5-93B4-52650D4C7B4E}
 		{3A0BF571-F67C-4F59-ABA7-D917884868E5} = {FF441F94-956A-46C5-93B4-52650D4C7B4E}
+		{4B3DC650-38A3-42BC-A650-C2BE3B518144} = {D296FD55-6AAD-472B-A725-B0296C3E2DE9}
+		{8DFE7740-4263-4895-B2B1-2DA25DE2D9D4} = {D296FD55-6AAD-472B-A725-B0296C3E2DE9}
+		{833B19E6-AEE1-49D2-B825-659B42756C28} = {D296FD55-6AAD-472B-A725-B0296C3E2DE9}
 	EndGlobalSection
 EndGlobal

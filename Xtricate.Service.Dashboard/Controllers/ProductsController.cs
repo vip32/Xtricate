@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using Ploeh.AutoFixture;
+using Serilog;
 
 namespace Xtricate.Service.Dashboard.Controllers
 {
@@ -9,16 +11,21 @@ namespace Xtricate.Service.Dashboard.Controllers
     public class ProductsController : ApiController
     {
         private static readonly IEnumerable<Product> Products;
+        private static readonly ILogger Logger;
 
         static ProductsController()
         {
-            Products = new Fixture().CreateMany<Product>(2500).OrderBy(p => p.Id);
+            Logger = Log.ForContext<ProductsController>();
+            Products = new Fixture().CreateMany<Product>(500).OrderBy(p => p.Id).ToList();
+
+            Logger.Information("created the products {ProductCount}", Products.Count());
         }
 
         [Route("")]
         // GET: api/Products
         public IEnumerable<Product> Get()
         {
+            Logger.Information("amount of products {ProductCount}, {CorrelationId}, {Unk}", Products.Count(), Guid.NewGuid().ToString(), 123);
             return Products;
         }
 
@@ -26,7 +33,9 @@ namespace Xtricate.Service.Dashboard.Controllers
         // GET: api/Products/5
         public Product Get(int id)
         {
-            return Products.FirstOrDefault(p => p.Id == id);
+            var product = Products.FirstOrDefault(p => p.Id == id);
+            Logger.Debug("product with id {id} {@Product}", id, product);
+            return product;
         }
 
         // POST: api/Products
@@ -51,5 +60,6 @@ namespace Xtricate.Service.Dashboard.Controllers
         public string Name { get; set; }
         public string Description { get; set; }
         public string Sku { get; set; }
+        public DateTime Created { get; set; }
     }
 }
