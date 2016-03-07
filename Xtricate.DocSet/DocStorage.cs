@@ -78,6 +78,7 @@ namespace Xtricate.DocSet
         public virtual StorageAction Upsert(object key, TDoc document, IEnumerable<string> tags = null)
         {
             // http://www.databasejournal.com/features/mssql/using-the-merge-statement-to-perform-an-upsert.html
+            // http://stackoverflow.com/questions/2479488/syntax-for-single-row-merge-upsert-in-sql-server
             using (var conn = CreateConnection())
             {
                 string sql;
