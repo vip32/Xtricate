@@ -96,6 +96,7 @@ namespace Xtricate.DocSet
         private StorageAction UpsertInternal(object key, TDoc document = default(TDoc), Stream data = null, IEnumerable<string> tags = null, bool forceInsert = false, DateTime? timestamp = null)
         {
             // http://www.databasejournal.com/features/mssql/using-the-merge-statement-to-perform-an-upsert.html
+            // http://stackoverflow.com/questions/2479488/syntax-for-single-row-merge-upsert-in-sql-server
             using (var conn = CreateConnection())
             {
                 string sql;
