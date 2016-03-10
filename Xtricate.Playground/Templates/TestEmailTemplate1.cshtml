@@ -1,0 +1,16 @@
+﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
+@using Xtricate.Playground.Templates
+@using Xtricate.Templ
+@inherits Xtricate.Playground.MailTemplate<Xtricate.Playground.EmailModel>
+@{
+    Layout = new TestLayout();
+    Title = "Test";
+}
+====== BODY
+@Text("welcome"), @Model.FirstName @Model.LastName
+@OutProperty("subject", $"{Text("welcome")}: {Model.FirstName} {Model.LastName}")
+@Model.Created
+@Html.LoremIpsum()
+@Html.LoremIpsum()
+@Html.LoremIpsum()
+====== BODY

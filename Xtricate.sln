@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.DocSet.Extras", "X
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.Templ", "Xtricate.Templ\Xtricate.Templ.csproj", "{833B19E6-AEE1-49D2-B825-659B42756C28}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.Playground", "Xtricate.Playground\Xtricate.Playground.csproj", "{6868718B-6203-4E92-9923-615035A82159}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{833B19E6-AEE1-49D2-B825-659B42756C28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{833B19E6-AEE1-49D2-B825-659B42756C28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{833B19E6-AEE1-49D2-B825-659B42756C28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6868718B-6203-4E92-9923-615035A82159}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6868718B-6203-4E92-9923-615035A82159}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6868718B-6203-4E92-9923-615035A82159}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6868718B-6203-4E92-9923-615035A82159}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -108,5 +114,6 @@ Global
 		{4B3DC650-38A3-42BC-A650-C2BE3B518144} = {D296FD55-6AAD-472B-A725-B0296C3E2DE9}
 		{8DFE7740-4263-4895-B2B1-2DA25DE2D9D4} = {D296FD55-6AAD-472B-A725-B0296C3E2DE9}
 		{833B19E6-AEE1-49D2-B825-659B42756C28} = {D296FD55-6AAD-472B-A725-B0296C3E2DE9}
+		{6868718B-6203-4E92-9923-615035A82159} = {FF441F94-956A-46C5-93B4-52650D4C7B4E}
 	EndGlobalSection
 EndGlobal

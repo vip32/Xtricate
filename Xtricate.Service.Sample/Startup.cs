@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http.Formatting;
 using System.Web.Http;
@@ -41,13 +42,14 @@ namespace Xtricate.Service.Sample
                     new Dictionary<string, IRequestDispatcher>
                     {
                         {
-                            "/products", new RequestDispatcher(x => new ProductIndex {Culture = "de-DE"})
+                            "/products",
+                            new RequestDispatcher(x => new ProductIndex {Culture = CultureInfo.GetCultureInfo("de-DE")})
                         },
                         {
                             "/products/(?<PageId>\\d+)",
                             new RequestDispatcher(x => new ProductDetails
                             {
-                                Culture = "de-DE",
+                                Culture = CultureInfo.GetCultureInfo("de-DE"),
                                 Parameters = new Dictionary<string, string>
                                 {
                                     {"id", x.Groups["PageId"].Value}
