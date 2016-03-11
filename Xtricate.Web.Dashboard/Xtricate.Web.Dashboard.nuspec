@@ -30,7 +30,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="Typings\**\*.ts" target="content"  />
+    <file src="Typings\**\*.ts" target="content/Typings"  />
   </files>
     <!--<contentFiles>
       <files include="Typings/**/*.ts" buildAction="TypeScriptCompile" />
