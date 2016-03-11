@@ -29,7 +29,7 @@
       </group>
     </dependencies>
     <contentFiles>
-      <file src="Typings/**/*.ts" buildAction="TypeScriptCompile" />
+      <files src="Typings/**/*.ts" buildAction="TypeScriptCompile" />
     </contentFiles>
   </metadata>
 </package>
