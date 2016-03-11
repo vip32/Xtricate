@@ -1,5 +1,5 @@
-﻿/// <reference path="../../Typings/jquery.d.ts"/>
-/// <reference path="../../Typings/knockout.d.ts"/>
+﻿/// <reference path="../Typings/jquery.d.ts"/>
+/// <reference path="../Typings/knockout.d.ts"/>
 
 setTimeout(() => console.log('hello from ProductIndex.ts'));
 
@@ -11,7 +11,7 @@ var viewModel = {
 ko.applyBindings(viewModel);
 
 $(document).ready(() => {
-    Refresh();
+    refresh();
 });
 
 console.log(sprintf("%2$s %3$s a %1$s", "cracker", "Polly", "wants"));
@@ -19,11 +19,12 @@ console.log(sprintf("Current timestamp: %d", Date.now)); // Current timestamp: 1
 console.log(sprintf("Current date and time: %s", () => new Date().toString()));
 
 $('#refresh').click(() => {
-    Refresh();
+    refresh();
     //$('.tree').treegrid();
 });
 
-function Refresh() {
+function refresh(): void {
+    console.log('refresh');
     viewModel.products(null);
     viewModel.isLoading(true);
     $.getJSON("/api/products", data => {

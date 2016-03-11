@@ -84,11 +84,11 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="Templates\ProductDetails.cshtml">
+    <None Include="Pages\ProductDetails.cshtml">
       <!--<Generator>RazorGenerator</Generator>-->
       <!--<LastGenOutput>ProductDetails.generated.cs</LastGenOutput>-->
     </None>
-    <None Include="Templates\ProductIndex.cshtml">
+    <None Include="Pages\ProductIndex.cshtml">
       <!--<Generator>RazorGenerator</Generator>-->
       <!--<LastGenOutput>ProductIndex.generated.cs</LastGenOutput>-->
     </None>
@@ -99,9 +99,10 @@
     <EmbeddedResource Include="Resources\js\jquery.treegrid.min.js" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\ts\ProductIndex.ts" />
+    <EmbeddedResource Include="Pages\ProductIndex.ts" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Pages\ProductDetails.ts" />
     <TypeScriptCompile Include="Typings\jquery.d.ts" />
     <TypeScriptCompile Include="Typings\knockout.d.ts" />
     <TypeScriptCompile Include="Typings\knockout.mapping.d.ts" />

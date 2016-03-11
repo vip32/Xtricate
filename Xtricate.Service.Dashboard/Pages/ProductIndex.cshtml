@@ -2,14 +2,14 @@
 
 @using Xtricate.Service.Dashboard
 @using Xtricate.Web.Dashboard
-@using Xtricate.Web.Dashboard.Templates
+@using Xtricate.Web.Dashboard.Pages
 @inherits Xtricate.Web.Dashboard.WebTemplate
 @{
     Layout = new DefaultLayout();
     Scripts = new[] { Url.To("/js-treegrid") };
     Stylesheets = new[] { Url.To("/css-treegrid") };
-    TypeScripts = new[] {Url.To("/ts-productindex")};
-    Title = "Products";
+    TypeScripts = new[] { Url.To("/_ts/" + GetType().Name) };
+    Title = "Product Index";
 }
 
 <div class="row show-grid">

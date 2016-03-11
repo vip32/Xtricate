@@ -9,12 +9,9 @@ namespace Xtricate.Web.Dashboard
         private readonly string _baseNamespace;
         private readonly string[] _resourceNames;
 
-        public ResourceCollectionDispatcher(
-            string contentType,
-            Assembly assembly,
-            string baseNamespace,
+        public ResourceCollectionDispatcher(string contentType, string baseNamespace, Assembly assembly,
             params string[] resourceNames)
-            : base(contentType, assembly, null)
+            : base(contentType, null, assembly)
         {
             _assembly = assembly;
             _baseNamespace = baseNamespace;

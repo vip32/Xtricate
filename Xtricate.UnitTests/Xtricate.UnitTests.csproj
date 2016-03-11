@@ -60,6 +60,7 @@
     <Compile Include="TestHelpers\Extensions.cs" />
     <Compile Include="TestHelpers\MiniPofilerInMemoryProvider.cs" />
     <Compile Include="TestHelpers\MiniPofilerInMemoryStorage.cs" />
+    <Compile Include="Web.Dashboard\RegExTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

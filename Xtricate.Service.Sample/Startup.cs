@@ -9,7 +9,7 @@ using Serilog;
 using Serilog.Events;
 using Xtricate.DocSet.Serilog;
 using Xtricate.Service.Dashboard;
-using Xtricate.Service.Dashboard.Templates;
+using Xtricate.Service.Dashboard.Pages;
 using Xtricate.Web.Dashboard;
 
 namespace Xtricate.Service.Sample
@@ -43,18 +43,12 @@ namespace Xtricate.Service.Sample
                     {
                         {
                             "/products",
-                            new RequestDispatcher(x => new ProductIndex {Culture = CultureInfo.GetCultureInfo("de-DE")})
-                        },
-                        {
-                            "/ts-productindex", new ResourceCollectionDispatcher(
-                                "application/typescript",
-                                typeof (Root).Assembly,
-                                RouteCollectionBuilder.GetResourceFolderNamespace(typeof (Root), "ts"),
-                                "ProductIndex.ts")
+                            new TemplateRequestDispatcher(
+                                x => new ProductIndex {Culture = CultureInfo.GetCultureInfo("de-DE")})
                         },
                         {
                             "/products/(?<PageId>\\d+)",
-                            new RequestDispatcher(x => new ProductDetails
+                            new TemplateRequestDispatcher(x => new ProductDetails
                             {
                                 Culture = CultureInfo.GetCultureInfo("de-DE"),
                                 Parameters = new Dictionary<string, string>
@@ -64,18 +58,28 @@ namespace Xtricate.Service.Sample
                             })
                         },
                         {
+                            @"/_ts/(?<ScriptName>\S+)",
+                            new ResourceRequestDispatcher(x => new ResourceDispatcher("application/typescript",
+                                RouteCollectionBuilder.GetPagesFolderNamespace(typeof (Root)) + "." +
+                                x.Groups["ScriptName"].Value + ".ts")) // , typeof (Root).Assembly
+                        },
+                        //{
+                        //    @"/_js/(?<ScriptName>\S+)",
+                        //    new ResourceRequestDispatcher(x => new ResourceDispatcher("application/javascript",
+                        //        RouteCollectionBuilder.GetPagesFolderNamespace(typeof (Root)) + "." +
+                        //        x.Groups["ScriptName"].Value + ".js")) // , typeof (Root).Assembly
+                        //},
+                        {
                             "/js-treegrid", new ResourceCollectionDispatcher(
                                 "application/javascript",
-                                typeof (Root).Assembly,
-                                RouteCollectionBuilder.GetResourceFolderNamespace(typeof (Root), "js"),
-                                "jquery.treegrid.min.js", "jquery.treegrid.bootstrap3.js")
+                                RouteCollectionBuilder.GetResourcesFolderNamespace(typeof (Root), "js"),
+                                typeof (Root).Assembly, "jquery.treegrid.min.js", "jquery.treegrid.bootstrap3.js")
                         },
                         {
                             "/css-treegrid", new ResourceCollectionDispatcher(
                                 "text/css",
-                                typeof (Root).Assembly,
-                                RouteCollectionBuilder.GetResourceFolderNamespace(typeof (Root), "css"),
-                                "jquery.treegrid.css")
+                                RouteCollectionBuilder.GetResourcesFolderNamespace(typeof (Root), "css"),
+                                typeof (Root).Assembly, "jquery.treegrid.css")
                         }
                     }).Routes);
             app.UseWebApi(httpConfig);

@@ -1,11 +1,12 @@
 ﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
 
-@using Xtricate.Web.Dashboard.Templates
+@using Xtricate.Web.Dashboard.Pages
 @inherits Xtricate.Web.Dashboard.WebTemplate
 @{
     Layout = new DefaultLayout();
     Scripts = new[] { Url.To("/js-treegrid") };
     Stylesheets = new[] { Url.To("/css-treegrid") };
+    TypeScripts = new[] { Url.To("/_ts/" + GetType().Name) };
     Title = "Product Details " + Parameters["id"];
 }
 
@@ -43,32 +44,5 @@
 </script>
 
 <script type="text/javascript">
-    var data = {};
-    var viewModel = {
-        isLoading: ko.observable(false),
-        name: ko.observable(),
-        description: ko.observable(),
-        sku: ko.observable()
-    };
-    ko.applyBindings(viewModel);
 
-    $(document).ready(function () {
-        Refresh();
-    });
-
-    $('#refresh').click(function () {
-        Refresh();
-        $('.tree').treegrid();
-    });
-
-    function Refresh() {
-        viewModel.isLoading(true);
-        $.getJSON("/api/products/@Parameter("id")", function (data) {
-            //console.log(data);
-            viewModel.isLoading(false);
-            viewModel.name(data.name);
-            viewModel.description(data.description);
-            viewModel.sku(data.sku);
-        });
-    };
 </script>

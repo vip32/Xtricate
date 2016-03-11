@@ -5,11 +5,11 @@ using Microsoft.Owin;
 
 namespace Xtricate.Web.Dashboard
 {
-    public class RequestDispatcher : IRequestDispatcher
+    public class TemplateRequestDispatcher : IRequestDispatcher
     {
         private readonly Func<Match, WebTemplate> _templateFunc;
 
-        public RequestDispatcher(Func<Match, WebTemplate> templateFunc)
+        public TemplateRequestDispatcher(Func<Match, WebTemplate> templateFunc)
         {
             _templateFunc = templateFunc;
         }

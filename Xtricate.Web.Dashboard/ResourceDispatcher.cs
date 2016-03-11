@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Owin;
@@ -10,16 +12,16 @@ namespace Xtricate.Web.Dashboard
         private readonly Assembly _assembly;
         private readonly string _contentType;
         private readonly string _resourceName;
+        private IEnumerable<Assembly> _assemblies;
 
-        public ResourceDispatcher(
-            string contentType,
-            Assembly assembly,
-            string resourceName)
+        public ResourceDispatcher(string contentType, string resourceName, Assembly assembly = null)
         {
             if (contentType == null) throw new ArgumentNullException(nameof(contentType));
-            if (assembly == null) throw new ArgumentNullException(nameof(assembly));
+            //if (assembly == null) throw new ArgumentNullException(nameof(assembly));
 
             _assembly = assembly;
+            if(assembly == null)
+                _assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList().Where(a => !a.IsDynamic);
             _resourceName = resourceName;
             _contentType = contentType;
         }
@@ -43,22 +45,29 @@ namespace Xtricate.Web.Dashboard
 
         protected void WriteResource(IOwinResponse response, Assembly assembly, string resourceName)
         {
-            using (var inputStream = assembly.GetManifestResourceStream(resourceName))
-            {
-                if (inputStream == null)
-                {
-                    throw new ArgumentException(string.Format(
-                        @"Resource with name {0} not found in assembly {1}.",
-                        resourceName, assembly));
-                }
+            if(assembly != null) _assemblies = new[] {assembly};
+            var found = false;
 
-                var buffer = new byte[Math.Min(inputStream.Length, 4096)];
-                var readLength = inputStream.Read(buffer, 0, buffer.Length);
-                while (readLength > 0)
+            foreach (var a in _assemblies)
+            {
+                using (var inputStream = a.GetManifestResourceStream(resourceName))
                 {
-                    response.Write(buffer, 0, readLength);
-                    readLength = inputStream.Read(buffer, 0, buffer.Length);
+                    if (inputStream == null) continue;
+
+                    found = true;
+                    var buffer = new byte[Math.Min(inputStream.Length, 4096)];
+                    var readLength = inputStream.Read(buffer, 0, buffer.Length);
+                    while (readLength > 0)
+                    {
+                        response.Write(buffer, 0, readLength);
+                        readLength = inputStream.Read(buffer, 0, buffer.Length);
+                    }
                 }
+            }
+            if (!found)
+            {
+                throw new ArgumentException(string.Format(
+                    @"Resource with name {0} not found in any assembly.", resourceName));
             }
         }
     }
