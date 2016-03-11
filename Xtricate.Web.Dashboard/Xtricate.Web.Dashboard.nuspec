@@ -29,10 +29,10 @@
       </group>
     </dependencies>
   </metadata>
-  <!--<files>
+  <files>
     <file src="Typings\**\*.ts" target="Typings"  />
-  </files>-->
-    <contentFiles>
+  </files>
+    <!--<contentFiles>
       <files include="Typings/**/*.ts" buildAction="TypeScriptCompile" />
-    </contentFiles>
+    </contentFiles>-->
 </package>
