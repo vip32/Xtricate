@@ -10,7 +10,14 @@ namespace Xtricate.Web.Dashboard
             "bootstrap.min.js",
             "lodash.min.js",
             "knockout.min.js",
-            "knockout.mapping.js"
+            "knockout.mapping.js",
+            "sprintf.min.js"
+        };
+
+        public readonly List<string> TypescriptEmbeddedResources = new List<string>
+        {
+            "typescriptservices.js",
+            "typescripttranspiler.js"
         };
 
         public readonly List<string> StylesheetEmbeddedResources = new List<string>
@@ -21,9 +28,11 @@ namespace Xtricate.Web.Dashboard
 
         public EmbeddedResources(
             string[] javascriptEmbeddedResources = null,
+            string[] typescriptEmbeddedResources = null,
             string[] stylesheetEmbeddedResources = null)
         {
             if (javascriptEmbeddedResources != null) JavascriptEmbeddedResources.AddRange(javascriptEmbeddedResources);
+            if (typescriptEmbeddedResources != null) TypescriptEmbeddedResources.AddRange(typescriptEmbeddedResources);
             if (stylesheetEmbeddedResources != null) StylesheetEmbeddedResources.AddRange(stylesheetEmbeddedResources);
         }
     }

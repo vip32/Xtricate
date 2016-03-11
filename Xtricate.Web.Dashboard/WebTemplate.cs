@@ -11,6 +11,7 @@ namespace Xtricate.Web.Dashboard
     public abstract class WebTemplate : Template
     {
         public string[] Scripts { get; set; }
+        public string[] TypeScripts { get; set; }
         public string[] Stylesheets { get; set; }
         public DashboardOptions Options { get; set; }
         public string AppPath { get; internal set; }
@@ -20,8 +21,7 @@ namespace Xtricate.Web.Dashboard
         public string RequestPath => Request.Path.Value;
 
         public string RequestFullPath =>
-            $"{Request.Scheme}://{Request.Uri.Host}{(Request.Uri.IsDefaultPort ? string.Empty : ":" + Request.Uri.Port)}{Request.Uri.AbsolutePath}"
-            ;
+            $"{Request.Scheme}://{Request.Uri.Host}{(Request.Uri.IsDefaultPort ? string.Empty : ":" + Request.Uri.Port)}{Request.Uri.AbsolutePath}";
 
         public UrlHelper Url { get; protected set; }
 
@@ -39,6 +39,7 @@ namespace Xtricate.Web.Dashboard
                 Response = webParentPage.Response;
                 AppPath = webParentPage.AppPath;
                 Scripts = webParentPage.Scripts;
+                TypeScripts = webParentPage.TypeScripts;
                 Stylesheets = webParentPage.Stylesheets;
             }
             base.Assign(parentTemplate);

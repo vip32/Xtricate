@@ -159,6 +159,19 @@
       <Name>Xtricate.Templ</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\js\typescriptservices.js" />
+    <EmbeddedResource Include="Resources\js\typescripttranspiler.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\js\sprintf.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Typings\jquery.d.ts" />
+    <TypeScriptCompile Include="Typings\knockout.d.ts" />
+    <TypeScriptCompile Include="Typings\knockout.mapping.d.ts" />
+    <TypeScriptCompile Include="Typings\lodash.d.ts" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\RazorGenerator.MsBuild.2.4.1\build\RazorGenerator.MsBuild.targets" Condition="Exists('..\packages\RazorGenerator.MsBuild.2.4.1\build\RazorGenerator.MsBuild.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

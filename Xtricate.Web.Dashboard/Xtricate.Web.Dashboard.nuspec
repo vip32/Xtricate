@@ -28,5 +28,8 @@
         <dependency id="Xtricate.Templ" version="1.0.0" />
       </group>
     </dependencies>
+    <files>
+      <file src="Typings\**\*.ts" target="Typings" />
+    </files>
   </metadata>
 </package>

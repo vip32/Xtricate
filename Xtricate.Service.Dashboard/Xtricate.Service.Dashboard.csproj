@@ -94,9 +94,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\css\jquery.treegrid.css" />
-    <EmbeddedResource Include="Content\js\jquery.treegrid.bootstrap3.js" />
-    <EmbeddedResource Include="Content\js\jquery.treegrid.min.js" />
+    <EmbeddedResource Include="Resources\css\jquery.treegrid.css" />
+    <EmbeddedResource Include="Resources\js\jquery.treegrid.bootstrap3.js" />
+    <EmbeddedResource Include="Resources\js\jquery.treegrid.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ts\ProductIndex.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Typings\jquery.d.ts" />
+    <TypeScriptCompile Include="Typings\knockout.d.ts" />
+    <TypeScriptCompile Include="Typings\knockout.mapping.d.ts" />
+    <TypeScriptCompile Include="Typings\lodash.d.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\RazorGenerator.MsBuild.2.4.1\build\RazorGenerator.MsBuild.targets" Condition="Exists('..\packages\RazorGenerator.MsBuild.2.4.1\build\RazorGenerator.MsBuild.targets')" />

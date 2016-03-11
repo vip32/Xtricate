@@ -51,6 +51,12 @@ namespace Xtricate.Web.Dashboard
                     GetResourceFolderNamespace("js"),
                     _resources.JavascriptEmbeddedResources.ToArray()));
 
+                _routes.Add("/ts", new ResourceCollectionDispatcher(
+                    "application/javascript",
+                    typeof(RouteCollectionBuilder).Assembly,
+                    GetResourceFolderNamespace("js"),
+                    _resources.TypescriptEmbeddedResources.ToArray()));
+
                 _routes.Add("/css", new ResourceCollectionDispatcher(
                     "text/css",
                     typeof (RouteCollectionBuilder).Assembly,

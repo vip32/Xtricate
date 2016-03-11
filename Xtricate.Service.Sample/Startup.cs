@@ -46,6 +46,13 @@ namespace Xtricate.Service.Sample
                             new RequestDispatcher(x => new ProductIndex {Culture = CultureInfo.GetCultureInfo("de-DE")})
                         },
                         {
+                            "/ts-productindex", new ResourceCollectionDispatcher(
+                                "application/typescript",
+                                typeof (Root).Assembly,
+                                RouteCollectionBuilder.GetResourceFolderNamespace(typeof (Root), "ts"),
+                                "ProductIndex.ts")
+                        },
+                        {
                             "/products/(?<PageId>\\d+)",
                             new RequestDispatcher(x => new ProductDetails
                             {

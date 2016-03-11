@@ -38,6 +38,10 @@
     </tbody>
 </table>
 
+<script type="text/typescript">
+    setTimeout(()=>console.log('hello from typescript'));
+</script>
+
 <script type="text/javascript">
     var data = {};
     var viewModel = {
@@ -60,7 +64,7 @@
     function Refresh() {
         viewModel.isLoading(true);
         $.getJSON("/api/products/@Parameter("id")", function (data) {
-            console.log(data);
+            //console.log(data);
             viewModel.isLoading(false);
             viewModel.name(data.name);
             viewModel.description(data.description);

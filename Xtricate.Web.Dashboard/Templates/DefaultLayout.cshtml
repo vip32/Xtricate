@@ -17,12 +17,12 @@
             <link rel="stylesheet" href="@stylesheet" />
         }
     }
-    <script src="@Url.To("/js")" type="application/javascript"></script>
+    <script src="@Url.To("/js")" type="text/javascript"></script>
     @if (Scripts != null && Scripts.Any())
     {
         foreach (var script in Scripts)
         {
-            <script src="@script" type="application/javascript"></script>
+            <script src="@script" type="text/javascript"></script>
         }
     }
 </head>
@@ -35,4 +35,12 @@
     </div>
     @Html.Include(new FooterPartial())
 </body>
+@if (TypeScripts != null && TypeScripts.Any())
+    {
+        foreach (var script in TypeScripts)
+        {
+            <script src="@script" type="text/typescript"></script>
+        }
+    }
+<script src="@Url.To("/ts")" type="text/javascript"></script>
 </html>
