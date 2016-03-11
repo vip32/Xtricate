@@ -22,7 +22,7 @@
     <copyright></copyright>
     <references></references>
     <tags>razor, templ, templating</tags>
-  <dependencies>
+    <dependencies>
       <group>
         <dependency id="RazorGenerator.MsBuild" version="2.4.1" />
       </group>
