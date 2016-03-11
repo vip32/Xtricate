@@ -28,10 +28,10 @@
         <dependency id="Xtricate.Templ" version="1.0.0" />
       </group>
     </dependencies>
-    <files>
-      <file src="Typings\**\*.ts" target="Typings"  />
-    </files>
   </metadata>
+  <files>
+    <file src="Typings\**\*.ts" target="content"  />
+  </files>
     <!--<contentFiles>
       <files include="Typings/**/*.ts" buildAction="TypeScriptCompile" />
     </contentFiles>-->
