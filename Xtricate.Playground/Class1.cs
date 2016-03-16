@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using Xtricate.Dynamic;
 using Xtricate.Playground.Templates;
@@ -27,25 +23,27 @@ namespace Xtricate.Playground
             _templatesDefinitions = templatesDefinitions;
         }
 
-        public MailTemplate<TModel> Create<TModel>(string name, CultureInfo culture)
+        public MailTemplate<TModel> Create<TModel>(string key, IEnumerable<string> tags, CultureInfo culture)
         {
             var definition = _templatesDefinitions.FirstOrDefault(t =>
-                         t.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase ) &&
+                         t.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase ) &&
                          t.Culture.Equals(culture));
-            if (definition == null) throw new Exception($"no template found for name={name} and culture={culture.Name}");
-            var instance = (MailTemplate<TModel>)Activator.CreateInstance(definition.Type, new object[] { });
+            if (definition == null) throw new Exception($"no template found for name={key} and culture={culture.Name}");
+            var instance = (MailTemplate<TModel>)Activator.CreateInstance(definition.TemplateType, new object[] { });
             if (instance == null) throw new Exception($"template should be of type 'MailTemplate<{typeof(TModel).Name}>'");
             instance.Culture = culture;
-            // TODO: set texts
+            // TODO: set texts here
             return instance;
         }
     }
 
     public class MailTemplateDefinition
     {
-        public string Name { get; set; }
+        public string Key { get; set; }
+        public IEnumerable<string> Tags { get; set; }
         public CultureInfo Culture { get; set; }
-        public Type Type { get; set; }
+        public Type TemplateType { get; set; }
+        public Type ModelType { get; set; }
     }
 
     public abstract class MailTemplate<TModel> : MailTemplate
@@ -80,34 +78,68 @@ namespace Xtricate.Playground
         [Test]
         public void Test2()
         {
+            // all templates registered in kernel
             var factory = new MailTemplateFactory(
                 new List<MailTemplateDefinition>
                 {
                     new MailTemplateDefinition
                     {
-                        Name = "OrderConfirmation",
+                        Key = "OrderConfirmation",
+                        Tags = null,
                         Culture = CultureInfo.GetCultureInfo("de-DE"),
-                        Type = typeof (TestEmailTemplate1)
+                        TemplateType = typeof (TestEmailTemplate1),
+                        ModelType = typeof (EmailTemplate1Model),
                     }
                 });
 
-            var templ = factory.Create<EmailModel>("OrderConfirmation", CultureInfo.GetCultureInfo("de-DE"));
+            // called from > controller > service > factory
+            var templ = factory.Create<EmailTemplate1Model>("OrderConfirmation", null, CultureInfo.GetCultureInfo("de-DE"));
             Assert.That(templ, Is.Not.Null);
-            templ.Model = new EmailModel();
+            templ.Model = new EmailTemplate1Model
+            {
+                FirstName = "John",
+                LastName = "Doe"
+            };
+            templ.Texts = new PropertyBag<IDictionary<string, string>>
+            {
+                {
+                    CultureInfo.GetCultureInfo("de-DE").Name, new Dictionary<string, string>()
+                    {
+                        {"welcome", "Wilkommen"}
+                    }
+                },
+                {
+                    CultureInfo.GetCultureInfo("nl-NL").Name, new Dictionary<string, string>()
+                    {
+                        {"welcome", "Welkom"}
+                    }
+                }
+            };
 
             var body = templ.ToString();
             Assert.That(body, Is.Not.Null.Or.Empty);
+            Assert.That(templ.OutProperties.Any());
+            Assert.That(templ.OutProperties.ContainsKey("subject"));
             Trace.WriteLine(body);
+            Trace.WriteLine(templ.OutProperties["subject"]);
         }
     }
 
-    public class EmailModel : Expando
+    public class EmailTemplate1Model : Expando
     {
         public DateTime Created => new DateTime(2000, 10, 10);
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Subject { get; set; }
-        public string To { get; set; }
-        public string From { get; set; }
     }
+
+    //public class MailMessage
+    //{
+
+    //}
+
+    //public class MailAttachment
+    //{
+    //    public string Name { get; set; }
+    //    byte[] Data { get; set; }
+    //}
 }

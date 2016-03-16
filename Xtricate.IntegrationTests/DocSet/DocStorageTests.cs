@@ -173,6 +173,16 @@ namespace Xtricate.IntegrationTests
 
             5.Times(i =>
             {
+                using (mp.Step("find by NAME with sql delimiter character " + i))
+                {
+                    var criterias = new List<Criteria> { new Criteria("name", CriteriaOperator.Eq, "'") };
+                    var result = storage.Load(new[] { "en-US" }, criterias).ToList();
+                    Assert.That(result, Is.Null.Or.Empty);
+                }
+            });
+
+            5.Times(i =>
+            {
                 using (mp.Step("find by SKU criteria/tags " + i))
                 {
                     var criterias = new List<Criteria> {new Criteria("sku", CriteriaOperator.Contains, sku)};
@@ -245,8 +255,13 @@ namespace Xtricate.IntegrationTests
             var inStream1 = File.OpenRead(@"c:\tmp\cat.jpg");
             storage.Upsert(key1, inStream1, new[] { "en-US" });
             var outStreams1 = storage.LoadData(key1, new[] {"en-US"});
-            foreach(var outStream in outStreams1)
+            Assert.That(outStreams1, Is.Not.Null);
+            Assert.That(outStreams1.Any());
+            foreach (var outStream in outStreams1)
+            {
+                Assert.That(outStream, Is.Not.Null);
                 File.WriteAllBytes($@"c:\tmp\cat_{key1}.jpg", outStream.ToBytes());
+            }
             var result1 = storage.Upsert(key1, new Fixture().Create<TestDocument>(), new[] { "en-US" });
             Assert.That(result1, Is.EqualTo(StorageAction.Updated));
 
@@ -254,8 +269,13 @@ namespace Xtricate.IntegrationTests
             var inStream2 = File.OpenRead(@"c:\tmp\test.log");
             storage.Upsert(key2, inStream2, new[] { "en-US" });
             var outStreams2 = storage.LoadData(key2, new[] { "en-US" });
+            Assert.That(outStreams2, Is.Not.Null);
+            Assert.That(outStreams2.Any());
             foreach (var outStream in outStreams2)
+            {
+                Assert.That(outStream, Is.Not.Null);
                 File.WriteAllBytes($@"c:\tmp\test_{key1}.log", outStream.ToBytes());
+            }
             var result2 = storage.Upsert(key2, new Fixture().Create<TestDocument>(), new[] { "en-US" });
             Assert.That(result2, Is.EqualTo(StorageAction.Updated));
         }

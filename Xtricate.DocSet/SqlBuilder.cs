@@ -8,10 +8,34 @@ namespace Xtricate.DocSet
     {
         public virtual string IndexColumnNameSuffix => "_idx";
 
+        public virtual string BuildDeleteByKey(string tableName)
+        {
+            return $"DELETE FROM {tableName} WHERE [key]=@key";
+        }
+        public virtual string BuildDeleteByTags(string tableName)
+        {
+            return $"DELETE FROM {tableName} WHERE ";
+        }
+
+        public virtual string BuildValueSelectByKey(string tableName)
+        {
+            return $"SELECT [value] FROM {tableName} WHERE [key]=@key";
+        }
+
+        public virtual string BuildValueSelectByTags(string tableName)
+        {
+            return $"SELECT [value] FROM {tableName} WHERE [id]>0";
+        }
+
+        public virtual string BuildDataSelectByKey(string tableName)
+        {
+            return $"SELECT [data] FROM {tableName} WHERE [key]=@key";
+        }
+
         public virtual string BuildTagSelect(string tag)
         {
             if (string.IsNullOrEmpty(tag)) return "";
-            return $" AND [tags] LIKE '%||{tag}||%'";
+            return $" AND [tags] LIKE '%||{Sanatize(tag)}||%'";
         }
 
         public virtual string BuildCriteriaSelect<TDoc>(
@@ -37,20 +61,20 @@ namespace Xtricate.DocSet
             if (string.IsNullOrEmpty(column)) return null;
 
             if (op.Equals(CriteriaOperator.Gt))
-                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] > '||{value}' ";
+                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] > '||{Sanatize(value)}' ";
             if (op.Equals(CriteriaOperator.Ge))
-                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] >= '||{value}' ";
+                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] >= '||{Sanatize(value)}' ";
             if (op.Equals(CriteriaOperator.Lt))
-                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] < '||{value}' ";
+                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] < '||{Sanatize(value)}' ";
             if (op.Equals(CriteriaOperator.Le))
-                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] <= '||{value}' ";
+                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] <= '||{Sanatize(value)}' ";
             if (op.Equals(CriteriaOperator.Contains))
-                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] LIKE '||%{value}%||' ";
+                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] LIKE '||%{Sanatize(value)}%||' ";
             if (op.Equals(CriteriaOperator.Eqm))
-                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] LIKE '%||{value}||%' ";
+                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] LIKE '%||{Sanatize(value)}||%' ";
                     // TODO: remove % for much faster PERF
 
-            return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] = '||{value}||' ";
+            return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] = '||{Sanatize(value)}||' ";
         }
 
         public virtual string BuildPagingSelect(int skip = 0, int take = 0,
@@ -96,6 +120,17 @@ namespace Xtricate.DocSet
             return @"
     SELECT QUOTENAME(TABLE_SCHEMA) + '.' + QUOTENAME(TABLE_NAME) AS Name
     FROM INFORMATION_SCHEMA.TABLES";
+        }
+
+        private string Sanatize(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return null;
+            value = value.Replace("'", "''"); // character data string delimiter
+            value = value.Replace(";", ""); // query delimiter
+            value = value.Replace("--", ""); // comment delimiter
+            value = value.Replace("/*", ""); // comment delimiter
+            value = value.Replace("*/", ""); // comment delimiter
+            return value;
         }
     }
 }

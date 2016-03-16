@@ -5,6 +5,11 @@ namespace Xtricate.DocSet
 {
     public interface ISqlBuilder
     {
+        string BuildDeleteByKey(string tableName);
+        string BuildDeleteByTags(string tableName);
+        string BuildValueSelectByKey(string tableName);
+        string BuildValueSelectByTags(string tableName);
+        string BuildDataSelectByKey(string tableName);
         string IndexColumnNameSuffix { get; }
         string BuildCriteriaSelect(string column, CriteriaOperator op, string value);
         string BuildCriteriaSelect<TDoc>(IEnumerable<IIndexMap<TDoc>> indexMaps = null, ICriteria criteria = null);

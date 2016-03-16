@@ -191,7 +191,7 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = $@"SELECT [value] FROM {TableName} WHERE [key]='{key}'";
+                var sql = SqlBuilder.BuildValueSelectByKey(TableName);
                 tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
                 criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 sql += SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime);
@@ -216,7 +216,7 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = $@"SELECT [data] FROM {TableName} WHERE [key]='{key}'";
+                var sql = SqlBuilder.BuildDataSelectByKey(TableName);
                 tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
                 criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 sql += SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime);
@@ -241,7 +241,7 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = $@"SELECT [value] FROM {TableName} WHERE [id]>0";
+                var sql = SqlBuilder.BuildValueSelectByTags(TableName);
                 tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
                 criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 sql += SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime);
@@ -262,7 +262,7 @@ namespace Xtricate.DocSet
                 Log.Debug($"{TableName} delete: key={key},tags={tags?.ToString("||")}");
             using (var conn = CreateConnection())
             {
-                var sql = $@"DELETE FROM {TableName} WHERE [key]='{key}'";
+                var sql = SqlBuilder.BuildDeleteByKey(TableName);
                 tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
                 criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 conn.Open();
@@ -279,7 +279,7 @@ namespace Xtricate.DocSet
             if (tags.IsNullOrEmpty()) return StorageAction.None;
             using (var conn = CreateConnection())
             {
-                var sql = $@"DELETE FROM {TableName} WHERE ";
+                var sql = SqlBuilder.BuildDeleteByTags(TableName);
                 tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
                 criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 conn.Open();
