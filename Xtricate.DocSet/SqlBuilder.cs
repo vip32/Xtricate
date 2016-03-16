@@ -60,21 +60,22 @@ namespace Xtricate.DocSet
         {
             if (string.IsNullOrEmpty(column)) return null;
 
+            // TODO: use sql cmd paramaters for the values
             if (op.Equals(CriteriaOperator.Gt))
-                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] > '||{Sanatize(value)}' ";
+                return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] > '||{Sanatize(value)}' ";
             if (op.Equals(CriteriaOperator.Ge))
-                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] >= '||{Sanatize(value)}' ";
+                return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] >= '||{Sanatize(value)}' ";
             if (op.Equals(CriteriaOperator.Lt))
-                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] < '||{Sanatize(value)}' ";
+                return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] < '||{Sanatize(value)}' ";
             if (op.Equals(CriteriaOperator.Le))
-                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] <= '||{Sanatize(value)}' ";
+                return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] <= '||{Sanatize(value)}' ";
             if (op.Equals(CriteriaOperator.Contains))
-                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] LIKE '||%{Sanatize(value)}%||' ";
+                return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] LIKE '||%{Sanatize(value)}%||' ";
             if (op.Equals(CriteriaOperator.Eqm))
-                return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] LIKE '%||{Sanatize(value)}||%' ";
+                return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] LIKE '%||{Sanatize(value)}||%' ";
                     // TODO: remove % for much faster PERF
 
-            return $" AND [{column.ToLower()}{IndexColumnNameSuffix}] = '||{Sanatize(value)}||' ";
+            return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] = '||{Sanatize(value)}||' ";
         }
 
         public virtual string BuildPagingSelect(int skip = 0, int take = 0,
@@ -125,7 +126,7 @@ namespace Xtricate.DocSet
         private string Sanatize(string value)
         {
             if (string.IsNullOrEmpty(value)) return null;
-            value = value.Replace("'", "''"); // character data string delimiter
+            value = value.Replace("'", ""); // character data string delimiter
             value = value.Replace(";", ""); // query delimiter
             value = value.Replace("--", ""); // comment delimiter
             value = value.Replace("/*", ""); // comment delimiter
