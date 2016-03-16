@@ -131,6 +131,7 @@ namespace Xtricate.DocSet
             value = value.Replace("--", ""); // comment delimiter
             value = value.Replace("/*", ""); // comment delimiter
             value = value.Replace("*/", ""); // comment delimiter
+            value = value.Replace("xp_", ""); // comment delimiter
             return value;
         }
     }
