@@ -14,46 +14,14 @@ namespace Xtricate.Playground
     {
     }
 
-    public class MailTemplateFactory
-    {
-        private readonly IEnumerable<MailTemplateDefinition> _templatesDefinitions;
+    //public abstract class MailTemplate<TModel> : MailTemplate
+    //{
+    //    public TModel Model { get; set; }
+    //}
 
-        public MailTemplateFactory(IEnumerable<MailTemplateDefinition> templatesDefinitions)
-        {
-            _templatesDefinitions = templatesDefinitions;
-        }
-
-        public MailTemplate<TModel> Create<TModel>(string key, IEnumerable<string> tags, CultureInfo culture)
-        {
-            var definition = _templatesDefinitions.FirstOrDefault(t =>
-                         t.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase ) &&
-                         t.Culture.Equals(culture));
-            if (definition == null) throw new Exception($"no template found for name={key} and culture={culture.Name}");
-            var instance = (MailTemplate<TModel>)Activator.CreateInstance(definition.TemplateType, new object[] { });
-            if (instance == null) throw new Exception($"template should be of type 'MailTemplate<{typeof(TModel).Name}>'");
-            instance.Culture = culture;
-            // TODO: set texts here
-            return instance;
-        }
-    }
-
-    public class MailTemplateDefinition
-    {
-        public string Key { get; set; }
-        public IEnumerable<string> Tags { get; set; }
-        public CultureInfo Culture { get; set; }
-        public Type TemplateType { get; set; }
-        public Type ModelType { get; set; }
-    }
-
-    public abstract class MailTemplate<TModel> : MailTemplate
-    {
-        public TModel Model { get; set; }
-    }
-
-    public abstract class MailTemplate : Template
-    {
-    }
+    //public abstract class MailTemplate : Template
+    //{
+    //}
 
     [TestFixture]
     public class MailTests
@@ -61,15 +29,15 @@ namespace Xtricate.Playground
         [Test]
         public void Test1()
         {
-            var templ = new TestEmailTemplate1();
+            var templ = new OrderConfirmationTemplate();
             Assert.That(templ, Is.Not.Null);
 
-            var templ2 = (TestEmailTemplate1)Activator.CreateInstance(
-                        typeof(TestEmailTemplate1), new object[] { });
+            var templ2 = (OrderConfirmationTemplate)Activator.CreateInstance(
+                        typeof(OrderConfirmationTemplate), new object[] { });
             Assert.That(templ2, Is.Not.Null);
 
-            //var ctor = typeof(TestEmailTemplate1).GetConstructors()[0];
-            //var o = FormatterServices.GetUninitializedObject(typeof(TestEmailTemplate1));
+            //var ctor = typeof(OrderConfirmationTemplate).GetConstructors()[0];
+            //var o = FormatterServices.GetUninitializedObject(typeof(OrderConfirmationTemplate));
             ////return (MailTemplate<TModel>) ctor.Invoke(o, new object[] {});
             //var templ3 = ctor.Invoke(o, new object[] { });
             //Assert.That(templ3, Is.Not.Null);
@@ -79,42 +47,49 @@ namespace Xtricate.Playground
         public void Test2()
         {
             // all templates registered in kernel
-            var factory = new MailTemplateFactory(
-                new List<MailTemplateDefinition>
-                {
-                    new MailTemplateDefinition
+            var engine = new TemplateEngine(
+                new TemplateFactory(
+                    new[]
                     {
-                        Key = "OrderConfirmation",
-                        Tags = null,
-                        Culture = CultureInfo.GetCultureInfo("de-DE"),
-                        TemplateType = typeof (TestEmailTemplate1),
-                        ModelType = typeof (EmailTemplate1Model),
+                        new TemplateDefinition
+                        {
+                            Key = "OrderConfirmation",
+                            Tags = new[] {"shop", "de-DE"},
+                            //Culture = CultureInfo.GetCultureInfo("de-DE"),
+                            TemplateType = typeof (OrderConfirmationTemplate),
+                            ModelType = typeof (OrderModel),
+                        }
+                    }),
+                new PropertyBag<IDictionary<string, string>>
+                {
+                    {
+                        CultureInfo.GetCultureInfo("de-DE").Name, new Dictionary<string, string>
+                        {
+                            {"welcome", "Wilkommen"}
+                        }
+                    },
+                    {
+                        CultureInfo.GetCultureInfo("nl-NL").Name, new Dictionary<string, string>
+                        {
+                            {"welcome", "Welkom"}
+                        }
                     }
                 });
 
             // called from > controller > service > factory
-            var templ = factory.Create<EmailTemplate1Model>("OrderConfirmation", null, CultureInfo.GetCultureInfo("de-DE"));
-            Assert.That(templ, Is.Not.Null);
-            templ.Model = new EmailTemplate1Model
+            var model = new OrderModel
             {
                 FirstName = "John",
-                LastName = "Doe"
-            };
-            templ.Texts = new PropertyBag<IDictionary<string, string>>
-            {
+                LastName = "Doe",
+                Items = new List<OrderItemModel>
                 {
-                    CultureInfo.GetCultureInfo("de-DE").Name, new Dictionary<string, string>()
-                    {
-                        {"welcome", "Wilkommen"}
-                    }
-                },
-                {
-                    CultureInfo.GetCultureInfo("nl-NL").Name, new Dictionary<string, string>()
-                    {
-                        {"welcome", "Welkom"}
-                    }
+                    new OrderItemModel {Name = "product1", Price = 9.99m, Quantity = 2, Sku = "sku1"},
+                    new OrderItemModel {Name = "product2", Price = 3.99m, Quantity = 4, Sku = "sku2"},
                 }
             };
+            var templ = engine.GetTemplate(model, "OrderConfirmation", new[] {"shop"}, "de-DE");
+            Assert.That(templ, Is.Not.Null);
+            Assert.That(templ.Model, Is.Not.Null);
 
             var body = templ.ToString();
             Assert.That(body, Is.Not.Null.Or.Empty);
@@ -125,12 +100,29 @@ namespace Xtricate.Playground
         }
     }
 
-    public class EmailTemplate1Model : Expando
+    public class OrderModel : Expando
     {
         public DateTime Created => new DateTime(2000, 10, 10);
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public IEnumerable<OrderItemModel> Items { get; set; }
     }
+
+    public class OrderItemModel
+    {
+        public DateTime Created => new DateTime(2000, 10, 10);
+        public string Sku { get; set; }
+        public string Name { get; set; }
+        public int Quantity { get; set; }
+        public decimal Price { get; set; }
+
+        public decimal Total
+        {
+            get { return Quantity*Price; }
+        }
+    }
+
+
 
     //public class MailMessage
     //{

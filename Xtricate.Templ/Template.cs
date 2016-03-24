@@ -48,9 +48,10 @@ namespace Xtricate.Templ
             return value;
         }
 
-        public string Text(string key)
+        public string GetText(string key)
         {
             if (string.IsNullOrEmpty(Culture.Name)) return null;
+            if (string.IsNullOrEmpty(key)) return null;
             IDictionary<string, string> values;
             Texts.TryGetValue(Culture.Name, out values);
             if (values == null) return null;
@@ -59,8 +60,9 @@ namespace Xtricate.Templ
             return value;
         }
 
-        public string OutProperty(string key, string value, bool output = false)
+        public string SetOutProperty(string key, string value, bool output = false)
         {
+            if (string.IsNullOrEmpty(key)) return null;
             if (OutProperties.ContainsKey(key)) OutProperties.Remove(key);
             OutProperties.Add(key, value);
             return output ? value : string.Empty;

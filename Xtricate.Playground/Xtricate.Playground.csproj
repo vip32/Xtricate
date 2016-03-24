@@ -61,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Templates\TestEmailTemplate1.cshtml" />
+    <None Include="Templates\OrderConfirmationTemplate.cshtml" />
     <None Include="Templates\TestLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
