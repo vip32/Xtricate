@@ -61,17 +61,17 @@ namespace Xtricate.DocSet
             if (string.IsNullOrEmpty(column)) return null;
 
             // TODO: use sql cmd paramaters for the values
-            if (op.Equals(CriteriaOperator.Gt))
+            if (op == CriteriaOperator.Gt /*op.Equals(CriteriaOperator.Gt)*/)
                 return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] > '||{Sanatize(value)}' ";
-            if (op.Equals(CriteriaOperator.Ge))
+            if (op == CriteriaOperator.Ge /*op.Equals(CriteriaOperator.Ge)*/)
                 return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] >= '||{Sanatize(value)}' ";
-            if (op.Equals(CriteriaOperator.Lt))
+            if (op == CriteriaOperator.Lt /*op.Equals(CriteriaOperator.Lt)*/)
                 return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] < '||{Sanatize(value)}' ";
-            if (op.Equals(CriteriaOperator.Le))
+            if (op == CriteriaOperator.Le /*op.Equals(CriteriaOperator.Le)*/)
                 return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] <= '||{Sanatize(value)}' ";
-            if (op.Equals(CriteriaOperator.Contains))
+            if (op == CriteriaOperator.Contains /*op.Equals(CriteriaOperator.Contains)*/)
                 return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] LIKE '||%{Sanatize(value)}%||' ";
-            if (op.Equals(CriteriaOperator.Eqm))
+            if (op == CriteriaOperator.Eqm /*op.Equals(CriteriaOperator.Eqm)*/)
                 return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] LIKE '%||{Sanatize(value)}||%' ";
                     // TODO: remove % for much faster PERF
 
@@ -82,26 +82,26 @@ namespace Xtricate.DocSet
             int defaultTakeSize = 1000, int maxTakeSize = 5000)
         {
             if (skip <= 0 && take <= 0)
-                return $" OFFSET {skip} ROWS FETCH NEXT {defaultTakeSize} ROWS ONLY; ";
+                return $" OFFSET {skip.ToString()} ROWS FETCH NEXT {defaultTakeSize.ToString()} ROWS ONLY; ";
             if (skip <= 0) skip = 0;
             if (take <= 0) take = defaultTakeSize;
             if (take > maxTakeSize) take = maxTakeSize;
-            return $" OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY; ";
+            return $" OFFSET {skip.ToString()} ROWS FETCH NEXT {take.ToString()} ROWS ONLY; ";
         }
 
         public virtual string BuildSortingSelect(SortColumn sorting = SortColumn.Id)
         {
             if (sorting == SortColumn.IdDescending)
-                return $" ORDER BY [id] DESC ";
+                return " ORDER BY [id] DESC ";
             if (sorting == SortColumn.Key)
-                return $" ORDER BY [key] ";
+                return " ORDER BY [key] ";
             if (sorting == SortColumn.KeyDescending)
-                return $" ORDER BY [key] DESC ";
+                return " ORDER BY [key] DESC ";
             if (sorting == SortColumn.Timestamp)
-                return $" ORDER BY [timestamp] ";
+                return " ORDER BY [timestamp] ";
             if (sorting == SortColumn.TimestampDescending)
-                return $" ORDER BY [timestamp] DESC ";
-            return $" ORDER BY [id] ";
+                return " ORDER BY [timestamp] DESC ";
+            return " ORDER BY [id] ";
         }
 
         public string BuildFromTillDateTimeSelect(
@@ -110,9 +110,9 @@ namespace Xtricate.DocSet
         {
             var result = "";
             if (fromDateTime.HasValue)
-                result += $" AND [timestamp] >= '{fromDateTime.Value.ToString("s")}'";
+                result = $"{result} AND [timestamp] >= '{fromDateTime.Value.ToString("s")}'";
             if (tillDateTime.HasValue)
-                result += $" AND [timestamp] < '{tillDateTime.Value.ToString("s")}'";
+                result = $"{result} AND [timestamp] < '{tillDateTime.Value.ToString("s")}'";
             return result;
         }
 
