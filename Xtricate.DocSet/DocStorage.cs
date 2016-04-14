@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Dapper;
 using Xtricate.DocSet.Logging;
 
@@ -71,14 +72,17 @@ namespace Xtricate.DocSet
         public virtual bool Exists(object key, IEnumerable<string> tags = null)
         {
             //Log.Debug($"document exists: key={key},tags={tags?.ToString("||")}");
-            var sql = $@"
-    SELECT [id] FROM {TableName} WHERE [key]='{key}'";
-            tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+
+            var sql = new StringBuilder($@"SELECT [id] FROM {TableName} WHERE [key]='{key}'");
+            foreach (var t in tags.NullToEmpty())
+                sql.Append(SqlBuilder.BuildTagSelect(t));
+            //var sql = $@"SELECT [id] FROM {TableName} WHERE [key]='{key}'";
+            //tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
 
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                return conn.Query<int>(sql, new {key}).Any();
+                return conn.Query<int>(sql.ToString(), new {key}).Any();
             }
         }
 
@@ -100,8 +104,8 @@ namespace Xtricate.DocSet
             // http://stackoverflow.com/questions/2479488/syntax-for-single-row-merge-upsert-in-sql-server
             using (var conn = CreateConnection())
             {
-                string sql;
                 StorageAction result;
+                var sql = new StringBuilder();
                 if (!forceInsert && Exists(key, tags))
                 {
                     // UPDATE ===
@@ -110,10 +114,11 @@ namespace Xtricate.DocSet
                     var updateColumns = "[value]=@value";
                     if (document != null && data != null) updateColumns += ",[data]=@data";
                     if (document == null && data != null) updateColumns = "[data]=@data";
-                    sql =
+                    sql.Append(
                         $@"
     UPDATE {TableName}
-    SET [hash]=@hash,[timestamp]=@timestamp,{updateColumns}
+    SET [hash]=@hash,[timestamp]=@timestamp,{updateColumns
+                            }
         {
                             IndexMaps.NullToEmpty()
                                 .Select(
@@ -121,8 +126,9 @@ namespace Xtricate.DocSet
                                         ",[" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix + "]=@" +
                                         i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix)
                                 .ToString("")}
-    WHERE [key]=@key";
-                    tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+    WHERE [key]=@key");
+                    foreach (var t in tags.NullToEmpty())
+                        sql.Append(SqlBuilder.BuildTagSelect(t));
                     result = StorageAction.Updated;
                 }
                 else
@@ -131,12 +137,12 @@ namespace Xtricate.DocSet
                     if (Options.EnableLogging)
                         Log.Debug($"{TableName} insert: key={key},tags={tags?.ToString("||")}");
                     var insertColumns = "[value]";
-                    if (document != null && data != null) insertColumns += ",[data]";
+                    if (document != null && data != null) insertColumns = $"{insertColumns},[data]" /*+= ",[data]"*/;
                     if (document == null && data != null) insertColumns = "[data]";
                     var insertValues = "@value";
-                    if (document != null && data != null) insertValues += ",@data";
+                    if (document != null && data != null) insertValues = $"{insertValues},@data" /*",@data"*/;
                     if (document == null && data != null) insertValues = "@data";
-                    sql =
+                    sql.Append(
                         $@"
     INSERT INTO {TableName}
         ([key],[tags],[hash],[timestamp],{insertColumns}{
@@ -146,7 +152,7 @@ namespace Xtricate.DocSet
         VALUES(@key,@tags,@hash,@timestamp,{insertValues}{
                             IndexMaps.NullToEmpty()
                                 .Select(i => ",@" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix)
-                                .ToString("")})";
+                                .ToString("")})");
                     result = StorageAction.Inserted;
                 }
 
@@ -161,7 +167,7 @@ namespace Xtricate.DocSet
                 AddIndexParameters(document, parameters);
 
                 conn.Open();
-                conn.Execute(sql, parameters);
+                conn.Execute(sql.ToString(), parameters);
                 return result;
             }
         }
@@ -173,11 +179,16 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = $@"SELECT COUNT(*) FROM {TableName} WHERE [id]>0";
-                tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
-                criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                var sql = new StringBuilder($@"SELECT COUNT(*) FROM {TableName} WHERE [id]>0");
+                foreach (var t in tags.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildTagSelect(t));
+                foreach (var c in criterias.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                //var sql = $@"SELECT COUNT(*) FROM {TableName} WHERE [id]>0";
+                //tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                //criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 conn.Open();
-                return conn.Query<int>(sql).SingleOrDefault();
+                return conn.Query<int>(sql.ToString()).SingleOrDefault();
             }
         }
 
@@ -188,11 +199,16 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = $@"SELECT [key] FROM {TableName} WHERE [id]>0";
-                tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
-                criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                var sql = new StringBuilder($@"SELECT [key] FROM {TableName} WHERE [id]>0");
+                foreach (var t in tags.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildTagSelect(t));
+                foreach (var c in criterias.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                //var sql = $@"SELECT [key] FROM {TableName} WHERE [id]>0";
+                //tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                //criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 conn.Open();
-                return conn.Query<object>(sql);
+                return conn.Query<object>(sql.ToString());
             }
         }
 
@@ -207,14 +223,22 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = SqlBuilder.BuildValueSelectByKey(TableName);
-                tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
-                criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
-                sql += SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime);
-                sql += SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn);
-                sql += SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize);
+                var sql = new StringBuilder(SqlBuilder.BuildValueSelectByKey(TableName));
+                foreach (var t in tags.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildTagSelect(t));
+                foreach (var c in criterias.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                sql.Append(SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime));
+                sql.Append(SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn));
+                sql.Append(SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize));
+                //var sql = SqlBuilder.BuildValueSelectByKey(TableName);
+                //tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                //criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                //sql += SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime);
+                //sql += SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn);
+                //sql += SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize);
                 conn.Open();
-                var results = conn.Query<string>(sql, new {key}, buffered: Options.BufferedLoad);
+                var results = conn.Query<string>(sql.ToString(), new {key}, buffered: Options.BufferedLoad);
                 if (results == null) yield break;
                 foreach (var result in results)
                     yield return Serializer.FromJson<TDoc>(result);
@@ -232,14 +256,22 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = SqlBuilder.BuildDataSelectByKey(TableName);
-                tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
-                criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
-                sql += SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime);
-                sql += SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn);
-                sql += SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize);
+                var sql = new StringBuilder(SqlBuilder.BuildDataSelectByKey(TableName));
+                foreach (var t in tags.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildTagSelect(t));
+                foreach (var c in criterias.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                sql.Append(SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime));
+                sql.Append(SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn));
+                sql.Append(SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize));
+                //var sql = SqlBuilder.BuildDataSelectByKey(TableName);
+                //tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                //criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                //sql += SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime);
+                //sql += SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn);
+                //sql += SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize);
                 conn.Open();
-                var results = conn.Query<byte[]>(sql, new {key}, buffered: Options.BufferedLoad);
+                var results = conn.Query<byte[]>(sql.ToString(), new {key}, buffered: Options.BufferedLoad);
                 if (results == null) yield break;
                 foreach (var data in results.Where(data => data != null))
                     yield return new MemoryStream(data.Decompress());
@@ -257,14 +289,22 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = SqlBuilder.BuildValueSelectByTags(TableName);
-                tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
-                criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
-                sql += SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime);
-                sql += SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn);
-                sql += SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize);
+                var sql = new StringBuilder(SqlBuilder.BuildValueSelectByTags(TableName));
+                foreach (var t in tags.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildTagSelect(t));
+                foreach (var c in criterias.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                sql.Append(SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime));
+                sql.Append(SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn));
+                sql.Append(SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize));
+                //var sql = SqlBuilder.BuildValueSelectByTags(TableName);
+                //tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                //criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                //sql += SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime);
+                //sql += SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn);
+                //sql += SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize);
                 conn.Open();
-                var documents = conn.Query<string>(sql, buffered: Options.BufferedLoad);
+                var documents = conn.Query<string>(sql.ToString(), buffered: Options.BufferedLoad);
                 if (documents == null) yield break;
                 foreach (var document in documents)
                     yield return Serializer.FromJson<TDoc>(document);
@@ -278,11 +318,16 @@ namespace Xtricate.DocSet
                 Log.Debug($"{TableName} delete: key={key},tags={tags?.ToString("||")}");
             using (var conn = CreateConnection())
             {
-                var sql = SqlBuilder.BuildDeleteByKey(TableName);
-                tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
-                criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                var sql = new StringBuilder(SqlBuilder.BuildDeleteByKey(TableName));
+                foreach (var t in tags.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildTagSelect(t));
+                foreach (var c in criterias.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                //var sql = SqlBuilder.BuildDeleteByKey(TableName);
+                //tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                //criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 conn.Open();
-                var num = conn.Execute(sql, new {key});
+                var num = conn.Execute(sql.ToString(), new {key});
                 return num > 0 ? StorageAction.Deleted : StorageAction.None;
             }
         }
@@ -295,11 +340,16 @@ namespace Xtricate.DocSet
             if (tags.IsNullOrEmpty()) return StorageAction.None;
             using (var conn = CreateConnection())
             {
-                var sql = SqlBuilder.BuildDeleteByTags(TableName);
-                tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
-                criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                var sql = new StringBuilder(SqlBuilder.BuildDeleteByTags(TableName));
+                foreach (var t in tags.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildTagSelect(t));
+                foreach (var c in criterias.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                //var sql = SqlBuilder.BuildDeleteByTags(TableName);
+                //tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                //criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 conn.Open();
-                var num = conn.Execute(sql);
+                var num = conn.Execute(sql.ToString());
                 return num > 0 ? StorageAction.Deleted : StorageAction.None;
             }
         }
