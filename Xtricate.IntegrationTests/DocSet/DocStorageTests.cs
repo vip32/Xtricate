@@ -148,11 +148,17 @@ namespace Xtricate.IntegrationTests
                 Log.Debug("newDoc: " + document.Name);
             }
 
+            var count = storage.Count(new[] { "en-US" });
+            var keys = storage.LoadKeys(new[] { "en-US" }).ToList();
+            Assert.That(keys, Is.Not.Null);
+            Assert.That(keys.Any(), Is.True);
+            Assert.That(count, Is.EqualTo(keys.Count()));
+
             5.Times(i =>
             {
                 using (mp.Step("find by KEY/tags " + i))
                 {
-                    var result = storage.Load(key, new[] {"en-US"}).ToList();
+                    var result = storage.LoadValues(key, new[] {"en-US"}).ToList();
                     Assert.That(result, Is.Not.Null);
                     Assert.That(result.Any(), Is.True);
                     Assert.That(result.FirstOrDefault().Name, Is.EqualTo(name));
@@ -164,7 +170,7 @@ namespace Xtricate.IntegrationTests
                 using (mp.Step("find by NAME criteria/tags " + i))
                 {
                     var criterias = new List<Criteria> {new Criteria("name", CriteriaOperator.Eq, name)};
-                    var result = storage.Load(new[] {"en-US"}, criterias).ToList();
+                    var result = storage.LoadValues(new[] {"en-US"}, criterias).ToList();
                     Assert.That(result, Is.Not.Null);
                     Assert.That(result.Any(), Is.True);
                     Assert.That(result.FirstOrDefault().Name, Is.EqualTo(name));
@@ -176,7 +182,7 @@ namespace Xtricate.IntegrationTests
                 using (mp.Step("find by NAME with sql delimiter character " + i))
                 {
                     var criterias = new List<Criteria> { new Criteria("name", CriteriaOperator.Eq, "'") };
-                    var result = storage.Load(new[] { "en-US" }, criterias).ToList();
+                    var result = storage.LoadValues(new[] { "en-US" }, criterias).ToList();
                     Assert.That(result, Is.Null.Or.Empty);
                 }
             });
@@ -186,7 +192,7 @@ namespace Xtricate.IntegrationTests
                 using (mp.Step("find by SKU criteria/tags " + i))
                 {
                     var criterias = new List<Criteria> {new Criteria("sku", CriteriaOperator.Contains, sku)};
-                    var result = storage.Load(new[] {"en-US"}, criterias).ToList();
+                    var result = storage.LoadValues(new[] {"en-US"}, criterias).ToList();
                     Assert.That(result, Is.Not.Null);
                     Assert.That(result.Any(), Is.True);
                     Assert.That(result.FirstOrDefault().Skus.FirstOrDefault().Sku, Is.EqualTo(sku));
@@ -196,7 +202,7 @@ namespace Xtricate.IntegrationTests
             {
                 using (mp.Step("find by timestamp " + i))
                 {
-                    var result = storage.Load(new[] { "en-US" }, fromDateTime:DateTime.Now.AddMonths(-1), tillDateTime:DateTime.Now).ToList();
+                    var result = storage.LoadValues(new[] { "en-US" }, fromDateTime:DateTime.Now.AddMonths(-1), tillDateTime:DateTime.Now).ToList();
                     Assert.That(result, Is.Not.Null);
                     Assert.That(result.Any(), Is.True);
                 }
@@ -321,7 +327,7 @@ namespace Xtricate.IntegrationTests
             {
                 using (mp.Step("load " + i))
                 {
-                    var result = storage.Load(new[] {"en-US"}).Take(100);
+                    var result = storage.LoadValues(new[] {"en-US"}).Take(100);
                     //Assert.That(result, Is.Not.Null);
                     //Assert.That(result, Is.Not.Empty);
                     Log.Debug($"loaded count: {result.Count()}");
@@ -370,7 +376,7 @@ namespace Xtricate.IntegrationTests
                 Assert.That(result2, Is.EqualTo(StorageAction.Updated));
                 Log.Debug("newDoc: " + newDoc.Name);
 
-                var updatedDoc = storage.Load(key, new[] {"en-US"}).ToList();
+                var updatedDoc = storage.LoadValues(key, new[] {"en-US"}).ToList();
                 Assert.That(updatedDoc, Is.Not.Null);
                 Assert.That(updatedDoc.Any(), Is.True);
                 Assert.That(updatedDoc.Count(), Is.EqualTo(1));
@@ -401,14 +407,14 @@ namespace Xtricate.IntegrationTests
 
             MassInsertTest(20, true);
 
-            var docs1 = storage.Load(new[] { "en-US" }).ToList();
+            var docs1 = storage.LoadValues(new[] { "en-US" }).ToList();
             Assert.That(docs1, Is.Not.Null);
             Assert.That(docs1.Any(), Is.True);
             Assert.That(docs1.Count, Is.EqualTo(options.DefaultTakeSize));
             foreach(var doc in docs1)
                 Log.Debug($"doc1: {doc.Id}, {doc.Name}");
 
-            var docs2 = storage.Load(new[] { "en-US" }, skip:0, take:10).ToList();
+            var docs2 = storage.LoadValues(new[] { "en-US" }, skip:0, take:10).ToList();
             Assert.That(docs2, Is.Not.Null);
             Assert.That(docs2.Any(), Is.True);
             Assert.That(docs2.Count, Is.EqualTo(options.MaxTakeSize));

@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Dapper;
@@ -180,7 +181,22 @@ namespace Xtricate.DocSet
             }
         }
 
-        public virtual IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null,
+        public virtual IEnumerable<object> LoadKeys(IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null)
+        {
+            if (Options.EnableLogging)
+                Log.Debug($"{TableName} count: tags={tags?.ToString("||")}");
+
+            using (var conn = CreateConnection())
+            {
+                var sql = $@"SELECT [key] FROM {TableName} WHERE [id]>0";
+                tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                conn.Open();
+                return conn.Query<object>(sql);
+            }
+        }
+
+        public virtual IEnumerable<TDoc> LoadValues(object key, IEnumerable<string> tags = null,
             IEnumerable<Criteria> criterias = null,
             DateTime? fromDateTime = null, DateTime? tillDateTime = null,
             int skip = 0, int take = 0)
@@ -230,7 +246,7 @@ namespace Xtricate.DocSet
             }
         }
 
-        public virtual IEnumerable<TDoc> Load(IEnumerable<string> tags = null,
+        public virtual IEnumerable<TDoc> LoadValues(IEnumerable<string> tags = null,
             IEnumerable<Criteria> criterias = null,
             DateTime? fromDateTime = null, DateTime? tillDateTime = null,
             int skip = 0, int take = 0)

@@ -87,7 +87,7 @@ namespace Xtricate.Playground
                     new OrderItemModel {Name = "product2", Price = 3.99m, Quantity = 4, Sku = "sku2"},
                 }
             };
-            var templ = engine.GetTemplate(model, "OrderConfirmation", new[] {"shop"}, "de-DE");
+            var templ = engine.GetTemplate(model, "OrderConfirmation", new[] { "shop" }, "de-DE");
             Assert.That(templ, Is.Not.Null);
             Assert.That(templ.Model, Is.Not.Null);
 
@@ -118,7 +118,7 @@ namespace Xtricate.Playground
 
         public decimal Total
         {
-            get { return Quantity*Price; }
+            get { return Quantity * Price; }
         }
     }
 

@@ -18,7 +18,9 @@ namespace Xtricate.DocSet
 
         long Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null);
 
-        IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null,
+        IEnumerable<object> LoadKeys(IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null);
+
+        IEnumerable<TDoc> LoadValues(object key, IEnumerable<string> tags = null,
             IEnumerable<Criteria> criteria = null,
             DateTime? fromDateTime = null, DateTime? tillDateTime = null,
             int skip = 0, int take = 0);
@@ -28,7 +30,7 @@ namespace Xtricate.DocSet
             DateTime? fromDateTime = null, DateTime? tillDateTime = null,
             int skip = 0, int take = 0);
 
-        IEnumerable<TDoc> Load(IEnumerable<string> tags = null,
+        IEnumerable<TDoc> LoadValues(IEnumerable<string> tags = null,
             IEnumerable<Criteria> criterias = null,
             DateTime? fromDateTime = null, DateTime? tillDateTime = null,
             int skip = 0, int take = 0);
