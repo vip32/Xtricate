@@ -1,4 +1,5 @@
-﻿using Microsoft.Owin;
+﻿using System;
+using Microsoft.Owin;
 using Xtricate.Templ;
 
 namespace Xtricate.Web.Dashboard
@@ -20,8 +21,9 @@ namespace Xtricate.Web.Dashboard
 
         public string RequestPath => Request.Path.Value;
 
-        public string RequestFullPath =>
-            $"{Request.Scheme}://{Request.Uri.Host}{(Request.Uri.IsDefaultPort ? string.Empty : ":" + Request.Uri.Port)}{Request.Uri.AbsolutePath}";
+        public string RequestFullPath => Request.GetFullPath();
+
+        public bool IsPost => Request.IsPost();
 
         public UrlHelper Url { get; protected set; }
 

@@ -71,7 +71,7 @@ namespace Xtricate.DocSet
 
         public virtual bool Exists(object key, IEnumerable<string> tags = null)
         {
-            //Log.Debug($"document exists: key={key},tags={tags?.ToString("||")}");
+            //Log.Debug($"document exists: key={key},tags={tags?.Join("||")}");
 
             var sql = new StringBuilder($@"SELECT [id] FROM {TableName} WHERE [key]='{key}'");
             foreach (var t in tags.NullToEmpty())
@@ -110,7 +110,7 @@ namespace Xtricate.DocSet
                 {
                     // UPDATE ===
                     if (Options.EnableLogging)
-                        Log.Debug($"{TableName} update: key={key},tags={tags?.ToString("||")}");
+                        Log.Debug($"{TableName} update: key={key},tags={tags?.Join("||")}");
                     var updateColumns = "[value]=@value";
                     if (document != null && data != null) updateColumns += ",[data]=@data";
                     if (document == null && data != null) updateColumns = "[data]=@data";
@@ -125,7 +125,7 @@ namespace Xtricate.DocSet
                                     i =>
                                         ",[" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix + "]=@" +
                                         i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix)
-                                .ToString("")}
+                                .Join("")}
     WHERE [key]=@key");
                     foreach (var t in tags.NullToEmpty())
                         sql.Append(SqlBuilder.BuildTagSelect(t));
@@ -135,7 +135,7 @@ namespace Xtricate.DocSet
                 {
                     // INSERT ===
                     if (Options.EnableLogging)
-                        Log.Debug($"{TableName} insert: key={key},tags={tags?.ToString("||")}");
+                        Log.Debug($"{TableName} insert: key={key},tags={tags?.Join("||")}");
                     var insertColumns = "[value]";
                     if (document != null && data != null) insertColumns = $"{insertColumns},[data]" /*+= ",[data]"*/;
                     if (document == null && data != null) insertColumns = "[data]";
@@ -148,18 +148,18 @@ namespace Xtricate.DocSet
         ([key],[tags],[hash],[timestamp],{insertColumns}{
                             IndexMaps.NullToEmpty()
                                 .Select(i => ",[" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix + "]")
-                                .ToString("")})
+                                .Join("")})
         VALUES(@key,@tags,@hash,@timestamp,{insertValues}{
                             IndexMaps.NullToEmpty()
                                 .Select(i => ",@" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix)
-                                .ToString("")})");
+                                .Join("")})");
                     result = StorageAction.Inserted;
                 }
 
                 // PARAMS
                 var parameters = new DynamicParameters();
                 parameters.Add("key", key.ToString());
-                parameters.Add("tags", $"||{tags.ToString("||")}||");
+                parameters.Add("tags", $"||{tags.Join("||")}||");
                 parameters.Add("hash", Hasher?.Compute(document));
                 parameters.Add("timestamp", timestamp ?? DateTime.UtcNow);
                 parameters.Add("value", Serializer.ToJson(document));
@@ -175,7 +175,7 @@ namespace Xtricate.DocSet
         public virtual long Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null)
         {
             if (Options.EnableLogging)
-                Log.Debug($"{TableName} count: tags={tags?.ToString("||")}");
+                Log.Debug($"{TableName} count: tags={tags?.Join("||")}");
 
             using (var conn = CreateConnection())
             {
@@ -195,7 +195,7 @@ namespace Xtricate.DocSet
         public virtual IEnumerable<object> LoadKeys(IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null)
         {
             if (Options.EnableLogging)
-                Log.Debug($"{TableName} count: tags={tags?.ToString("||")}");
+                Log.Debug($"{TableName} count: tags={tags?.Join("||")}");
 
             using (var conn = CreateConnection())
             {
@@ -219,7 +219,7 @@ namespace Xtricate.DocSet
         {
             if (Options.EnableLogging)
                 Log.Debug(
-                $"{TableName} load: key={key}, tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
+                $"{TableName} load: key={key}, tags={tags?.Join("||")}, criterias={criterias?.Select(c => $"{c.Name}:{c.Value}").Join("||")}");
 
             using (var conn = CreateConnection())
             {
@@ -252,7 +252,7 @@ namespace Xtricate.DocSet
         {
             if (Options.EnableLogging)
                 Log.Debug(
-                $"{TableName} load: key={key}, tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
+                $"{TableName} load: key={key}, tags={tags?.Join("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).Join("||")}");
 
             using (var conn = CreateConnection())
             {
@@ -285,7 +285,7 @@ namespace Xtricate.DocSet
         {
             if (Options.EnableLogging)
                 Log.Debug(
-                $"{TableName} load: tags={tags?.ToString("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).ToString("||")}");
+                $"{TableName} load: tags={tags?.Join("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).Join("||")}");
 
             using (var conn = CreateConnection())
             {
@@ -315,7 +315,7 @@ namespace Xtricate.DocSet
             IEnumerable<Criteria> criterias = null)
         {
             if (Options.EnableLogging)
-                Log.Debug($"{TableName} delete: key={key},tags={tags?.ToString("||")}");
+                Log.Debug($"{TableName} delete: key={key},tags={tags?.Join("||")}");
             using (var conn = CreateConnection())
             {
                 var sql = new StringBuilder(SqlBuilder.BuildDeleteByKey(TableName));
@@ -336,7 +336,7 @@ namespace Xtricate.DocSet
             IEnumerable<Criteria> criterias = null)
         {
             if (Options.EnableLogging)
-                Log.Debug($"{TableName} delete: tags={tags?.ToString("||")}");
+                Log.Debug($"{TableName} delete: tags={tags?.Join("||")}");
             if (tags.IsNullOrEmpty()) return StorageAction.None;
             using (var conn = CreateConnection())
             {
@@ -377,13 +377,13 @@ namespace Xtricate.DocSet
             var indexColumnValues = IndexMaps.ToDictionary(i => i.Name,
                 i => i.Value != null
                     ? $"||{i.Value(document)}||"
-                    : $"||{i.Values(document).ToString("||")}||");
+                    : $"||{i.Values(document).Join("||")}||");
 
             foreach (var item in IndexMaps)
             {
-                parameters.Add(item.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix,
+                parameters.Add($"{item.Name.ToLower()}{SqlBuilder.IndexColumnNameSuffix}",
                     indexColumnValues.FirstOrDefault(
-                        i => i.Key.Equals(item.Name, StringComparison.InvariantCultureIgnoreCase))
+                        i => i.Key.Equals(item.Name, StringComparison.OrdinalIgnoreCase))
                         .ValueOrDefault(i => i.Value));
             }
         }
@@ -395,7 +395,7 @@ namespace Xtricate.DocSet
 
             foreach (var item in IndexMaps)
             {
-                parameters.Add(item.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix, null);
+                parameters.Add($"{item.Name.ToLower()}{SqlBuilder.IndexColumnNameSuffix}", null);
             }
         }
 
@@ -408,7 +408,7 @@ namespace Xtricate.DocSet
                     Log.Debug($"{tableName} exists [{conn.Database}]");
                 return
                     conn.Query<string>(SqlBuilder.TableNamesSelect())
-                        .Any(t => t.Equals(tableName, StringComparison.InvariantCultureIgnoreCase));
+                        .Any(t => t.Equals(tableName, StringComparison.OrdinalIgnoreCase));
             }
         }
 
@@ -425,7 +425,7 @@ namespace Xtricate.DocSet
     FROM INFORMATION_SCHEMA.TABLES")
                     .Any(t =>
                         t.Equals($"[{options.SchemaName}]",
-                            StringComparison.InvariantCultureIgnoreCase)))
+                            StringComparison.OrdinalIgnoreCase)))
                     return;
                 try
                 {
@@ -464,7 +464,7 @@ namespace Xtricate.DocSet
     CREATE INDEX [IX_key_{1}] ON {0} ([key] ASC);
     CREATE INDEX [IX_tags_{1}] ON {0} ([tags] ASC);
     CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);",
-                    tableName, new Random().Next(1000, 9999));
+                    tableName, new Random().Next(1000, 9999).ToString());
                 conn.Execute(sql);
             }
         }
@@ -478,7 +478,7 @@ namespace Xtricate.DocSet
                 conn.Open();
                 if (Options.EnableLogging)
                     Log.Debug(
-                    $"{tableName} ensure index [{conn.Database}], index={IndexMaps.NullToEmpty().Select(i => i.Name).ToString(", ")}");
+                    $"{tableName} ensure index [{conn.Database}], index={IndexMaps.NullToEmpty().Select(i => i.Name).Join(", ")}");
                 var sql = IndexMaps.NullToEmpty().Select(i =>
                     string.Format(@"
     IF NOT EXISTS(SELECT * FROM sys.columns

@@ -1,8 +1,9 @@
 ﻿/// <reference path="../Typings/jquery.d.ts"/>
 /// <reference path="../Typings/knockout.d.ts"/>
 
-var data = {};
-var viewModel = {
+setTimeout(() => console.log('hello from ProductDetails.ts'));
+
+var viewModel: any = {
     isLoading: ko.observable(false),
     name: ko.observable(),
     description: ko.observable(),

@@ -46,7 +46,7 @@ namespace Xtricate.DocSet
             if (criteria == null) return null;
 
             var indexMap = indexMaps.FirstOrDefault(i =>
-                i.Name.Equals(criteria.Name, StringComparison.InvariantCultureIgnoreCase));
+                i.Name.Equals(criteria.Name, StringComparison.OrdinalIgnoreCase));
             if (indexMap == null) return null;
 
             // small equals hack to handle multiple values and optimize for single values (%)

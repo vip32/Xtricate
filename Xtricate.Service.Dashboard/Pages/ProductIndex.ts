@@ -3,10 +3,9 @@
 
 setTimeout(() => console.log('hello from ProductIndex.ts'));
 
-var data = [];
-var viewModel = {
+var viewModel: any = {
     isLoading: ko.observable(false),
-    products: ko.observableArray(data)
+    products: ko.observableArray()
 };
 ko.applyBindings(viewModel);
 

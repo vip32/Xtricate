@@ -79,6 +79,7 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AppBuilderExtensions.cs" />
+    <Compile Include="OwinRequestExtensions.cs" />
     <Compile Include="ResourceCollectionDispatcher.cs" />
     <Compile Include="DashboardOptions.cs" />
     <Compile Include="EmbeddedResources.cs" />
