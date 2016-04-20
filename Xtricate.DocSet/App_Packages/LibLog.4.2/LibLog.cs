@@ -658,7 +658,7 @@ namespace Xtricate.DocSet.Logging
 
             public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception, params object[] formatParameters)
             {
-                System.Diagnostics.Trace.WriteLine(messageFunc());
+                if (messageFunc != null) System.Diagnostics.Trace.WriteLine(messageFunc());
                 return false;
             }
         }

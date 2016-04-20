@@ -7,7 +7,7 @@
     Title = "Test - OrderConfirmationTemplate";
 }
 ====== BODY
-OrderConfirmationTemplate
+<h1>OrderConfirmationTemplate</h1>
 @GetText("welcome"), @Model.FirstName @Model.LastName
 @SetOutProperty("subject", string.Format("{0}: {1} {2}", GetText("welcome"), Model.FirstName, Model.LastName))
 @Model.Created
