@@ -100,7 +100,7 @@ namespace Xtricate.Playground
                 }
             };
 
-            var templ = engine.GetTemplate(model, "OrderConfirmation", new[] { "shop" }, "de-DE");
+            var templ = engine.GetTemplate(model, "OrderConfirmation", new[] { "shop", "de-DE" }, "de-DE");
             Assert.That(templ, Is.Not.Null);
             Assert.That(templ.Model, Is.Not.Null);
 
