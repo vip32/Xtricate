@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Xtricate.Web.Dashboard.Models;
-using Xtricate.Web.Dashboard.Templates;
+using Xtricate.Web.Dashboard.Pages;
+
 namespace Xtricate.Web.Dashboard
 {
     public class RouteCollectionBuilder
@@ -36,51 +37,64 @@ namespace Xtricate.Web.Dashboard
                 {
                     //Culture = "de-DE",
                     Model = new InformationViewModel(_routes,
-                    _resources.JavascriptEmbeddedResources,
-                    _resources.StylesheetEmbeddedResources, new { DynProp = " |dynamic prop test|" })
+                        _resources.JavascriptEmbeddedResources,
+                        _resources.StylesheetEmbeddedResources, new {DynProp = " |dynamic prop test|"})
                 });
-
+                //_routes.Add(@"/ts/(?<ScriptName>\S+)",
+                //    new ResourceRequestDispatcher(x => new ResourceDispatcher(
+                //        "application/typescript",
+                //        GetResourcesFolderNamespace(typeof (RouteCollectionBuilder), "ts") + "." +
+                //        x.Groups["ScriptName"].Value + ".ts"))
+                //    );
+                //_routes.Add(@"/js/(?<ScriptName>\S+)",
+                //    new ResourceRequestDispatcher(x => new ResourceDispatcher(
+                //        "application/javascript",
+                //        GetResourcesFolderNamespace(typeof (RouteCollectionBuilder), "js") + "." +
+                //        x.Groups["ScriptName"].Value + ".js"))
+                //    );
                 _routes.Add("/img/logo", new ResourceDispatcher(
                     "image/png",
-                    typeof (RouteCollectionBuilder).Assembly,
-                    GetResourceName("img", "logo.png")));
+                    GetResourceName("img", "logo.png"), typeof (RouteCollectionBuilder).Assembly));
 
                 _routes.Add("/js", new ResourceCollectionDispatcher(
                     "application/javascript",
-                    typeof (RouteCollectionBuilder).Assembly,
-                    GetResourceFolderNamespace("js"),
-                    _resources.JavascriptEmbeddedResources.ToArray()));
+                    GetResourcesFolderNamespace("js"),
+                    typeof (RouteCollectionBuilder).Assembly, _resources.JavascriptEmbeddedResources.ToArray()));
+
+                _routes.Add("/ts", new ResourceCollectionDispatcher(
+                    "application/javascript",
+                    GetResourcesFolderNamespace("js"),
+                    typeof (RouteCollectionBuilder).Assembly, _resources.TypescriptEmbeddedResources.ToArray()));
 
                 _routes.Add("/css", new ResourceCollectionDispatcher(
                     "text/css",
-                    typeof (RouteCollectionBuilder).Assembly,
-                    GetResourceFolderNamespace("css"),
-                    _resources.StylesheetEmbeddedResources.ToArray()));
+                    GetResourcesFolderNamespace("css"),
+                    typeof (RouteCollectionBuilder).Assembly, _resources.StylesheetEmbeddedResources.ToArray()));
 
                 _routes.Add("/fonts/glyphicons-halflings-regular/eot", new ResourceDispatcher(
                     "application/vnd.ms-fontobject",
-                    typeof (RouteCollectionBuilder).Assembly,
-                    GetResourceName("fonts", "glyphicons-halflings-regular.eot")));
+                    GetResourceName("fonts", "glyphicons-halflings-regular.eot"),
+                    typeof (RouteCollectionBuilder).Assembly));
 
                 _routes.Add("/fonts/glyphicons-halflings-regular/svg", new ResourceDispatcher(
                     "image/svg+xml",
-                    typeof (RouteCollectionBuilder).Assembly,
-                    GetResourceName("fonts", "glyphicons-halflings-regular.svg")));
+                    GetResourceName("fonts", "glyphicons-halflings-regular.svg"),
+                    typeof (RouteCollectionBuilder).Assembly));
 
                 _routes.Add("/fonts/glyphicons-halflings-regular/ttf", new ResourceDispatcher(
                     "application/octet-stream",
-                    typeof (RouteCollectionBuilder).Assembly,
-                    GetResourceName("fonts", "glyphicons-halflings-regular.ttf")));
+                    GetResourceName("fonts", "glyphicons-halflings-regular.ttf"),
+                    typeof (RouteCollectionBuilder).Assembly));
 
                 _routes.Add("/fonts/glyphicons-halflings-regular/woff", new ResourceDispatcher(
                     "application/font-woff",
-                    typeof (RouteCollectionBuilder).Assembly,
-                    GetResourceName("fonts", "glyphicons-halflings-regular.woff")));
+                    GetResourceName("fonts", "glyphicons-halflings-regular.woff"),
+                    typeof (RouteCollectionBuilder).Assembly));
 
                 _routes.Add("/fonts/glyphicons-halflings-regular/woff2", new ResourceDispatcher(
                     "application/font-woff2",
-                    typeof (RouteCollectionBuilder).Assembly,
-                    GetResourceName("fonts", "glyphicons-halflings-regular.woff2")));
+                    GetResourceName("fonts", "glyphicons-halflings-regular.woff2"),
+                    typeof (RouteCollectionBuilder).Assembly));
 
                 if (_dispatchers != null && _dispatchers.Any())
                 {
@@ -95,14 +109,28 @@ namespace Xtricate.Web.Dashboard
             }
         }
 
-        public static string GetResourceFolderNamespace(string resourceFolder)
+        public static string GetResourcesFolderNamespace(string folder)
         {
-            return GetResourceFolderNamespace(typeof (RouteCollectionBuilder), resourceFolder);
+            return GetResourcesFolderNamespace(typeof (RouteCollectionBuilder), folder);
         }
 
-        public static string GetResourceFolderNamespace(Type type, string resourceFolder)
+        public static string GetResourcesFolderNamespace(Type type, string folder)
         {
-            return string.Format("{0}.Resources.{1}", type.Namespace, resourceFolder);
+            if (string.IsNullOrEmpty(folder))
+                return string.Format("{0}.Resources", type.Namespace);
+            return string.Format("{0}.Resources.{1}", type.Namespace, folder);
+        }
+
+        public static string GetPagesFolderNamespace(string folder)
+        {
+            return GetPagesFolderNamespace(typeof(RouteCollectionBuilder), folder);
+        }
+
+        public static string GetPagesFolderNamespace(Type type, string folder = null)
+        {
+            if(string.IsNullOrEmpty(folder))
+                return string.Format("{0}.Pages", type.Namespace);
+            return string.Format("{0}.Pages.{1}", type.Namespace, folder);
         }
 
         public static string GetResourceName(string resourceFolder, string name)
@@ -112,7 +140,7 @@ namespace Xtricate.Web.Dashboard
 
         public static string GetResourceName(Type type, string resourceFolder, string name)
         {
-            return string.Format("{0}.{1}", GetResourceFolderNamespace(type, resourceFolder), name);
+            return string.Format("{0}.{1}", GetResourcesFolderNamespace(type, resourceFolder), name);
         }
     }
 }

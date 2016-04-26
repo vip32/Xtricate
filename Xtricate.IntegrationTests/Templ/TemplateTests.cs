@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using NUnit.Framework;
 using Xtricate.Dynamic;
 using Xtricate.IntegrationTests.Templ.Templates;
@@ -26,7 +27,7 @@ namespace Xtricate.IntegrationTests.Templ
         {
             var template = new TestBody
             {
-                Culture = "de-DE",
+                Culture = CultureInfo.GetCultureInfo("de-DE"),
                 Model = new PersonModel
                 {
                     FirstName = "John",
@@ -35,13 +36,13 @@ namespace Xtricate.IntegrationTests.Templ
                 Texts = new PropertyBag<IDictionary<string, string>>
                 {
                     {
-                        "de-DE", new Dictionary<string, string>()
+                        CultureInfo.GetCultureInfo("de-DE").Name, new Dictionary<string, string>()
                         {
                             {"welcome", "Wilkommen"}
                         }
                     },
                     {
-                        "nl-NL", new Dictionary<string, string>()
+                        CultureInfo.GetCultureInfo("nl-NL").Name, new Dictionary<string, string>()
                         {
                             {"welcome", "Welkom"}
                         }

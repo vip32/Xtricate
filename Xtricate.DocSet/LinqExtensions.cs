@@ -33,7 +33,7 @@ namespace Xtricate.DocSet
             return itemsArray;
         }
 
-        public static string ToString<T>(this IEnumerable<T> items, string separator)
+        public static string Join<T>(this IEnumerable<T> items, string separator)
         {
             if (items.IsNullOrEmpty()) return null;
             var sb = new StringBuilder();

@@ -10,7 +10,7 @@ namespace Xtricate.Service.Dashboard.Controllers
     [RoutePrefix("api/products")]
     public class ProductsController : ApiController
     {
-        private static readonly IEnumerable<Product> Products;
+        private static readonly List<Product> Products;
         private static readonly ILogger Logger;
 
         static ProductsController()
@@ -39,13 +39,22 @@ namespace Xtricate.Service.Dashboard.Controllers
         }
 
         // POST: api/Products
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Product value)
         {
+            if (value == null) return;
+            Products.Add(value);
         }
 
         // PUT: api/Products/5
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, [FromBody] Product value)
         {
+            if (value == null) return;
+            var product = Products.FirstOrDefault(p => p.Id == value.Id);
+            if (product != null)
+            {
+                product.Name = value.Name;
+                product.Description = value.Description;
+            }
         }
 
         // DELETE: api/Products/5

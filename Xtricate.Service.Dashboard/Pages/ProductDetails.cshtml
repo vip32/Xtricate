@@ -1,0 +1,63 @@
+﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
+
+@using Xtricate.Web.Dashboard
+@using Xtricate.Web.Dashboard.Pages
+@inherits Xtricate.Web.Dashboard.WebTemplate
+@{
+    Layout = new DefaultLayout();
+    Scripts = new[] { Url.To("/js-treegrid") };
+    Stylesheets = new[] { Url.To("/css-treegrid") };
+    TypeScripts = new[] { Url.To("/_ts/" + GetType().Name) };
+    Title = "Product Details " + Parameters["id"];
+}
+
+<div class="row show-grid">
+    <div class="col-md-4"><button id="refresh" class="btn btn-default btn-sm" data-bind="enabled: !isLoading()">Refresh</button></div>
+    <div class="col-md-4"><span data-bind="visible: isLoading" class="glyphicon glyphicon-refresh glyphicon-spin"></span></div>
+    <div class="col-md-4">&nbsp;</div>
+</div>
+
+<table class="table tree">
+    <thead>
+    <tr>
+        <th>Property</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Name</td>
+        <td data-bind="text: name"></td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td data-bind="text: description"></td>
+    </tr>
+    <tr>
+        <td>Sku</td>
+        <td data-bind="text: sku"></td>
+    </tr>
+    </tbody>
+</table>
+
+<form role="form" method="POST" action="">
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" id="name" name="name">
+    </div>
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <input type="text" class="form-control" id="description" name="description">
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+    @if (IsPost)
+    {<text>POST! </text>@Request.GetBodyParameters()["name"]}
+</form>
+
+<script type="text/typescript">
+    setTimeout(()=>console.log('hello from typescript'));
+</script>
+
+<script type="text/javascript">
+
+</script>

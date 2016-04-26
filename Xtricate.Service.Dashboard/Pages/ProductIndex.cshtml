@@ -2,13 +2,14 @@
 
 @using Xtricate.Service.Dashboard
 @using Xtricate.Web.Dashboard
-@using Xtricate.Web.Dashboard.Templates
+@using Xtricate.Web.Dashboard.Pages
 @inherits Xtricate.Web.Dashboard.WebTemplate
 @{
     Layout = new DefaultLayout();
     Scripts = new[] { Url.To("/js-treegrid") };
     Stylesheets = new[] { Url.To("/css-treegrid") };
-    Title = "Products";
+    TypeScripts = new[] { Url.To("/_ts/" + GetType().Name) };
+    Title = "Product Index";
 }
 
 <div class="row show-grid">
@@ -19,13 +20,13 @@
 
 <table class="table tree">
     <thead>
-        <tr>
-            <th>Category</th>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Sku</th>
-            <th>Created</th>
-        </tr>
+    <tr>
+        <th>Category</th>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Sku</th>
+        <th>Created</th>
+    </tr>
     </thead>
     <tbody data-bind="template: { foreach: products }">
     <tr>
@@ -38,30 +39,10 @@
     </tbody>
 </table>
 
+<script type="text/typescript">
+    setTimeout(()=>console.log('hello from typescript inline'));
+</script>
+
 <script type="text/javascript">
-    var data = [];
-    var viewModel = {
-        isLoading: ko.observable(false),
-        products: ko.observableArray(data)
-    };
-    ko.applyBindings(viewModel);
-
-    $(document).ready(function () {
-        Refresh();
-    });
-
-    $('#refresh').click(function () {
-        Refresh();
-        $('.tree').treegrid();
-    });
-
-    function Refresh() {
-        viewModel.products(null);
-        viewModel.isLoading(true);
-        $.getJSON("/api/products", function (data) {
-            //console.log(data);
-            viewModel.isLoading(false);
-            viewModel.products(data);
-        });
-    };
+    console.log('hello from javascript inline')
 </script>

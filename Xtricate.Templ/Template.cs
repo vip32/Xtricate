@@ -27,10 +27,10 @@ namespace Xtricate.Templ
             OutProperties = new Dictionary<string, string>();
             Texts = new Dictionary<string, IDictionary<string, string>>();
             ContentType = "text/html";
-            Culture = Thread.CurrentThread.CurrentCulture.Name;
+            Culture = Thread.CurrentThread.CurrentCulture;
         }
 
-        public string Culture { get; set; }
+        public CultureInfo Culture { get; set; }
         public string ContentType { get; set; }
         public IDictionary<string, string> Parameters { get; set; }
         public IDictionary<string, string> OutProperties { get; set; }
@@ -48,19 +48,21 @@ namespace Xtricate.Templ
             return value;
         }
 
-        public string Text(string key)
+        public string GetText(string key)
         {
-            if (string.IsNullOrEmpty(Culture)) return null;
+            if (string.IsNullOrEmpty(Culture.Name)) return null;
+            if (string.IsNullOrEmpty(key)) return null;
             IDictionary<string, string> values;
-            Texts.TryGetValue(Culture, out values);
+            Texts.TryGetValue(Culture.Name, out values);
             if (values == null) return null;
             string value;
             values.TryGetValue(key, out value);
             return value;
         }
 
-        public string OutProperty(string key, string value, bool output = false)
+        public string SetOutProperty(string key, string value, bool output = false)
         {
+            if (string.IsNullOrEmpty(key)) return null;
             if (OutProperties.ContainsKey(key)) OutProperties.Remove(key);
             OutProperties.Add(key, value);
             return output ? value : string.Empty;
@@ -70,12 +72,12 @@ namespace Xtricate.Templ
 
         public override string ToString()
         {
-            if (string.IsNullOrEmpty(Culture) || Thread.CurrentThread.CurrentCulture.Name.Equals(Culture))
+            if (Culture == null || Thread.CurrentThread.CurrentCulture.Equals(Culture))
                 return TransformText(null);
-            var culture = Thread.CurrentThread.CurrentCulture.Name;
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(Culture);
+            var culture = Thread.CurrentThread.CurrentCulture;
+            Thread.CurrentThread.CurrentCulture = Culture;
             var result = TransformText(null);
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(culture);
+            Thread.CurrentThread.CurrentCulture = culture;
             return Regex.Replace(result, @"^\s+$[\r\n]*", "", RegexOptions.Multiline); // remove empty lines
         }
 

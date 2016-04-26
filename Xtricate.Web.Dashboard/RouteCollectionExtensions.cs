@@ -14,7 +14,7 @@ namespace Xtricate.Web.Dashboard
             if (pathTemplate == null) throw new ArgumentNullException(nameof(pathTemplate));
             if (pageFunc == null) throw new ArgumentNullException(nameof(pageFunc));
 
-            routes.Add(pathTemplate, new RequestDispatcher(pageFunc));
+            routes.Add(pathTemplate, new TemplateRequestDispatcher(pageFunc));
         }
     }
 }

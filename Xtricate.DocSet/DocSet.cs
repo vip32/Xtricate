@@ -31,7 +31,7 @@ namespace Xtricate.DocSet
             int skip = 0, int take = 0)
         {
             if (key == null) return null;
-            return _docStorage.Load(key, tags, null, fromDateTime, tillDateTime, skip, take);
+            return _docStorage.LoadValues(key, tags, null, fromDateTime, tillDateTime, skip, take);
         }
 
         public IEnumerable<TDoc> Load(IEnumerable<string> tags = null,
@@ -39,7 +39,7 @@ namespace Xtricate.DocSet
             DateTime? fromDateTime = null, DateTime? tillDateTime = null,
             int skip = 0, int take = 0)
         {
-            return _docStorage.Load(tags, criteria, fromDateTime, tillDateTime, skip, take);
+            return _docStorage.LoadValues(tags, criteria, fromDateTime, tillDateTime, skip, take);
         }
 
         public IEnumerable<TDoc> Store(IEnumerable<TDoc> documents, IEnumerable<string> tags = null)

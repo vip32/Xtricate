@@ -1,0 +1,23 @@
+﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
+@using Xtricate.Playground.Templates
+@using Xtricate.Templ
+@inherits Template<Xtricate.Playground.OrderModel>
+@{
+    Layout = new TestLayout();
+    Title = "Test - OrderConfirmationTemplate";
+}
+====== BODY
+<h1>OrderConfirmationTemplate</h1>
+@GetText("welcome"), @Model.FirstName @Model.LastName
+@SetOutProperty("subject", string.Format("{0}: {1} {2}", GetText("welcome"), Model.FirstName, Model.LastName))
+@Model.Created
+@Html.LoremIpsum()
+@Html.LoremIpsum()
+@Html.LoremIpsum()
+<ul>
+    @foreach (var item in Model.Items)
+    {
+        <li>@item.Name (@item.Sku) @item.Quantity (@item.Price) - total = @item.Total</li>
+    }
+</ul>
+====== BODY
