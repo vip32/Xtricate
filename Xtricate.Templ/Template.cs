@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -52,6 +53,8 @@ namespace Xtricate.Templ
         {
             if (string.IsNullOrEmpty(Culture.Name)) return null;
             if (string.IsNullOrEmpty(key)) return null;
+            if (Texts == null || !Texts.Any()) return null;
+
             IDictionary<string, string> values;
             Texts.TryGetValue(Culture.Name, out values);
             if (values == null) return null;
@@ -75,9 +78,12 @@ namespace Xtricate.Templ
             if (Culture == null || Thread.CurrentThread.CurrentCulture.Equals(Culture))
                 return TransformText(null);
             var culture = Thread.CurrentThread.CurrentCulture;
+            var uiculture = Thread.CurrentThread.CurrentUICulture;
             Thread.CurrentThread.CurrentCulture = Culture;
+            Thread.CurrentThread.CurrentUICulture = Culture;
             var result = TransformText(null);
             Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = uiculture;
             return Regex.Replace(result, @"^\s+$[\r\n]*", "", RegexOptions.Multiline); // remove empty lines
         }
 

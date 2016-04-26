@@ -69,7 +69,7 @@ namespace Xtricate.Playground
                             Tags = new[] {"shop", "de-DE"},
                             //Culture = CultureInfo.GetCultureInfo("de-DE"),
                             TemplateType = typeof (OrderConfirmationTemplate),
-                            ModelType = typeof (OrderModel),
+                            ModelType = typeof (OrderConfirmationModel),
                         }
                     }),
                 new PropertyBag<IDictionary<string, string>>
@@ -89,10 +89,11 @@ namespace Xtricate.Playground
                 });
 
             // CREATE the template based on a model (MAILSERVICE)
-            var model = new OrderModel
+            var model = new OrderConfirmationModel
             {
                 FirstName = "John",
                 LastName = "Doe",
+                DeliveryDate = DateTime.Now.AddDays(2),
                 Items = new List<OrderItemModel>
                 {
                     new OrderItemModel {Name = "product1", Price = 9.99m, Quantity = 2, Sku = "sku1"},
@@ -143,12 +144,13 @@ namespace Xtricate.Playground
         }
     }
 
-    public class OrderModel : Expando
+    public class OrderConfirmationModel : Expando
     {
         public DateTime Created => new DateTime(2000, 10, 10);
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public IEnumerable<OrderItemModel> Items { get; set; }
+        public DateTime DeliveryDate { get; set; }
     }
 
     public class OrderItemModel
