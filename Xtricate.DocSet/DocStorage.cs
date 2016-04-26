@@ -43,7 +43,7 @@ namespace Xtricate.DocSet
             {
                 Log.Debug($"table: {TableName}");
                 IndexMaps.ForEach(
-                    im => Log.Debug($"index map: {typeof (TDoc).Name} > {im.Name} [{im.Description}]"));
+                    im => Log.Debug($"index map: {typeof(TDoc).Name} > {im.Name} [{im.Description}]"));
                 Log.Debug($"connection: {Options.ConnectionString}");
             }
             Initialize();
@@ -82,7 +82,7 @@ namespace Xtricate.DocSet
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                return conn.Query<int>(sql.ToString(), new {key}).Any();
+                return conn.Query<int>(sql.ToString(), new { key }).Any();
             }
         }
 
@@ -238,7 +238,7 @@ namespace Xtricate.DocSet
                 //sql += SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn);
                 //sql += SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize);
                 conn.Open();
-                var results = conn.Query<string>(sql.ToString(), new {key}, buffered: Options.BufferedLoad);
+                var results = conn.Query<string>(sql.ToString(), new { key }, buffered: Options.BufferedLoad);
                 if (results == null) yield break;
                 foreach (var result in results)
                     yield return Serializer.FromJson<TDoc>(result);
@@ -271,7 +271,7 @@ namespace Xtricate.DocSet
                 //sql += SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn);
                 //sql += SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize);
                 conn.Open();
-                var results = conn.Query<byte[]>(sql.ToString(), new {key}, buffered: Options.BufferedLoad);
+                var results = conn.Query<byte[]>(sql.ToString(), new { key }, buffered: Options.BufferedLoad);
                 if (results == null) yield break;
                 foreach (var data in results.Where(data => data != null))
                     yield return new MemoryStream(data.Decompress());
@@ -327,7 +327,7 @@ namespace Xtricate.DocSet
                 //tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
                 //criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 conn.Open();
-                var num = conn.Execute(sql.ToString(), new {key});
+                var num = conn.Execute(sql.ToString(), new { key });
                 return num > 0 ? StorageAction.Deleted : StorageAction.None;
             }
         }
