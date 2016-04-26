@@ -180,6 +180,7 @@ namespace Xtricate.DocSet
             }
         }
 
+        // TODO: add LoadMany where multiple keys can be provided https://msdn.microsoft.com/de-de/library/ms177682(v=sql.120).aspx
         public virtual IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null,
             IEnumerable<Criteria> criterias = null,
             DateTime? fromDateTime = null, DateTime? tillDateTime = null,
