@@ -43,7 +43,7 @@ namespace Xtricate.DocSet
             {
                 Log.Debug($"table: {TableName}");
                 IndexMaps.ForEach(
-                    im => Log.Debug($"index map: {typeof (TDoc).Name} > {im.Name} [{im.Description}]"));
+                    im => Log.Debug($"index map: {typeof(TDoc).Name} > {im.Name} [{im.Description}]"));
                 Log.Debug($"connection: {Options.ConnectionString}");
             }
             Initialize();
@@ -82,7 +82,7 @@ namespace Xtricate.DocSet
             using (var conn = CreateConnection())
             {
                 conn.Open();
-                return conn.Query<int>(sql.ToString(), new {key}).Any();
+                return conn.Query<int>(sql.ToString(), new { key }).Any();
             }
         }
 
@@ -192,8 +192,27 @@ namespace Xtricate.DocSet
             }
         }
 
-        // TODO: add LoadMany where multiple keys can be provided https://msdn.microsoft.com/de-de/library/ms177682(v=sql.120).aspx
-        public virtual IEnumerable<TDoc> Load(object key, IEnumerable<string> tags = null,
+        public virtual IEnumerable<object> LoadKeys(IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null)
+        {
+            if (Options.EnableLogging)
+                Log.Debug($"{TableName} count: tags={tags?.Join("||")}");
+
+            using (var conn = CreateConnection())
+            {
+                var sql = new StringBuilder($@"SELECT [key] FROM {TableName} WHERE [id]>0");
+                foreach (var t in tags.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildTagSelect(t));
+                foreach (var c in criterias.NullToEmpty())
+                    sql.Append(SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                //var sql = $@"SELECT [key] FROM {TableName} WHERE [id]>0";
+                //tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
+                //criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
+                conn.Open();
+                return conn.Query<object>(sql.ToString());
+            }
+        }
+
+        public virtual IEnumerable<TDoc> LoadValues(object key, IEnumerable<string> tags = null,
             IEnumerable<Criteria> criterias = null,
             DateTime? fromDateTime = null, DateTime? tillDateTime = null,
             int skip = 0, int take = 0)
@@ -219,7 +238,7 @@ namespace Xtricate.DocSet
                 //sql += SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn);
                 //sql += SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize);
                 conn.Open();
-                var results = conn.Query<string>(sql.ToString(), new {key}, buffered: Options.BufferedLoad);
+                var results = conn.Query<string>(sql.ToString(), new { key }, buffered: Options.BufferedLoad);
                 if (results == null) yield break;
                 foreach (var result in results)
                     yield return Serializer.FromJson<TDoc>(result);
@@ -252,7 +271,7 @@ namespace Xtricate.DocSet
                 //sql += SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn);
                 //sql += SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize);
                 conn.Open();
-                var results = conn.Query<byte[]>(sql.ToString(), new {key}, buffered: Options.BufferedLoad);
+                var results = conn.Query<byte[]>(sql.ToString(), new { key }, buffered: Options.BufferedLoad);
                 if (results == null) yield break;
                 foreach (var data in results.Where(data => data != null))
                     yield return new MemoryStream(data.Decompress());
@@ -308,7 +327,7 @@ namespace Xtricate.DocSet
                 //tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
                 //criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
                 conn.Open();
-                var num = conn.Execute(sql.ToString(), new {key});
+                var num = conn.Execute(sql.ToString(), new { key });
                 return num > 0 ? StorageAction.Deleted : StorageAction.None;
             }
         }
