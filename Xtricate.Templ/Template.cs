@@ -71,6 +71,15 @@ namespace Xtricate.Templ
             return output ? value : string.Empty;
         }
 
+        public string GetOutProperty(string key)
+        {
+            if (string.IsNullOrEmpty(key)) return null;
+            if (OutProperties == null || !OutProperties.Any()) return null;
+            if (!OutProperties.ContainsKey(key)) return null;
+
+            return OutProperties[key];
+        }
+
         public abstract void Execute();
 
         public override string ToString()
