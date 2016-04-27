@@ -17,5 +17,14 @@ namespace Xtricate.Templ
             partialTemplate.Assign(_template);
             return new NonEscapedString(partialTemplate.ToString());
         }
+
+        public bool IsDebug()
+        {
+#if DEBUG
+            return true;
+#else
+            return false;
+#endif
+        }
     }
 }
