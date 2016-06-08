@@ -26,9 +26,12 @@ function refresh(): void {
     console.log('refresh');
     viewModel.products(null);
     viewModel.isLoading(true);
+    RefreshOn();
+
     $.getJSON("/api/products", data => {
         //console.log(data);
         viewModel.isLoading(false);
         viewModel.products(data);
+        RefreshOff();
     });
 };

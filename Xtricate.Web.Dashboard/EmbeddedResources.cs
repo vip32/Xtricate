@@ -11,7 +11,8 @@ namespace Xtricate.Web.Dashboard
             "lodash.min.js",
             "knockout.min.js",
             "knockout.mapping.js",
-            "sprintf.min.js"
+            "sprintf.min.js",
+            "glyphrefresh.js"
         };
 
         public readonly List<string> TypescriptEmbeddedResources = new List<string>

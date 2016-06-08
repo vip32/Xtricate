@@ -40,9 +40,11 @@
 </table>
 
 <script type="text/typescript">
-    setTimeout(()=>console.log('hello from typescript inline'));
+    setTimeout(()=>console.log('hello from typescript inline1'));
 </script>
 
 <script type="text/javascript">
-    console.log('hello from javascript inline')
+    $(document).ready(function () {
+        console.log('hello from javascript inline2');
+    });
 </script>
