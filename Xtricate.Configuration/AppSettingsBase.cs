@@ -82,7 +82,7 @@ namespace Xtricate.Configuration
         {
             var stringValue = GetNullableString(name);
             return stringValue != null
-                ? TypeSerializer.DeserializeFromString<T>(stringValue) //JsonConvert.DeserializeObject<T>(stringValue) 
+                ? TypeSerializer.DeserializeFromString<T>(stringValue) //JsonConvert.DeserializeObject<T>(stringValue)
                 : default(T);
         }
 
@@ -108,6 +108,7 @@ namespace Xtricate.Configuration
                 throw new ConfigurationErrorsException(message, ex);
             }
 
+            if (ret == null) ret = defaultValue;
             return ret;
         }
 

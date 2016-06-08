@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -98,6 +96,12 @@ namespace Xtricate.DocSet
             return UpsertInternal(key, data: data, tags: tags, forceInsert: forceInsert, timestamp: timestamp);
         }
 
+        public virtual StorageAction Upsert(object key, TDoc document, Stream data, IEnumerable<string> tags = null,
+            bool forceInsert = false, DateTime? timestamp = null)
+        {
+            return UpsertInternal(key, document: document, data: data, tags: tags, forceInsert: forceInsert, timestamp: timestamp);
+        }
+
         private StorageAction UpsertInternal(object key, TDoc document = default(TDoc), Stream data = null, IEnumerable<string> tags = null, bool forceInsert = false, DateTime? timestamp = null)
         {
             // http://www.databasejournal.com/features/mssql/using-the-merge-statement-to-perform-an-upsert.html
@@ -112,7 +116,7 @@ namespace Xtricate.DocSet
                     if (Options.EnableLogging)
                         Log.Debug($"{TableName} update: key={key},tags={tags?.Join("||")}");
                     var updateColumns = "[value]=@value";
-                    if (document != null && data != null) updateColumns += ",[data]=@data";
+                    if (document != null && data != null) updateColumns = $"{updateColumns},[data]=@data";
                     if (document == null && data != null) updateColumns = "[data]=@data";
                     sql.Append(
                         $@"

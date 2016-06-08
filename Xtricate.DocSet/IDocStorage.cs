@@ -16,6 +16,9 @@ namespace Xtricate.DocSet
         StorageAction Upsert(object key, Stream data, IEnumerable<string> tags = null, bool forceInsert = false,
             DateTime? timestamp = null);
 
+        StorageAction Upsert(object key, TDoc document, Stream data, IEnumerable<string> tags = null,
+            bool forceInsert = false, DateTime? timestamp = null);
+
         long Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null);
 
         IEnumerable<object> LoadKeys(IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null);
