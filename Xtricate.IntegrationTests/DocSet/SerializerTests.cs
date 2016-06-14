@@ -19,6 +19,7 @@ namespace Xtricate.IntegrationTests
         }
 
         [TestCase("Routing wide joints (≥ 4 mm, e.g. between natural stone tiles)öoäa®r¼4")]
+        [TestCase("NEU!Kreissägeblätter Expert for Steel NOUVEAU˜!Lames de scies circulaires Expert for Steel °˛˝˙°ˆˇ! ˘  Expert for Steel")]
         public void JsonNetCharacterTest1(string str)
         {
             var jsonNetSerializer = new JsonNetSerializer();

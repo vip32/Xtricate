@@ -309,7 +309,8 @@ namespace Xtricate.IntegrationTests
                 using (mp.Step("insert " + i))
                 {
                     var doc1 = new Fixture().Create<TestDocument>();
-                    doc1.Name = "Routing wide joints (≥ 4 mm, e.g. between natural stone tiles)öoäa®r¼4èe";
+                    //doc1.Name = "Routing wide joints (≥ 4 mm, e.g. between natural stone tiles)öoäa®r¼4èe";
+                    doc1.Name = "NEU!Kreissägeblätter Expert for Steel NOUVEAU˜!Lames de scies circulaires Expert for Steel °˛˝˙°ˆˇ! ˘  Expert for Steel";
 
                     var result1 = storage.Upsert("key1", doc1, new[] {"en-US"});
                     //    Assert.That(result1, Is.EqualTo(StorageAction.Updated));
