@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
@@ -16,6 +16,22 @@ namespace Xtricate.IntegrationTests
         {
             MiniProfiler.Settings.Storage = new MiniPofilerInMemoryStorage();
             MiniProfiler.Settings.ProfilerProvider = new MiniPofilerInMemoryProvider();
+        }
+
+        [TestCase("Routing wide joints (≥ 4 mm, e.g. between natural stone tiles)öoäa®r¼4")]
+        public void JsonNetCharacterTest1(string str)
+        {
+            var jsonNetSerializer = new JsonNetSerializer();
+            var sut = new TestClass1 {Name = str};
+            var result = jsonNetSerializer.ToJson(sut);
+
+            Assert.That(str, Is.EqualTo(sut.Name));
+            Assert.That(result.Contains(str));
+        }
+
+        public class TestClass1
+        {
+            public string Name { get; set; }
         }
 
         [TestCase(100, false)]

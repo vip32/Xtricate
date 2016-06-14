@@ -303,12 +303,15 @@ namespace Xtricate.IntegrationTests
             Log.Debug($"pre count: {preCount}");
 
             var key = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
-            for (var i = 1; i < 100; i++)
+            for (var i = 1; i < 5; i++)
             {
                 Log.Debug($"+{i}");
                 using (mp.Step("insert " + i))
                 {
-                    var result1 = storage.Upsert("key1", new Fixture().Create<TestDocument>(), new[] {"en-US"});
+                    var doc1 = new Fixture().Create<TestDocument>();
+                    doc1.Name = "Routing wide joints (≥ 4 mm, e.g. between natural stone tiles)öoäa®r¼4èe";
+
+                    var result1 = storage.Upsert("key1", doc1, new[] {"en-US"});
                     //    Assert.That(result1, Is.EqualTo(StorageAction.Updated));
                     //}
                     //using (mp.Step("upsert string"))

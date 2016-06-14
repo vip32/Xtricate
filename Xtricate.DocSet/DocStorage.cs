@@ -461,7 +461,7 @@ namespace Xtricate.DocSet
     [tags] NVARCHAR(1024) NOT NULL,
     [hash] NVARCHAR(128),
     [timestamp] DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    [value] TEXT,
+    [value] NTEXT,
     [data] VARBINARY(MAX));
 
     CREATE UNIQUE CLUSTERED INDEX [IX_id_{1}] ON {0} (id)
