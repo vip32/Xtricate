@@ -210,3 +210,8 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+
+# dotnet core
+*.lock.json
+*.nuget.props
+*.nuget.targets
