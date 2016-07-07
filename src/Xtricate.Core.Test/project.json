@@ -2,7 +2,6 @@
   "version": "1.1",
   "description": "Xtricate.Core.Test",
   "authors": [ "vip32" ],
-  "tags": [ "test" ],
   "projectUrl": "",
   "licenseUrl": "",
   "frameworks": {
@@ -10,8 +9,6 @@
   },
   "dependencies": {
     "Dapper": "1.42.0",
-    "Humanizer": "1.37.7",
-    "LibLog": "4.2.5",
     "Newtonsoft.Json": "9.0.1"
   }
 }
