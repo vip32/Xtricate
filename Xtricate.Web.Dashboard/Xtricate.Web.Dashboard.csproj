@@ -75,9 +75,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\SharedAssemblyInfo.cs">
-      <Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="AppBuilderExtensions.cs" />
     <Compile Include="OwinRequestExtensions.cs" />
     <Compile Include="ResourceCollectionDispatcher.cs" />

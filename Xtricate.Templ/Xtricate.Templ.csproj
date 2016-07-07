@@ -38,9 +38,6 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\SharedAssemblyInfo.cs">
-      <Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="Extensions.cs" />
     <Compile Include="HtmlHelper.cs" />
     <Compile Include="HtmlHelperExtensions.cs" />

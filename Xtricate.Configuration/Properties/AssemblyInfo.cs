@@ -5,6 +5,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
+[assembly: AssemblyVersion("1.0.0")]
+[assembly: AssemblyFileVersion("1.0.0")]
+[assembly: AssemblyInformationalVersion("1.0.0")]
 [assembly: AssemblyTitle("Xtricate.Configuration")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]

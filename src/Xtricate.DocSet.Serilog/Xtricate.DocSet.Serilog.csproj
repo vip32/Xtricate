@@ -57,9 +57,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\SharedAssemblyInfo.cs">
-      <Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="DocSetSink.cs" />
     <Compile Include="LogEvent.cs" />
     <Compile Include="LoggerConfigurationExtensions.cs" />
