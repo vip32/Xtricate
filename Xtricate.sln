@@ -33,8 +33,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.Templ", "src\Xtric
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.Playground", "test\Xtricate.Playground\Xtricate.Playground.csproj", "{6868718B-6203-4E92-9923-615035A82159}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Xtricate.Core.Test", "test\Xtricate.Core.Test\Xtricate.Core.Test.xproj", "{27DCFCB4-A4C9-44B9-96A6-E12186BE443D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,10 +91,6 @@ Global
 		{6868718B-6203-4E92-9923-615035A82159}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6868718B-6203-4E92-9923-615035A82159}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6868718B-6203-4E92-9923-615035A82159}.Release|Any CPU.Build.0 = Release|Any CPU
-		{27DCFCB4-A4C9-44B9-96A6-E12186BE443D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{27DCFCB4-A4C9-44B9-96A6-E12186BE443D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{27DCFCB4-A4C9-44B9-96A6-E12186BE443D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{27DCFCB4-A4C9-44B9-96A6-E12186BE443D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,6 +109,5 @@ Global
 		{8DFE7740-4263-4895-B2B1-2DA25DE2D9D4} = {D296FD55-6AAD-472B-A725-B0296C3E2DE9}
 		{833B19E6-AEE1-49D2-B825-659B42756C28} = {D296FD55-6AAD-472B-A725-B0296C3E2DE9}
 		{6868718B-6203-4E92-9923-615035A82159} = {FF441F94-956A-46C5-93B4-52650D4C7B4E}
-		{27DCFCB4-A4C9-44B9-96A6-E12186BE443D} = {FF441F94-956A-46C5-93B4-52650D4C7B4E}
 	EndGlobalSection
 EndGlobal
