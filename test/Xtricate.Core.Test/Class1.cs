@@ -12,6 +12,9 @@ namespace Xtricate.Core.Test
             // http://www.michael-whelan.net/porting-dotnet-framework-library-to-dotnet-core/
             // http://andrewlock.net/publishing-your-first-nuget-package-with-appveyor-and-myget/
 
+
+
+
         }
     }
 }
