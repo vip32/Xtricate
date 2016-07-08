@@ -1,4 +1,22 @@
 version: 1.1.{build}
 build:
   project: Xtricate.Core.sln
-  verbosity: minimal
+  verbosity: normal
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  only:
+  - master
+nuget:
+  disable_publish_on_pr: true
+build_script:
+- ps: .\Build.ps1
+test: off
+artifacts:
+- path: .\artifacts\**\*.nupkg
+  name: NuGet
+deploy:
+- provider: NuGet
+  name: production
+  api_key:
+    secure: If/9VF8y71yT3VTht3PHFdwohtdZ38PDEIYriNu7gE/VyJRyzqvTdszut0E2Uwoq
