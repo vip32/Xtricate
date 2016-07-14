@@ -5,14 +5,15 @@ namespace Xtricate.DocSet
 {
     public class StorageOptions : IStorageOptions
     {
-        public StorageOptions(string connectionString, string schemaName = null, string tableName = null,
-            string tableNamePrefix = null, string tableNameSuffix = null, bool useTransactions = false,
-            bool bufferedLoad = false, int defaultTakeSize = 1000, int maxTakeSize = 5000, bool enableLogging = true,
-            SortColumn defaultSortColumn = SortColumn.Id)
+        public StorageOptions(string connectionString, string databaseName = null, string schemaName = null,
+            string tableName = null, string tableNamePrefix = null, string tableNameSuffix = null,
+            bool useTransactions = false, bool bufferedLoad = false, int defaultTakeSize = 1000, int maxTakeSize = 5000,
+            bool enableLogging = true, SortColumn defaultSortColumn = SortColumn.Id)
         {
             if (string.IsNullOrEmpty(connectionString)) throw new ArgumentException(nameof(connectionString));
 
             ConnectionString = connectionString;
+            DatabaseName = databaseName;
             SchemaName = schemaName;
             TableName = tableName;
             TableNamePrefix = tableNamePrefix;
@@ -26,6 +27,7 @@ namespace Xtricate.DocSet
         }
 
         public string ConnectionString { get; set; }
+        public string DatabaseName { get; set; }
         public string SchemaName { get; set; }
         public bool BufferedLoad { get; set; }
         public string TableName { get; set; }

@@ -50,8 +50,8 @@ namespace Xtricate.DocSet
         public virtual void Reset(bool indexOnly = false)
         {
             if (!indexOnly)
-                DeleteTable(TableName);
-            DeleteIndex(TableName);
+                DeleteTable(Options.DatabaseName, TableName);
+            DeleteIndex(Options.DatabaseName, TableName);
             Initialize();
         }
 
@@ -71,7 +71,7 @@ namespace Xtricate.DocSet
         {
             //Log.Debug($"document exists: key={key},tags={tags?.Join("||")}");
 
-            var sql = new StringBuilder($@"SELECT [id] FROM {TableName} WHERE [key]='{key}'");
+            var sql = new StringBuilder($@"{SqlBuilder.BuildUseDatabase(Options.DatabaseName)} SELECT [id] FROM {TableName} WHERE [key]='{key}'");
             foreach (var t in tags.NullToEmpty())
                 sql.Append(SqlBuilder.BuildTagSelect(t));
             //var sql = $@"SELECT [id] FROM {TableName} WHERE [key]='{key}'";
@@ -120,6 +120,7 @@ namespace Xtricate.DocSet
                     if (document == null && data != null) updateColumns = "[data]=@data";
                     sql.Append(
                         $@"
+    {SqlBuilder.BuildUseDatabase(Options.DatabaseName)}
     UPDATE {TableName}
     SET [hash]=@hash,[timestamp]=@timestamp,{updateColumns
                             }
@@ -148,6 +149,7 @@ namespace Xtricate.DocSet
                     if (document == null && data != null) insertValues = "@data";
                     sql.Append(
                         $@"
+    {SqlBuilder.BuildUseDatabase(Options.DatabaseName)}
     INSERT INTO {TableName}
         ([key],[tags],[hash],[timestamp],{insertColumns}{
                             IndexMaps.NullToEmpty()
@@ -183,7 +185,7 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = new StringBuilder($@"SELECT COUNT(*) FROM {TableName} WHERE [id]>0");
+                var sql = new StringBuilder($@"{SqlBuilder.BuildUseDatabase(Options.DatabaseName)} SELECT COUNT(*) FROM {TableName} WHERE [id]>0");
                 foreach (var t in tags.NullToEmpty())
                     sql.Append(SqlBuilder.BuildTagSelect(t));
                 foreach (var c in criterias.NullToEmpty())
@@ -203,7 +205,7 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = new StringBuilder($@"SELECT [key] FROM {TableName} WHERE [id]>0");
+                var sql = new StringBuilder($@"{SqlBuilder.BuildUseDatabase(Options.DatabaseName)} SELECT [key] FROM {TableName} WHERE [id]>0");
                 foreach (var t in tags.NullToEmpty())
                     sql.Append(SqlBuilder.BuildTagSelect(t));
                 foreach (var c in criterias.NullToEmpty())
@@ -227,7 +229,7 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = new StringBuilder(SqlBuilder.BuildValueSelectByKey(TableName));
+                var sql = new StringBuilder($"{SqlBuilder.BuildUseDatabase(Options.DatabaseName)} {SqlBuilder.BuildValueSelectByKey(TableName)}");
                 foreach (var t in tags.NullToEmpty())
                     sql.Append(SqlBuilder.BuildTagSelect(t));
                 foreach (var c in criterias.NullToEmpty())
@@ -260,7 +262,7 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = new StringBuilder(SqlBuilder.BuildDataSelectByKey(TableName));
+                var sql = new StringBuilder($"{SqlBuilder.BuildUseDatabase(Options.DatabaseName)} {SqlBuilder.BuildDataSelectByKey(TableName)}");
                 foreach (var t in tags.NullToEmpty())
                     sql.Append(SqlBuilder.BuildTagSelect(t));
                 foreach (var c in criterias.NullToEmpty())
@@ -293,7 +295,7 @@ namespace Xtricate.DocSet
 
             using (var conn = CreateConnection())
             {
-                var sql = new StringBuilder(SqlBuilder.BuildValueSelectByTags(TableName));
+                var sql = new StringBuilder($"{SqlBuilder.BuildUseDatabase(Options.DatabaseName)} {SqlBuilder.BuildValueSelectByTags(TableName)}");
                 foreach (var t in tags.NullToEmpty())
                     sql.Append(SqlBuilder.BuildTagSelect(t));
                 foreach (var c in criterias.NullToEmpty())
@@ -322,7 +324,7 @@ namespace Xtricate.DocSet
                 Log.Debug($"{TableName} delete: key={key},tags={tags?.Join("||")}");
             using (var conn = CreateConnection())
             {
-                var sql = new StringBuilder(SqlBuilder.BuildDeleteByKey(TableName));
+                var sql = new StringBuilder($"{SqlBuilder.BuildUseDatabase(Options.DatabaseName)} {SqlBuilder.BuildDeleteByKey(TableName)}");
                 foreach (var t in tags.NullToEmpty())
                     sql.Append(SqlBuilder.BuildTagSelect(t));
                 foreach (var c in criterias.NullToEmpty())
@@ -344,7 +346,7 @@ namespace Xtricate.DocSet
             if (tags.IsNullOrEmpty()) return StorageAction.None;
             using (var conn = CreateConnection())
             {
-                var sql = new StringBuilder(SqlBuilder.BuildDeleteByTags(TableName));
+                var sql = new StringBuilder($"{SqlBuilder.BuildUseDatabase(Options.DatabaseName)} {SqlBuilder.BuildDeleteByTags(TableName)}");
                 foreach (var t in tags.NullToEmpty())
                     sql.Append(SqlBuilder.BuildTagSelect(t));
                 foreach (var c in criterias.NullToEmpty())
@@ -364,9 +366,10 @@ namespace Xtricate.DocSet
         {
             TableName = Options.GetTableName<TDoc>();
 
+            EnsureDatabase(Options);
             EnsureSchema(Options);
-            EnsureTable(TableName);
-            EnsureIndex(TableName);
+            EnsureTable(Options.DatabaseName, TableName);
+            EnsureIndex(Options.DatabaseName, TableName);
         }
 
         private void AddIndexParameters(TDoc document, DynamicParameters parameters)
@@ -403,7 +406,7 @@ namespace Xtricate.DocSet
             }
         }
 
-        protected virtual bool TableExists(string tableName)
+        protected virtual bool TableExists(string databaseName, string tableName)
         {
             using (var conn = CreateConnection())
             {
@@ -411,8 +414,35 @@ namespace Xtricate.DocSet
                 if (Options.EnableLogging)
                     Log.Debug($"{tableName} exists [{conn.Database}]");
                 return
-                    conn.Query<string>(SqlBuilder.TableNamesSelect())
+                    conn.Query<string>($"{SqlBuilder.BuildUseDatabase(Options.DatabaseName)} {SqlBuilder.TableNamesSelect()}")
                         .Any(t => t.Equals(tableName, StringComparison.OrdinalIgnoreCase));
+            }
+        }
+
+        protected virtual void EnsureDatabase(IStorageOptions options)
+        {
+            if (string.IsNullOrEmpty(options.DatabaseName)) return;
+            using (var conn = CreateConnection())
+            {
+                conn.Open();
+                if (Options.EnableLogging)
+                    Log.Debug($"{options.DatabaseName} ensure database [{conn.Database}]");
+                if (conn.Query<string>($@"
+    SELECT *
+    FROM sys.databases
+    WHERE name='{options.DatabaseName}'")
+                    .Any())
+                    return;
+                try
+                {
+                    conn.Execute($"CREATE DATABASE [{options.DatabaseName}]");
+                }
+                catch (SqlException e)
+                {
+                    // swallog
+                    if (Options.EnableLogging)
+                        Log.Warn($"create database: {e.Message}: ");
+                }
             }
         }
 
@@ -424,9 +454,10 @@ namespace Xtricate.DocSet
                 conn.Open();
                 if (Options.EnableLogging)
                     Log.Debug($"{options.SchemaName} ensure schema [{conn.Database}]");
-                if (conn.Query<string>(@"
-    SELECT QUOTENAME(TABLE_SCHEMA) AS Name
-    FROM INFORMATION_SCHEMA.TABLES")
+                if (conn.Query<string>($@"
+    {SqlBuilder.BuildUseDatabase(options.DatabaseName)}
+    SELECT QUOTENAME(SCHEMA_NAME) AS Name
+    FROM INFORMATION_SCHEMA.SCHEMATA")
                     .Any(t =>
                         t.Equals($"[{options.SchemaName}]",
                             StringComparison.OrdinalIgnoreCase)))
@@ -444,9 +475,9 @@ namespace Xtricate.DocSet
             }
         }
 
-        protected virtual void EnsureTable(string tableName)
+        protected virtual void EnsureTable(string databaseName, string tableName)
         {
-            if (TableExists(tableName)) return;
+            if (TableExists(databaseName, tableName)) return;
             using (var conn = CreateConnection())
             {
                 conn.Open();
@@ -454,7 +485,8 @@ namespace Xtricate.DocSet
                     Log.Debug($"{tableName} ensure table [{conn.Database}]");
                 // http://stackoverflow.com/questions/11938044/what-are-the-best-practices-for-using-a-guid-as-a-primary-key-specifically-rega
                 var sql = string.Format(@"
-    CREATE TABLE {0}(
+    {0}
+    CREATE TABLE {1}(
     [uid] UNIQUEIDENTIFIER DEFAULT NEWID() NOT NULL PRIMARY KEY NONCLUSTERED,
     [id] INTEGER NOT NULL IDENTITY(1,1),
     [key] NVARCHAR(512) NOT NULL,
@@ -464,19 +496,20 @@ namespace Xtricate.DocSet
     [value] NTEXT,
     [data] VARBINARY(MAX));
 
-    CREATE UNIQUE CLUSTERED INDEX [IX_id_{1}] ON {0} (id)
-    CREATE INDEX [IX_key_{1}] ON {0} ([key] ASC);
-    CREATE INDEX [IX_tags_{1}] ON {0} ([tags] ASC);
-    CREATE INDEX [IX_hash_{1}] ON {0} ([hash] ASC);",
+    CREATE UNIQUE CLUSTERED INDEX [IX_id_{2}] ON {1} (id)
+    CREATE INDEX [IX_key_{2}] ON {1} ([key] ASC);
+    CREATE INDEX [IX_tags_{2}] ON {1} ([tags] ASC);
+    CREATE INDEX [IX_hash_{2}] ON {1} ([hash] ASC);",
+                    SqlBuilder.BuildUseDatabase(databaseName),
                     tableName, new Random().Next(1000, 9999).ToString());
                 conn.Execute(sql);
             }
         }
 
-        protected virtual void EnsureIndex(string tableName)
+        protected virtual void EnsureIndex(string databaseName, string tableName)
         {
             if (IndexMaps == null || !IndexMaps.Any()) return;
-            if (!TableExists(tableName)) EnsureTable(tableName);
+            if (!TableExists(databaseName, tableName)) EnsureTable(databaseName, tableName);
             using (var conn = CreateConnection())
             {
                 conn.Open();
@@ -485,34 +518,35 @@ namespace Xtricate.DocSet
                     $"{tableName} ensure index [{conn.Database}], index={IndexMaps.NullToEmpty().Select(i => i.Name).Join(", ")}");
                 var sql = IndexMaps.NullToEmpty().Select(i =>
                     string.Format(@"
+    {0}
     IF NOT EXISTS(SELECT * FROM sys.columns
-            WHERE Name = N'{1}{2}' AND Object_ID = Object_ID(N'{0}'))
+            WHERE Name = N'{2}{3}' AND Object_ID = Object_ID(N'{1}'))
     BEGIN
-        ALTER TABLE {0} ADD [{1}{2}] NVARCHAR(2048)
-        CREATE INDEX [IX_{1}{2}] ON {0} ([{1}{2}] ASC)
-    END ", tableName, i.Name.ToLower(), SqlBuilder.IndexColumnNameSuffix));
+        ALTER TABLE {1} ADD [{2}{3}] NVARCHAR(2048)
+        CREATE INDEX [IX_{2}{3}] ON {1} ([{2}{3}] ASC)
+    END ", SqlBuilder.BuildUseDatabase(databaseName), tableName, i.Name.ToLower(), SqlBuilder.IndexColumnNameSuffix));
                 sql.ForEach(s => conn.Execute(s));
             }
             // sqlite check column exists: http://stackoverflow.com/questions/18920136/check-if-a-column-exists-in-sqlite
             // sqlite alter table https://www.sqlite.org/lang_altertable.html
         }
 
-        private void DeleteTable(string tableName)
+        private void DeleteTable(string databaseName, string tableName)
         {
-            if (!TableExists(tableName)) return;
+            if (!TableExists(databaseName, tableName)) return;
             using (var conn = CreateConnection())
             {
                 conn.Open();
                 if (Options.EnableLogging)
                     Log.Debug($"{tableName} drop table [{conn.Database}]");
-                var sql = string.Format(@"DROP TABLE {0}", tableName);
+                var sql = string.Format(@"{0} DROP TABLE {1}", SqlBuilder.BuildUseDatabase(databaseName), tableName);
                 conn.Execute(sql);
             }
         }
 
-        private void DeleteIndex(string tableName)
+        private void DeleteIndex(string databaseName, string tableName)
         {
-            if (!TableExists(tableName)) return;
+            if (!TableExists(databaseName, tableName)) return;
             using (var conn = CreateConnection())
             {
                 conn.Open();
@@ -520,12 +554,13 @@ namespace Xtricate.DocSet
                     Log.Debug($"{tableName} drop table [{conn.Database}]");
                 var sql = IndexMaps.NullToEmpty().Select(i =>
                     string.Format(@"
+    {0}
     IF EXISTS(SELECT * FROM sys.columns
-            WHERE Name = N'{1}{2}' AND Object_ID = Object_ID(N'{0}'))
+            WHERE Name = N'{2}{3}' AND Object_ID = Object_ID(N'{1}'))
     BEGIN
-        DROP INDEX {0}.[IX_{1}{2}]
-        ALTER TABLE {0} DROP COLUMN [{1}{2}]
-    END ", tableName, i.Name.ToLower(), SqlBuilder.IndexColumnNameSuffix));
+        DROP INDEX {1}.[IX_{2}{3}]
+        ALTER TABLE {1} DROP COLUMN [{2}{3}]
+    END ", SqlBuilder.BuildUseDatabase(databaseName), tableName, i.Name.ToLower(), SqlBuilder.IndexColumnNameSuffix));
                 sql.ForEach(s => conn.Execute(s));
             }
         }

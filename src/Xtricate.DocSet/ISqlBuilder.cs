@@ -5,6 +5,7 @@ namespace Xtricate.DocSet
 {
     public interface ISqlBuilder
     {
+        string BuildUseDatabase(string databaseName);
         string BuildDeleteByKey(string tableName);
         string BuildDeleteByTags(string tableName);
         string BuildValueSelectByKey(string tableName);

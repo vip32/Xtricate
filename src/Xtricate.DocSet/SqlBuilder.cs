@@ -8,10 +8,17 @@ namespace Xtricate.DocSet
     {
         public virtual string IndexColumnNameSuffix => "_idx";
 
+        public virtual string BuildUseDatabase(string databaseName = null)
+        {
+            if (string.IsNullOrEmpty(databaseName)) return null;
+            return $"USE [{databaseName}]; ";
+        }
+
         public virtual string BuildDeleteByKey(string tableName)
         {
             return $"DELETE FROM {tableName} WHERE [key]=@key";
         }
+
         public virtual string BuildDeleteByTags(string tableName)
         {
             return $"DELETE FROM {tableName} WHERE ";

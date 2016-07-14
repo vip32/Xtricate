@@ -8,8 +8,8 @@ namespace Xtricate.DocSet.Sqlite
             string tableNamePrefix = null, string tableNameSuffix = null, bool useTransactions = false,
             bool bufferedLoad = false, int defaultTakeSize = 1000, int maxTakeSize = 5000, bool enableLogging = true,
             SortColumn defaultSortColumn = SortColumn.Id)
-            : base(connectionString, schemaName, tableName, tableNamePrefix, tableNameSuffix, useTransactions, bufferedLoad,
-                defaultTakeSize, maxTakeSize, enableLogging, defaultSortColumn)
+            : base(connectionString, schemaName: schemaName, tableName: tableName, tableNamePrefix: tableNamePrefix, tableNameSuffix: tableNameSuffix, useTransactions: useTransactions, bufferedLoad: bufferedLoad,
+                defaultTakeSize: defaultTakeSize, maxTakeSize: maxTakeSize, enableLogging: enableLogging, defaultSortColumn: defaultSortColumn)
         {
         }
 

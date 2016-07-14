@@ -137,6 +137,10 @@
       <Project>{1932db30-fcec-43d7-ace5-6c0f8cafdfd0}</Project>
       <Name>Xtricate.DocSet.Sqlite</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Xtricate.DocSet.SqlLocalDb\Xtricate.DocSet.SqlLocalDb.csproj">
+      <Project>{c747c231-149d-460b-aa9e-b76b317aa3a1}</Project>
+      <Name>Xtricate.DocSet.SqlLocalDb</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Xtricate.DocSet\Xtricate.DocSet.csproj">
       <Project>{22fe1723-6131-49e4-b0f7-847419650b6a}</Project>
       <Name>Xtricate.DocSet</Name>

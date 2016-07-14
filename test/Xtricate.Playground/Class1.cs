@@ -54,7 +54,7 @@ namespace Xtricate.Playground
         [Test]
         public void Test2()
         {
-            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests") { BufferedLoad = false };
+            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), schemaName: "StorageTests") { BufferedLoad = false };
             var connectionFactory = new SqlConnectionFactory();
             var storage = new DocStorage<MimeMessage>(connectionFactory, options, new SqlBuilder(), new JsonNetSerializer(), new Md5Hasher());
 

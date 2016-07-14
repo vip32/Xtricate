@@ -51,8 +51,7 @@ namespace Xtricate.DocSet.Serilog
             if(options == null)
                 options = new StorageOptions(
                     new ConnectionStrings().Get(connectionsStringName),
-                    schemaName,
-                    enableLogging: enableDocSetLogging);
+                    schemaName: schemaName);
 
             if(indexMap == null)
                 indexMap = new List<IIndexMap<LogEvent>>

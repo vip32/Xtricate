@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.Entity.Infrastructure;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
@@ -50,10 +48,11 @@ namespace Xtricate.IntegrationTests
             MiniProfiler.Settings.ProfilerProvider = new MiniPofilerInMemoryProvider();
         }
 
-        [TestCase(100, false)]
-        public void MassInsertTest(int docCount, bool reset)
+        [TestCase("XtricateTestSqlDb", null, "StorageTests", 100, false)]
+        [TestCase("XtricateTestSqlLocalDb", "XtricateSql_TEST", "StorageTests", 100, false)]
+        public void MassInsertTest(string connectionName, string databaseName, string schemaName, int docCount, bool reset)
         {
-            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
+            var options = new StorageOptions(new ConnectionStrings().Get(connectionName), databaseName: databaseName, schemaName: schemaName);
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
@@ -79,10 +78,11 @@ namespace Xtricate.IntegrationTests
             MiniProfiler.Stop();
         }
 
-        [Test]
-        public void DeleteTest()
+        [TestCase("XtricateTestSqlDb", null, "StorageTests")]
+        [TestCase("XtricateTestSqlLocalDb", "XtricateSql_TEST", "StorageTests")]
+        public void DeleteTest(string connectionName, string databaseName, string schemaName)
         {
-            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
+            var options = new StorageOptions(new ConnectionStrings().Get(connectionName), databaseName: databaseName, schemaName: schemaName);
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
@@ -120,10 +120,11 @@ namespace Xtricate.IntegrationTests
             Assert.That(storage.Count(), Is.EqualTo(0));
         }
 
-        [Test]
-        public void FindTest()
+        [TestCase("XtricateTestSqlDb", null, "StorageTests")]
+        [TestCase("XtricateTestSqlLocalDb", "XtricateSql_TEST", "StorageTests")]
+        public void FindTest(string connectionName, string databaseName, string schemaName)
         {
-            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests") {BufferedLoad = false};
+            var options = new StorageOptions(new ConnectionStrings().Get(connectionName), databaseName: databaseName, schemaName: schemaName) { BufferedLoad = false};
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
@@ -212,10 +213,11 @@ namespace Xtricate.IntegrationTests
             MiniProfiler.Stop();
         }
 
-        [Test]
-        public void InitializeTest()
+        [TestCase("XtricateTestSqlDb", null, "StorageTests")]
+        [TestCase("XtricateTestSqlLocalDb", "XtricateSql_TEST", "StorageTests")]
+        public void InitializeTest(string connectionName, string databaseName, string schemaName)
         {
-            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
+            var options = new StorageOptions(new ConnectionStrings().Get(connectionName), databaseName: databaseName, schemaName: schemaName);
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
@@ -241,10 +243,11 @@ namespace Xtricate.IntegrationTests
         //}
 
 
-        [Test]
-        public void InsertDataTest()
+        [TestCase("XtricateTestSqlDb", null, "StorageTests")]
+        [TestCase("XtricateTestSqlLocalDb", "XtricateSql_TEST", "StorageTests")]
+        public void InsertDataTest(string connectionName, string databaseName, string schemaName)
         {
-            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
+            var options = new StorageOptions(new ConnectionStrings().Get(connectionName), databaseName: databaseName, schemaName: schemaName);
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
@@ -286,10 +289,13 @@ namespace Xtricate.IntegrationTests
             Assert.That(result2, Is.EqualTo(StorageAction.Updated));
         }
 
-        [Test]
-        public void InsertTest()
+        [TestCase("XtricateTestSqlDb", null, "StorageTests")]
+        [TestCase("XtricateTestSqlLocalDb", "XtricateSql_TEST", "StorageTests")]
+        public void InsertTest(string connectionName, string databaseName, string schemaName)
         {
-            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
+            var options = new StorageOptions(new ConnectionStrings().Get(connectionName), databaseName: databaseName, schemaName: schemaName);
+            //var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlLocalDb"), databaseName: databaseName, schemaName: "StorageTests");
+            //var connectionFactory = new SqlLocalDbConnectionFactory();
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
@@ -298,7 +304,7 @@ namespace Xtricate.IntegrationTests
             MiniProfiler.Start();
             var mp = MiniProfiler.Current;
 
-            storage.Reset();
+            //storage.Reset();
             var preCount = storage.Count(new[] {"en-US"});
             Log.Debug($"pre count: {preCount}");
 
@@ -352,11 +358,11 @@ namespace Xtricate.IntegrationTests
             MiniProfiler.Stop();
         }
 
-        [Test]
-        public void UpsertTest()
+        [TestCase("XtricateTestSqlDb", null, "StorageTests")]
+        [TestCase("XtricateTestSqlLocalDb", "XtricateSql_TEST", "StorageTests")]
+        public void UpsertTest(string connectionName, string databaseName, string schemaName)
         {
-            Log.Debug("UpsertTest");
-            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests");
+            var options = new StorageOptions(new ConnectionStrings().Get(connectionName), databaseName: databaseName, schemaName: schemaName);
             var connectionFactory = new SqlConnectionFactory();
             var indexMap = TestDocumentIndexMap;
             var storage = new DocStorage<TestDocument>(connectionFactory, options, new SqlBuilder(),
@@ -392,10 +398,11 @@ namespace Xtricate.IntegrationTests
             MiniProfiler.Stop();
         }
 
-        [Test]
-        public void PagingAndSortingTest()
+        [TestCase("XtricateTestSqlDb", null, "StorageTests")]
+        [TestCase("XtricateTestSqlLocalDb", "XtricateSql_TEST", "StorageTests")]
+        public void PagingAndSortingTest(string connectionName, string databaseName, string schemaName)
         {
-            var options = new StorageOptions(new ConnectionStrings().Get("XtricateTestSqlDb"), "StorageTests")
+            var options = new StorageOptions(new ConnectionStrings().Get(connectionName), databaseName: databaseName, schemaName: schemaName)
             {
                 DefaultTakeSize = 3,
                 MaxTakeSize = 5,
@@ -409,7 +416,7 @@ namespace Xtricate.IntegrationTests
             MiniProfiler.Start();
             var mp = MiniProfiler.Current;
 
-            MassInsertTest(20, true);
+            MassInsertTest(connectionName, databaseName, schemaName, 20, true);
 
             var docs1 = storage.LoadValues(new[] { "en-US" }).ToList();
             Assert.That(docs1, Is.Not.Null);
