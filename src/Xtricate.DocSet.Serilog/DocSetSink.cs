@@ -29,7 +29,7 @@ namespace Xtricate.DocSet.Serilog
             IEnumerable<string> propertiesWhiteList = null)
             : base(batchSizeLimit, period)
         {
-            if (storage == null) throw new ArgumentNullException(nameof(storage));
+            //if (storage == null) throw new ArgumentNullException(nameof(storage));
 
             _storage = storage;
             _formatProvider = formatProvider;
@@ -39,6 +39,7 @@ namespace Xtricate.DocSet.Serilog
 
         protected override void EmitBatch(IEnumerable<global::Serilog.Events.LogEvent> events)
         {
+            if (_storage == null) return;
             foreach (var logEvent in events.NullToEmpty())
             {
                 if (logEvent == null) continue;

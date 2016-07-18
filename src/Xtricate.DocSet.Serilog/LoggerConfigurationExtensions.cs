@@ -5,6 +5,7 @@ using Serilog;
 using Serilog.Configuration;
 using Serilog.Events;
 using Xtricate.Configuration;
+using System.Data.Common;
 
 namespace Xtricate.DocSet.Serilog
 {
@@ -60,17 +61,34 @@ namespace Xtricate.DocSet.Serilog
                     new IndexMap<LogEvent>(nameof(LogEvent.Timestamp), i => i.Timestamp.ToString("s"))
                 };
 
-            return loggerConfiguration.Sink(
-                new DocSetSink(
-                    new DocStorage<LogEvent>(new SqlConnectionFactory(), options, new SqlBuilder(),
-                        new JsonNetSerializer(), null /*new Md5Hasher()*/, indexMap),
-                    batchPostingLimit,
-                    period ?? DocSetSink.DefaultPeriod,
-                    formatProvider,
-                    propertiesAsTags ?? new[] {"CorrelationId", "App" /*, "SourceContext"*/},
-                    propertiesWhiteList ??
-                    new[] {/*"CorrelationId",*/ "App", "SourceContext", /*"Message", "DocSetKey"*/}),
-                restrictedToMinimumLevel);
+            try
+            {
+                return loggerConfiguration.Sink(
+                    new DocSetSink(
+                        new DocStorage<LogEvent>(new SqlConnectionFactory(), options, new SqlBuilder(),
+                            new JsonNetSerializer(), null /*new Md5Hasher()*/, indexMap),
+                        batchPostingLimit,
+                        period ?? DocSetSink.DefaultPeriod,
+                        formatProvider,
+                        propertiesAsTags ?? new[] { "CorrelationId", "App" /*, "SourceContext"*/},
+                        propertiesWhiteList ??
+                        new[] {/*"CorrelationId",*/ "App", "SourceContext", /*"Message", "DocSetKey"*/}),
+                    restrictedToMinimumLevel);
+            }
+            catch(DbException) // could not connect to the db, use a null docstorage instead
+            {
+                return loggerConfiguration.Sink(
+                        new DocSetSink(
+                            null,
+                            batchPostingLimit,
+                            period ?? DocSetSink.DefaultPeriod,
+                            formatProvider,
+                            propertiesAsTags ?? new[] { "CorrelationId", "App" /*, "SourceContext"*/},
+                            propertiesWhiteList ??
+                            new[] {/*"CorrelationId",*/ "App", "SourceContext", /*"Message", "DocSetKey"*/}),
+                        restrictedToMinimumLevel);
+            }
+            return null;
         }
     }
 }
