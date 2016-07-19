@@ -3,6 +3,7 @@ namespace Xtricate.DocSet
     public interface IStorageOptions
     {
         string ConnectionString { get; set; }
+        string DataSource { get; set; }
         string DatabaseName { get; set; }
         string SchemaName { get; set; }
         bool BufferedLoad { get; set; }

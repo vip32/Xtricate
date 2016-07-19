@@ -27,6 +27,7 @@ namespace Xtricate.DocSet
         }
 
         public string ConnectionString { get; set; }
+        public string DataSource { get; set; }
         public string DatabaseName { get; set; }
         public string SchemaName { get; set; }
         public bool BufferedLoad { get; set; }

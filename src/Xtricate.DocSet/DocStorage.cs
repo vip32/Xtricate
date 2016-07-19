@@ -31,6 +31,12 @@ namespace Xtricate.DocSet
 
             ConnectionFactory = connectionFactory;
             Options = options;
+
+            var builder = new SqlConnectionStringBuilder(options.ConnectionString);
+            options.DataSource = builder.DataSource;
+            if (!builder.InitialCatalog.IsNullOrEmpty()) // overrule database name if provided in connectionstring
+                Options.DatabaseName = builder.InitialCatalog;
+
             SqlBuilder = sqlBuilder;
             Serializer = serializer ?? new JsonNetSerializer();
             Hasher = hasher;// ?? new Md5Hasher();
@@ -39,11 +45,15 @@ namespace Xtricate.DocSet
 
             if (Options.EnableLogging)
             {
+                Log.Debug($"datasource: {Options.DataSource}");
+                Log.Debug($"database: {Options.DatabaseName}");
+                Log.Debug($"schema: {Options.SchemaName}");
                 Log.Debug($"table: {TableName}");
                 IndexMaps.ForEach(
                     im => Log.Debug($"index map: {typeof(TDoc).Name} > {im.Name} [{im.Description}]"));
-                Log.Debug($"connection: {Options.ConnectionString}");
+                //Log.Debug($"connection: {Options.ConnectionString}");
             }
+
             Initialize();
         }
 
@@ -424,9 +434,11 @@ namespace Xtricate.DocSet
             if (string.IsNullOrEmpty(options.DatabaseName)) return;
             using (var conn = CreateConnection())
             {
-                conn.Open();
                 if (Options.EnableLogging)
                     Log.Debug($"{options.DatabaseName} ensure database [{conn.Database}]");
+
+                EnsureOpenConnection(conn, options);
+
                 if (conn.Query<string>($@"
     SELECT *
     FROM sys.databases
@@ -441,7 +453,7 @@ namespace Xtricate.DocSet
                 {
                     // swallog
                     if (Options.EnableLogging)
-                        Log.Warn($"create database: {e.Message}: ");
+                        Log.Warn($"create database: {e.Message}");
                 }
             }
         }
@@ -470,7 +482,7 @@ namespace Xtricate.DocSet
                 {
                     // swallog
                     if (Options.EnableLogging)
-                        Log.Warn($"create schema: {e.Message}: ");
+                        Log.Warn($"create schema: {e.Message}");
                 }
             }
         }
@@ -562,6 +574,25 @@ namespace Xtricate.DocSet
         ALTER TABLE {1} DROP COLUMN [{2}{3}]
     END ", SqlBuilder.BuildUseDatabase(databaseName), tableName, i.Name.ToLower(), SqlBuilder.IndexColumnNameSuffix));
                 sql.ForEach(s => conn.Execute(s));
+            }
+        }
+
+        private void EnsureOpenConnection(IDbConnection conn, IStorageOptions options)
+        {
+            try
+            {
+                conn.Open();
+            }
+            catch (SqlException e) // cannot login (catalog does not exist?), try without catalog in the conn string
+            {
+                var builder = new SqlConnectionStringBuilder(options.ConnectionString);
+                if (builder.InitialCatalog.IsNullOrEmpty()) throw;
+                if (options.EnableLogging)
+                    Log.Warn($"fallback to db connectionstring with an empty initial catalog: {e.Message}");
+                builder.InitialCatalog = "";
+                options.ConnectionString = builder.ConnectionString;
+                conn.ConnectionString = options.ConnectionString;
+                conn.Open();
             }
         }
     }

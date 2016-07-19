@@ -291,6 +291,7 @@ namespace Xtricate.IntegrationTests
 
         [TestCase("XtricateTestSqlDb", null, "StorageTests")]
         [TestCase("XtricateTestSqlLocalDb", "XtricateSql_TEST", "StorageTests")]
+        [TestCase("XtricateTestSqlLocalDbNoCatalog", "XtricateSql_TEST_NO_Catalog", "StorageTests")]
         public void InsertTest(string connectionName, string databaseName, string schemaName)
         {
             var options = new StorageOptions(new ConnectionStrings().Get(connectionName), databaseName: databaseName, schemaName: schemaName);
@@ -304,7 +305,7 @@ namespace Xtricate.IntegrationTests
             MiniProfiler.Start();
             var mp = MiniProfiler.Current;
 
-            //storage.Reset();
+            storage.Reset();
             var preCount = storage.Count(new[] {"en-US"});
             Log.Debug($"pre count: {preCount}");
 
