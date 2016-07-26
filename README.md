@@ -9,9 +9,14 @@
 
 ## Introduction
 
-## Storage
+## Configuration
+## DocSet
 #### Sqlserver
 #### Sqlite
+#### Serilog
+## Expando
+## Templ
+## Web.Dashboard
 
 ## Bugs and feature requests
 Do you have a bug or a feature request? Please use the [issue tracker](https://github.com/vip32/xtricate.docset/issues) and search for existing and closed issues. If your problem or request isn't addressed yet, go ahead and [open a new issue](https://github.com/vip32/xtricate.docset/issues/new). 
@@ -24,7 +29,3 @@ For transparency and to maintain backward compatibility (as much as possible), t
 
 ## Creators
 * [vip32](https://github.com/vip32) - for the initial conception and core contributor.
-
-## Copyright and license
-Code and documentation copyright 2015 vip32. Code is licensed under the [Microsoft Public License](http://opensource.org/licenses/Ms-PL.html), use it as you wish (but please 
-provide some credit somewhere in your app.) Documentation is released under [Creative Commons](https://github.com/vip32/xtricate.docset/blob/master/docs/LICENSE).
