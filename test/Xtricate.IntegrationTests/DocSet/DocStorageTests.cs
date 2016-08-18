@@ -140,6 +140,12 @@ namespace Xtricate.IntegrationTests
             using (mp.Step("insert "))
             {
                 var document = new Fixture().Create<TestDocument>();
+                var dict = new JsonDictionary<string, TestAttributeValue>();
+                //new JsonDictionary<string, TestAttributeValue>() { new KeyValuePair<string, TestAttributeValue>("", new TestAttributeValue()) };
+                dict.Add("F45G8HMK", new TestAttributeValue { Name = "Test", TextValue = "TextTest" });
+                dict.Add("545G8HMK", new TestAttributeValue { Name = "Test", TextValue = "TextTest" });
+                dict.Add("FRTT45MK", new TestAttributeValue { Name = "Test", TextValue = "TextTest" });
+                document.JsonKeyTest = dict;
                 document.Name = name;
                 sku = document.Skus.FirstOrDefault().Sku;
                 dynamic dDocument = document;
@@ -456,6 +462,7 @@ namespace Xtricate.IntegrationTests
         public IEnumerable<TestAttributeValue> Relations { get; set; }
         public IEnumerable<TestAttributeValue> Includes { get; set; }
         public IEnumerable<TestAttributeValue> Attributes { get; set; }
+        public JsonDictionary<string, TestAttributeValue> JsonKeyTest { get; set; }
     }
 
     public class TestSku

@@ -11,6 +11,7 @@ using Xtricate.DocSet.Serilog;
 using Xtricate.Service.Dashboard;
 using Xtricate.Service.Dashboard.Pages;
 using Xtricate.Web.Dashboard;
+using Xtricate.DocSet.Serialize;
 
 namespace Xtricate.Service.Sample
 {
@@ -90,7 +91,7 @@ namespace Xtricate.Service.Sample
             config.MapHttpAttributeRoutes();
 
             var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().First();
-            jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            jsonFormatter.SerializerSettings.ContractResolver = new CamelCasesResolver();
         }
     }
 }
