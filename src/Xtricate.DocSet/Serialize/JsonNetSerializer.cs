@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
+using Xtricate.DocSet.Serialize;
 
 namespace Xtricate.DocSet
 {
@@ -10,7 +10,7 @@ namespace Xtricate.DocSet
         {
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             NullValueHandling = NullValueHandling.Ignore,
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            ContractResolver = new CamelCasesResolver(),
             Converters = new JsonConverter[]
             {
                 new StringEnumConverter(),

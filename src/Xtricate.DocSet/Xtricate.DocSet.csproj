@@ -76,6 +76,7 @@
     <Compile Include="Hash\Md5Hasher.cs" />
     <Compile Include="Hash\IHasher.cs" />
     <Compile Include="IStorageOptions.cs" />
+    <Compile Include="JsonDictionary.cs" />
     <Compile Include="LinqExtensions.cs" />
     <Compile Include="DocStorage.cs" />
     <Compile Include="Criteria\ICriteria.cs" />
@@ -84,7 +85,9 @@
     <Compile Include="IDocSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Hash\Sha1Hasher.cs" />
+    <Compile Include="Serialize\CamelCasesResolver.cs" />
     <Compile Include="Serialize\ISerializer.cs" />
+    <Compile Include="Serialize\JsonFormatting.cs" />
     <Compile Include="Serialize\JsonNetSerializer.cs" />
     <Compile Include="SqlBuilder.cs" />
     <Compile Include="StorageAction.cs" />
