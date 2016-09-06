@@ -68,6 +68,7 @@ namespace Xtricate.DocSet
             if (string.IsNullOrEmpty(column)) return null;
 
             // TODO: use sql cmd paramaters for the values
+            // TODO: null value handling
             if (op == CriteriaOperator.Gt /*op.Equals(CriteriaOperator.Gt)*/)
                 return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] > '||{Sanatize(value)}' ";
             if (op == CriteriaOperator.Ge /*op.Equals(CriteriaOperator.Ge)*/)
@@ -80,7 +81,7 @@ namespace Xtricate.DocSet
                 return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] LIKE '||%{Sanatize(value)}%||' ";
             if (op == CriteriaOperator.Eqm /*op.Equals(CriteriaOperator.Eqm)*/)
                 return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] LIKE '%||{Sanatize(value)}||%' ";
-                    // TODO: remove % for much faster PERF
+                       // TODO: remove % for much faster PERF
 
             return $" AND [{Sanatize(column).ToLower()}{IndexColumnNameSuffix}] = '||{Sanatize(value)}||' ";
         }

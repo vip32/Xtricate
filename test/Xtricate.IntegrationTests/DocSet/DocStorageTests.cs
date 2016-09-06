@@ -155,6 +155,16 @@ namespace Xtricate.IntegrationTests
             Assert.That(keys.Any(), Is.True);
             Assert.That(count, Is.EqualTo(keys.Count()));
 
+
+            5.Times(i =>
+            {
+                using (mp.Step("find no non-existing by SKU criteria/tags " + i))
+                {
+                    var criterias = new List<Criteria> { new Criteria("sku", CriteriaOperator.Eq, "XYZ_SKU") };
+                    var result = storage.LoadValues(new[] { "en-US" }, criterias).ToList();
+                    Assert.That(result, Is.Null.Or.Empty);
+                }
+            });
             5.Times(i =>
             {
                 using (mp.Step("find by KEY/tags " + i))

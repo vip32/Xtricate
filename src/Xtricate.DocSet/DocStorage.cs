@@ -300,8 +300,7 @@ namespace Xtricate.DocSet
             int skip = 0, int take = 0)
         {
             if (Options.EnableLogging)
-                Log.Debug(
-                $"{TableName} load: tags={tags?.Join("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).Join("||")}");
+                Log.Debug($"{TableName} load: tags={tags?.Join("||")}, criterias={criterias?.Select(c => c.Name + ":" + c.Value).Join("||")}");
 
             using (var conn = CreateConnection())
             {
@@ -313,12 +312,6 @@ namespace Xtricate.DocSet
                 sql.Append(SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime));
                 sql.Append(SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn));
                 sql.Append(SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize));
-                //var sql = SqlBuilder.BuildValueSelectByTags(TableName);
-                //tags.NullToEmpty().ForEach(t => sql += SqlBuilder.BuildTagSelect(t));
-                //criterias.NullToEmpty().ForEach(c => sql += SqlBuilder.BuildCriteriaSelect(IndexMaps, c));
-                //sql += SqlBuilder.BuildFromTillDateTimeSelect(fromDateTime, tillDateTime);
-                //sql += SqlBuilder.BuildSortingSelect(Options.DefaultSortColumn);
-                //sql += SqlBuilder.BuildPagingSelect(skip, take, Options.DefaultTakeSize, Options.MaxTakeSize);
                 conn.Open();
                 var documents = conn.Query<string>(sql.ToString(), buffered: Options.BufferedLoad);
                 if (documents == null) yield break;
