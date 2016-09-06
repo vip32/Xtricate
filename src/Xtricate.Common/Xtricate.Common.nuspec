@@ -12,7 +12,7 @@
     <releaseNotes>
     </releaseNotes>
     <summary>
-      A short description of the package. If specified, this shows up in the middle pane of the Add Package Dialog. If not specified, a truncated version of the description is used instead.
+      A short description of the package. iIf specified, this shows up in the middle pane of the Add Package Dialog. If not specified, a truncated version of the description is used instead.
     </summary>
     <language>en-US</language>
     <projectUrl>https://github.com/vip32/Xtricate</projectUrl>
