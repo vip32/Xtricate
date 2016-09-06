@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using Xtricate.Common.Logging;
 
 namespace Xtricate.Common
 {
     public class Seq : IDisposable
     {
+        private static readonly ILog Log = LogProvider.GetLogger(typeof(Seq));
         private static Stack<string> _froms = new Stack<string>();
         private static string _title;
         private static bool _enabled;
@@ -237,7 +239,7 @@ namespace Xtricate.Common
                 srcStream.Close();
 
                 //Log.Debug(wsd);
-                //Log.Debug("created: " + name);
+                Log.Debug("created: " + name);
 
                 return name;
             }
