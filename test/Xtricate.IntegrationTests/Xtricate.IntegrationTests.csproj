@@ -113,6 +113,7 @@
     <Compile Include="DocSet\DocStorageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DocSet\SerializerTests.cs" />
+    <Compile Include="Common.Seq\SeqTests.cs" />
     <Compile Include="Templ\TemplateTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +126,10 @@
     <None Include="Templ\Templates\TestBody.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Xtricate.Common\Xtricate.Common.csproj">
+      <Project>{e57d70ec-6fdf-4bfc-9225-ae9037757fb6}</Project>
+      <Name>Xtricate.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Xtricate.Configuration\Xtricate.Configuration.csproj">
       <Project>{0cb26ac0-76e4-4688-8cf9-a1526fea32b2}</Project>
       <Name>Xtricate.Configuration</Name>
@@ -136,10 +141,6 @@
     <ProjectReference Include="..\..\src\Xtricate.DocSet.Sqlite\Xtricate.DocSet.Sqlite.csproj">
       <Project>{1932db30-fcec-43d7-ace5-6c0f8cafdfd0}</Project>
       <Name>Xtricate.DocSet.Sqlite</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Xtricate.DocSet.SqlLocalDb\Xtricate.DocSet.SqlLocalDb.csproj">
-      <Project>{c747c231-149d-460b-aa9e-b76b317aa3a1}</Project>
-      <Name>Xtricate.DocSet.SqlLocalDb</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Xtricate.DocSet\Xtricate.DocSet.csproj">
       <Project>{22fe1723-6131-49e4-b0f7-847419650b6a}</Project>
