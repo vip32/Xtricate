@@ -12,19 +12,22 @@ namespace Xtricate.Common
         private static readonly ILog Log = LogProvider.GetLogger(typeof(Seq));
         private static Stack<string> _froms = new Stack<string>();
         private static string _title;
-        private static bool _enabled;
         public static List<SeqStep> Steps = new List<SeqStep>();
         private readonly string _returnDescription;
+        private static bool _enabled;
+        private static bool _loggingEnabled;
 
         public Seq(string from, string description = null, string returnDescription = null, string title = null,
-            bool? enabled = null)
+            bool? enabled = null, bool? loggingEnabled = null)
         {
             if (enabled.HasValue) _enabled = enabled.Value;
+            if (loggingEnabled.HasValue) _loggingEnabled = loggingEnabled.Value; ;
             if (!_enabled) return;
 
             _returnDescription = returnDescription;
             if (!string.IsNullOrEmpty(title)) _title = title;
             if (_froms.Count >= 1)
+            {
                 Steps.Add(new SeqStep
                 {
                     Type = _froms.Peek() != from ? SeqStepType.Call : SeqStepType.CallSelf,
@@ -32,6 +35,8 @@ namespace Xtricate.Common
                     To = from,
                     Description = description
                 });
+                if (_loggingEnabled) Log.Debug($"Seq [{Steps.Count}]: from '{from}' - '{description}'");
+            }
             _froms.Push(from);
         }
 
@@ -56,6 +61,7 @@ namespace Xtricate.Common
         public static void Self(string description)
         {
             if (!_enabled) return;
+
             Steps.Add(new SeqStep
             {
                 Type = SeqStepType.Self,
@@ -63,11 +69,13 @@ namespace Xtricate.Common
                 To = _froms.Peek(),
                 Description = description
             });
+            if (_loggingEnabled) Log.Debug($"Seq [{Steps.Count}]: self - '{description}'");
         }
 
         public static void Note(string description)
         {
             if (!_enabled) return;
+
             Steps.Add(new SeqStep
             {
                 Type = SeqStepType.Note,
@@ -75,6 +83,7 @@ namespace Xtricate.Common
                 From = _froms.Peek(),
                 To = _froms.Peek()
             });
+            if (_loggingEnabled) Log.Debug($"Seq [{Steps.Count}]: note - '{description}'");
         }
 
         public static void Reset()
@@ -82,6 +91,7 @@ namespace Xtricate.Common
             _froms = new Stack<string>();
             Steps = new List<SeqStep>();
             _title = null;
+            if (_loggingEnabled) Log.Debug($"Seq [{Steps.Count}]: reset");
         }
 
         public static string Render()
@@ -89,10 +99,13 @@ namespace Xtricate.Common
             var sb = new StringBuilder();
             sb.Append($"\ntitle {_title}\n");
             if (Steps != null)
+            {
+                if (_loggingEnabled) Log.Debug($"Seq: render #{Steps.Count} steps");
                 foreach (var s in Steps)
                 {
                     sb.Append(s.Render());
                 }
+            }
             return sb.ToString();
         }
 
@@ -105,6 +118,7 @@ namespace Xtricate.Common
             {
                 var from = _froms.Pop();
                 if (from != _froms.Peek())
+                {
                     Steps.Add(new SeqStep
                     {
                         Type = SeqStepType.Return,
@@ -112,6 +126,8 @@ namespace Xtricate.Common
                         To = _froms.Peek(),
                         Description = _returnDescription
                     });
+                    if (_loggingEnabled) Log.Debug($"Seq [{Steps.Count}]: return from '{from}' - '{_returnDescription}'");
+                }
             }
         }
 

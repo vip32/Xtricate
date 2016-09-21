@@ -21,7 +21,7 @@ namespace Xtricate.IntegrationTests
         [Test]
         public void Seq1()
         {
-            using (new Seq("CLIENT", "make a service request", enabled: true))
+            using (new Seq("CLIENT", "make a service request", enabled: true, loggingEnabled: true))
             {
                 Seq.Self("filter grid");
                 var sut = new Service(new Repo());
@@ -36,7 +36,7 @@ namespace Xtricate.IntegrationTests
         [Test]
         public void Seq2()
         {
-            using (new Seq("CLIENT", enabled: true))
+            using (new Seq("CLIENT", enabled: true, loggingEnabled: true))
             {
                 using (new Seq("SERVICE", "handle get request", "return json"))
                 {

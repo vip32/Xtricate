@@ -38,6 +38,7 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="HtmlHelper.cs" />
     <Compile Include="HtmlHelperExtensions.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="TemplateFactory.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Xtricate.Templ.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

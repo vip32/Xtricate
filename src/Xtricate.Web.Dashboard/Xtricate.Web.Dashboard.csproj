@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppBuilderExtensions.cs" />
+    <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
     <Compile Include="OwinRequestExtensions.cs" />
     <Compile Include="ResourceCollectionDispatcher.cs" />
     <Compile Include="DashboardOptions.cs" />
