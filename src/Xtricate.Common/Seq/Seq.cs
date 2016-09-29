@@ -21,7 +21,7 @@ namespace Xtricate.Common
             bool? enabled = null, bool? loggingEnabled = null)
         {
             if (enabled.HasValue) _enabled = enabled.Value;
-            if (loggingEnabled.HasValue) _loggingEnabled = loggingEnabled.Value; ;
+            if (loggingEnabled.HasValue) _loggingEnabled = loggingEnabled.Value;
             if (!_enabled) return;
 
             _returnDescription = returnDescription;
