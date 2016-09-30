@@ -9,16 +9,10 @@ using Microsoft.Owin;
 namespace Xtricate.Web.Dashboard
 {
     using BuildFunc = Action<
-        Func<
-            IDictionary<string, object>,
-            Func<
-                Func<IDictionary<string, object>, Task>,
-                Func<IDictionary<string, object>, Task>
-                >>>;
-    using MidFunc = Func<
-        Func<IDictionary<string, object>, Task>,
-        Func<IDictionary<string, object>, Task>
-        >;
+        Func<IDictionary<string, object>,
+            Func<Func<IDictionary<string, object>, Task>,
+                Func<IDictionary<string, object>, Task>>>>;
+    using MidFunc = Func<Func<IDictionary<string, object>, Task>, Func<IDictionary<string, object>, Task>>;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class MiddlewareExtensions

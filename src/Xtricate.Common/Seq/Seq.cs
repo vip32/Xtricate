@@ -9,13 +9,12 @@ namespace Xtricate.Common
 {
     public class Seq : IDisposable
     {
-        private static readonly ILog Log = LogProvider.GetLogger(typeof(Seq));
+        private static readonly ILog Log = LogProvider.GetLogger(typeof (Seq));
         private static Stack<string> _froms = new Stack<string>();
         private static string _title;
-        public static List<SeqStep> Steps = new List<SeqStep>();
-        private readonly string _returnDescription;
         private static bool _enabled;
         private static bool _loggingEnabled;
+        private readonly string _returnDescription;
 
         public Seq(string from, string description = null, string returnDescription = null, string title = null,
             bool? enabled = null, bool? loggingEnabled = null)
@@ -40,16 +39,15 @@ namespace Xtricate.Common
             _froms.Push(from);
         }
 
+        public static List<SeqStep> Steps { get; set; } = new List<SeqStep>();
+
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        public static bool IsEnabled()
-        {
-            return _enabled;
-        }
+        public static bool IsEnabled() => _enabled;
 
         public static Seq Call(string from, string description = null, string returnDescription = null,
             string title = null)
@@ -126,7 +124,8 @@ namespace Xtricate.Common
                         To = _froms.Peek(),
                         Description = _returnDescription
                     });
-                    if (_loggingEnabled) Log.Debug($"Seq [{Steps.Count}]: return from '{from}' - '{_returnDescription}'");
+                    if (_loggingEnabled)
+                        Log.Debug($"Seq [{Steps.Count}]: return from '{from}' - '{_returnDescription}'");
                 }
             }
         }
@@ -172,7 +171,7 @@ namespace Xtricate.Common
             var wsd = Render();
             var sb = new StringBuilder("style=");
             sb.Append(style).Append("&apiVersion=1&format=").Append(format).Append("&message=");
-            sb.Append(System.Net.WebUtility.UrlEncode(System.Net.WebUtility.UrlDecode(wsd)));
+            sb.Append(WebUtility.UrlEncode(WebUtility.UrlDecode(wsd)));
             var postBytes = Encoding.ASCII.GetBytes(sb.ToString());
 
             // Typical Microsoft crap here: the HttpWebRequest by default always append the header

@@ -147,7 +147,6 @@ namespace Xtricate.Templ
                 : WebUtility.HtmlEncode(text);
         }
 
-
         //public abstract void Assign(Template parentTemplate);
         public virtual void Assign(Template parentTemplate)
         {

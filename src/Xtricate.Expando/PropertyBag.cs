@@ -154,7 +154,7 @@ namespace Xtricate.Dynamic
                     // deserialize
                     else if (xmlType.StartsWith("___"))
                     {
-                        // skip ahead to serialized value element                                                
+                        // skip ahead to serialized value element
                         while (reader.Read() && reader.NodeType != XmlNodeType.Element)
                         {
                         }
@@ -191,7 +191,7 @@ namespace Xtricate.Dynamic
         {
             Clear();
 
-            // if xml string is empty we return an empty dictionary                        
+            // if xml string is empty we return an empty dictionary
             if (string.IsNullOrEmpty(xml))
                 return true;
 
@@ -307,7 +307,7 @@ namespace Xtricate.Dynamic
                 return typeof (byte[]);
 
             // return null if no match is found
-            // don't throw so the caller can decide more efficiently what to do 
+            // don't throw so the caller can decide more efficiently what to do
             // with this error result
             return null;
         }

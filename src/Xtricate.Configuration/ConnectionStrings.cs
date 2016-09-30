@@ -26,8 +26,8 @@ namespace Xtricate.Configuration
 
             public List<string> GetAllKeys()
             {
-                return (ConfigurationManager.ConnectionStrings.Cast<ConnectionStringSettings>()
-                    .Select(settings => settings.Name)).ToList();
+                return ConfigurationManager.ConnectionStrings.Cast<ConnectionStringSettings>()
+                    .Select(settings => settings.Name).ToList();
             }
         }
     }

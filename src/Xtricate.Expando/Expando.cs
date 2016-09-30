@@ -37,7 +37,7 @@ namespace Xtricate.Dynamic
         ///     stored on this object/instance
         /// </summary>
         /// <remarks>Using PropertyBag to support XML Serialization of the dictionary</remarks>
-        public PropertyBag Properties = new PropertyBag();
+        public PropertyBag Properties { get; } = new PropertyBag();
 
         //public Dictionary<string, object> Properties = new Dictionary<string, object>(); // not xmlserializable
 
@@ -251,11 +251,11 @@ namespace Xtricate.Dynamic
             if (instance == null)
                 instance = this;
 
-            var miArray = _instanceType.GetMember(name,
+            var memberInfos = _instanceType.GetMember(name,
                 BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.Instance);
-            if (miArray != null && miArray.Length > 0)
+            if (memberInfos != null && memberInfos.Length > 0)
             {
-                var mi = miArray[0];
+                var mi = memberInfos[0];
                 if (mi.MemberType == MemberTypes.Property)
                 {
                     result = ((PropertyInfo) mi).GetValue(instance, null);
@@ -279,11 +279,11 @@ namespace Xtricate.Dynamic
             if (instance == null)
                 instance = this;
 
-            var miArray = _instanceType.GetMember(name,
+            var memberInfos = _instanceType.GetMember(name,
                 BindingFlags.Public | BindingFlags.SetProperty | BindingFlags.Instance);
-            if (miArray != null && miArray.Length > 0)
+            if (memberInfos != null && memberInfos.Length > 0)
             {
-                var mi = miArray[0];
+                var mi = memberInfos[0];
                 if (mi.MemberType == MemberTypes.Property)
                 {
                     if (((PropertyInfo) mi).CanWrite)
@@ -308,13 +308,13 @@ namespace Xtricate.Dynamic
                 instance = this;
 
             // Look at the instanceType
-            var miArray = _instanceType.GetMember(name,
+            var memberInfos = _instanceType.GetMember(name,
                 BindingFlags.InvokeMethod |
                 BindingFlags.Public | BindingFlags.Instance);
 
-            if (miArray != null && miArray.Length > 0)
+            if (memberInfos != null && memberInfos.Length > 0)
             {
-                var mi = miArray[0] as MethodInfo;
+                var mi = memberInfos[0] as MethodInfo;
                 result = mi.Invoke(_instance, args);
                 return true;
             }

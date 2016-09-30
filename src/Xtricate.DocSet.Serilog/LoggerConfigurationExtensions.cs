@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.Entity.Infrastructure;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Events;
 using Xtricate.Configuration;
-using System.Data.Common;
 
 namespace Xtricate.DocSet.Serilog
 {
     public static class LoggerConfigurationExtensions
     {
         /// <summary>
-        /// Adds a sink that writes log events as documents using DocSet.
+        ///     Adds a sink that writes log events as documents using DocSet.
         /// </summary>
         /// <param name="loggerConfiguration">The logger configuration.</param>
         /// <param name="connectionsStringName">The connectionsString name.</param>
@@ -27,7 +27,7 @@ namespace Xtricate.DocSet.Serilog
         /// <param name="indexMap">The index map.</param>
         /// <param name="enableDocSetLogging">if set to <c>true</c> [enable document set logging].</param>
         /// <returns>
-        /// Logger configuration, allowing configuration to continue.
+        ///     Logger configuration, allowing configuration to continue.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">
         /// </exception>
@@ -49,12 +49,12 @@ namespace Xtricate.DocSet.Serilog
             if (loggerConfiguration == null) throw new ArgumentNullException(nameof(loggerConfiguration));
             if (connectionsStringName == null) throw new ArgumentNullException(nameof(connectionsStringName));
 
-            if(options == null)
+            if (options == null)
                 options = new StorageOptions(
                     new ConnectionStrings().Get(connectionsStringName),
                     schemaName: schemaName);
 
-            if(indexMap == null)
+            if (indexMap == null)
                 indexMap = new List<IIndexMap<LogEvent>>
                 {
                     new IndexMap<LogEvent>(nameof(LogEvent.Level), i => i.Level),
@@ -70,23 +70,23 @@ namespace Xtricate.DocSet.Serilog
                         batchPostingLimit,
                         period ?? DocSetSink.DefaultPeriod,
                         formatProvider,
-                        propertiesAsTags ?? new[] { "CorrelationId", "App" /*, "SourceContext"*/},
+                        propertiesAsTags ?? new[] {"CorrelationId", "App" /*, "SourceContext"*/},
                         propertiesWhiteList ??
-                        new[] {/*"CorrelationId",*/ "App", "SourceContext", /*"Message", "DocSetKey"*/}),
+                        new[] {/*"CorrelationId",*/ "App", "SourceContext" /*"Message", "DocSetKey"*/}),
                     restrictedToMinimumLevel);
             }
-            catch(DbException) // could not connect to the db, use a null docstorage instead
+            catch (DbException) // could not connect to the db, use a null docstorage instead
             {
                 return loggerConfiguration.Sink(
-                        new DocSetSink(
-                            null,
-                            batchPostingLimit,
-                            period ?? DocSetSink.DefaultPeriod,
-                            formatProvider,
-                            propertiesAsTags ?? new[] { "CorrelationId", "App" /*, "SourceContext"*/},
-                            propertiesWhiteList ??
-                            new[] {/*"CorrelationId",*/ "App", "SourceContext", /*"Message", "DocSetKey"*/}),
-                        restrictedToMinimumLevel);
+                    new DocSetSink(
+                        null,
+                        batchPostingLimit,
+                        period ?? DocSetSink.DefaultPeriod,
+                        formatProvider,
+                        propertiesAsTags ?? new[] {"CorrelationId", "App" /*, "SourceContext"*/},
+                        propertiesWhiteList ??
+                        new[] {/*"CorrelationId",*/ "App", "SourceContext" /*"Message", "DocSetKey"*/}),
+                    restrictedToMinimumLevel);
             }
             return null;
         }

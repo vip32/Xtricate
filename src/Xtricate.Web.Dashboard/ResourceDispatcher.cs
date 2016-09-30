@@ -20,7 +20,7 @@ namespace Xtricate.Web.Dashboard
             //if (assembly == null) throw new ArgumentNullException(nameof(assembly));
 
             _assembly = assembly;
-            if(assembly == null)
+            if (assembly == null)
                 _assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList().Where(a => !a.IsDynamic);
             _resourceName = resourceName;
             _contentType = contentType;
@@ -45,7 +45,7 @@ namespace Xtricate.Web.Dashboard
 
         protected void WriteResource(IOwinResponse response, Assembly assembly, string resourceName)
         {
-            if(assembly != null) _assemblies = new[] {assembly};
+            if (assembly != null) _assemblies = new[] {assembly};
             var found = false;
 
             foreach (var a in _assemblies)

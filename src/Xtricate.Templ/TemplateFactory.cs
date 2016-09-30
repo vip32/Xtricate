@@ -17,7 +17,7 @@ namespace Xtricate.Templ
         {
             var definition = _definitions.FirstOrDefault(t =>
                 t.Key.Equals(key, StringComparison.OrdinalIgnoreCase) &&
-                (t.Tags.NullToEmpty().Intersect(tags.NullToEmpty()).Count().Equals(tags.NullToEmpty().Count())));
+                t.Tags.NullToEmpty().Intersect(tags.NullToEmpty()).Count().Equals(tags.NullToEmpty().Count()));
             if (definition == null) throw new Exception($"no template found for name={key} and tags={tags}");
             var instance = (Template<TModel>)Activator.CreateInstance(definition.TemplateType, new object[] { });
             if (instance == null) throw new Exception($"template should be of type 'MailTemplate<{typeof(TModel).Name}>'");
@@ -28,7 +28,7 @@ namespace Xtricate.Templ
         {
             var definition = _definitions.FirstOrDefault(t =>
                 t.Key.Equals(key, StringComparison.OrdinalIgnoreCase) &&
-                (t.Tags.NullToEmpty().Intersect(tags.NullToEmpty()).Count().Equals(tags.NullToEmpty().Count())));
+                t.Tags.NullToEmpty().Intersect(tags.NullToEmpty()).Count().Equals(tags.NullToEmpty().Count()));
             if (definition == null) throw new Exception($"no template found for name={key} and tags={tags}");
             var instance = (Template)Activator.CreateInstance(definition.TemplateType, new object[] { });
             if (instance == null) throw new Exception("template should be of type 'MailTemplate'");
