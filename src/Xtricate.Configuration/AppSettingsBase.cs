@@ -11,8 +11,8 @@ namespace Xtricate.Configuration
     public class AppSettingsBase : IAppSettings, ISettingsWriter
     {
         protected const string ErrorAppsettingNotFound = "Unable to find App Setting: {0}";
-        protected ISettings Settings;
-        protected ISettingsWriter SettingsWriter;
+        protected ISettings Settings { get; set; }
+        protected ISettingsWriter SettingsWriter { get; set; }
 
         public AppSettingsBase(ISettings settings = null)
         {
@@ -37,8 +37,7 @@ namespace Xtricate.Configuration
         public virtual List<string> GetAllKeys()
         {
             var keys = Settings.GetAllKeys().ToHashSet();
-            if (SettingsWriter != null)
-                SettingsWriter.GetAllKeys().Each(x => keys.Add(x));
+            SettingsWriter?.GetAllKeys().Each(x => keys.Add(x));
 
             return keys.ToList();
         }
@@ -70,10 +69,7 @@ namespace Xtricate.Configuration
             }
             catch (Exception ex)
             {
-                var message =
-                    string.Format(
-                        "The {0} setting had an invalid dictionary format. The correct format is of type \"Key1:Value1,Key2:Value2\"",
-                        key);
+                var message = $"The {key} setting had an invalid dictionary format. The correct format is of type \"Key1:Value1,Key2:Value2\"";
                 throw new ConfigurationErrorsException(message, ex);
             }
         }
@@ -101,10 +97,7 @@ namespace Xtricate.Configuration
             }
             catch (Exception ex)
             {
-                var message =
-                    string.Format(
-                        "The {0} setting had an invalid format. The value \"{1}\" could not be cast to type {2}",
-                        name, stringValue, typeof (T).FullName);
+                var message = $"The {name} setting had an invalid format. The value \"{stringValue}\" could not be cast to type {typeof (T).FullName}";
                 throw new ConfigurationErrorsException(message, ex);
             }
 
@@ -155,7 +148,6 @@ namespace Xtricate.Configuration
             {
                 throw new ConfigurationErrorsException(string.Format(ErrorAppsettingNotFound, name));
             }
-
             return value;
         }
     }
