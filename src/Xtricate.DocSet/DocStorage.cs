@@ -122,54 +122,11 @@ namespace Xtricate.DocSet
                 var sql = new StringBuilder();
                 if (!forceInsert && Exists(key, tags))
                 {
-                    // UPDATE ===
-                    if (Options.EnableLogging)
-                        Log.Debug($"{TableName} update: key={key},tags={tags?.Join("||")}");
-                    var updateColumns = "[value]=@value";
-                    if (document != null && data != null) updateColumns = $"{updateColumns},[data]=@data";
-                    if (document == null && data != null) updateColumns = "[data]=@data";
-                    sql.Append(
-                        $@"
-    {SqlBuilder.BuildUseDatabase(Options.DatabaseName)}
-    UPDATE {TableName}
-    SET [hash]=@hash,[timestamp]=@timestamp,{updateColumns
-                            }
-        {
-                            IndexMaps.NullToEmpty()
-                                .Select(
-                                    i =>
-                                        ",[" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix + "]=@" +
-                                        i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix)
-                                .Join("")}
-    WHERE [key]=@key");
-                    foreach (var t in tags.NullToEmpty())
-                        sql.Append(SqlBuilder.BuildTagSelect(t));
-                    result = StorageAction.Updated;
+                    result = Update(key, document, data, tags, sql);
                 }
                 else
                 {
-                    // INSERT ===
-                    if (Options.EnableLogging)
-                        Log.Debug($"{TableName} insert: key={key},tags={tags?.Join("||")}");
-                    var insertColumns = "[value]";
-                    if (document != null && data != null) insertColumns = $"{insertColumns},[data]" /*+= ",[data]"*/;
-                    if (document == null && data != null) insertColumns = "[data]";
-                    var insertValues = "@value";
-                    if (document != null && data != null) insertValues = $"{insertValues},@data" /*",@data"*/;
-                    if (document == null && data != null) insertValues = "@data";
-                    sql.Append(
-                        $@"
-    {SqlBuilder.BuildUseDatabase(Options.DatabaseName)}
-    INSERT INTO {TableName}
-        ([key],[tags],[hash],[timestamp],{insertColumns}{
-                            IndexMaps.NullToEmpty()
-                                .Select(i => ",[" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix + "]")
-                                .Join("")})
-        VALUES(@key,@tags,@hash,@timestamp,{insertValues}{
-                            IndexMaps.NullToEmpty()
-                                .Select(i => ",@" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix)
-                                .Join("")})");
-                    result = StorageAction.Inserted;
+                    result = Insert(key, document, data, tags, sql);
                 }
 
                 // PARAMS
@@ -186,6 +143,61 @@ namespace Xtricate.DocSet
                 conn.Execute(sql.ToString(), parameters);
                 return result;
             }
+        }
+
+        private StorageAction Update(object key, TDoc document, Stream data, IEnumerable<string> tags, StringBuilder sql)
+        {
+            // UPDATE ===
+            if (Options.EnableLogging)
+                Log.Debug($"{TableName} update: key={key},tags={tags?.Join("||")}");
+            var updateColumns = "[value]=@value";
+            if (document != null && data != null) updateColumns = $"{updateColumns},[data]=@data";
+            if (document == null && data != null) updateColumns = "[data]=@data";
+            sql.Append(
+                $@"
+    {SqlBuilder.BuildUseDatabase(Options.DatabaseName)}
+    UPDATE {TableName
+                    }
+    SET [hash]=@hash,[timestamp]=@timestamp,{updateColumns
+                    }
+        {
+                    IndexMaps.NullToEmpty()
+                        .Select(
+                            i =>
+                                ",[" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix + "]=@" +
+                                i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix)
+                        .Join("")}
+    WHERE [key]=@key");
+            foreach (var t in tags.NullToEmpty())
+                sql.Append(SqlBuilder.BuildTagSelect(t));
+            return StorageAction.Updated;
+        }
+
+        private StorageAction Insert(object key, TDoc document, Stream data, IEnumerable<string> tags, StringBuilder sql)
+        {
+            // INSERT ===
+            if (Options.EnableLogging)
+                Log.Debug($"{TableName} insert: key={key},tags={tags?.Join("||")}");
+            var insertColumns = "[value]";
+            if (document != null && data != null) insertColumns = $"{insertColumns},[data]" /*+= ",[data]"*/;
+            if (document == null && data != null) insertColumns = "[data]";
+            var insertValues = "@value";
+            if (document != null && data != null) insertValues = $"{insertValues},@data" /*",@data"*/;
+            if (document == null && data != null) insertValues = "@data";
+            sql.Append(
+                $@"
+    {SqlBuilder.BuildUseDatabase(Options.DatabaseName)}
+    INSERT INTO {TableName
+                    }
+        ([key],[tags],[hash],[timestamp],{insertColumns}{
+                    IndexMaps.NullToEmpty()
+                        .Select(i => ",[" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix + "]")
+                        .Join("")})
+        VALUES(@key,@tags,@hash,@timestamp,{insertValues}{
+                    IndexMaps.NullToEmpty()
+                        .Select(i => ",@" + i.Name.ToLower() + SqlBuilder.IndexColumnNameSuffix)
+                        .Join("")})");
+            return StorageAction.Inserted;
         }
 
         public virtual long Count(IEnumerable<string> tags = null, IEnumerable<Criteria> criterias = null)
