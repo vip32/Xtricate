@@ -44,7 +44,7 @@ namespace Xtricate.Configuration
         /// </summary>
         public static bool ConfigSectionExists(string sectionName)
         {
-            return (ConfigurationManager.GetSection(sectionName) != null);
+            return ConfigurationManager.GetSection(sectionName) != null;
         }
 
         /// <summary>
@@ -153,8 +153,8 @@ namespace Xtricate.Configuration
         {
             foreach (var ci in type.GetConstructors())
             {
-                var ciTypes = ci.GetGenericArguments();
-                var matchFound = (ciTypes.Length == 1 && ciTypes[0] == typeof (string)); //e.g. T(string)
+                var arguments = ci.GetGenericArguments();
+                var matchFound = (arguments.Length == 1 && arguments[0] == typeof (string)); //e.g. T(string)
                 if (matchFound)
                 {
                     return ci;
@@ -173,13 +173,13 @@ namespace Xtricate.Configuration
             var parseMethod = GetParseMethod(typeof (T));
             if (parseMethod == null)
             {
-                var ci = GetConstructorInfo(typeof (T));
-                if (ci == null)
+                var constructorInfo = GetConstructorInfo(typeof (T));
+                if (constructorInfo == null)
                 {
                     throw new TypeLoadException(string.Format(ErrorCreatingType, typeof (T).GetOperationName(),
                         textValue));
                 }
-                var newT = ci.Invoke(null, new object[] {textValue});
+                var newT = constructorInfo.Invoke(null, new object[] {textValue});
                 return (T) newT;
             }
             var value = parseMethod.Invoke(null, new object[] {textValue});

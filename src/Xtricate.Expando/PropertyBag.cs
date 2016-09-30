@@ -22,7 +22,7 @@ namespace Xtricate.Dynamic
         /// </summary>
         /// <param name="xml">Serialize</param>
         /// <returns></returns>
-        public new static PropertyBag CreateFromXml(string xml)
+        public static new PropertyBag CreateFromXml(string xml)
         {
             var bag = new PropertyBag();
             bag.FromXml(xml);

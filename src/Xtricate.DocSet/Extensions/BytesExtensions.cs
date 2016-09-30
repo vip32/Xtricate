@@ -28,6 +28,5 @@ namespace Xtricate.DocSet
                 return outStream.ToArray();
             }
         }
-
     }
 }

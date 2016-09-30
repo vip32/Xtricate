@@ -309,8 +309,7 @@ namespace Xtricate.Dynamic
 
             // Look at the instanceType
             var memberInfos = _instanceType.GetMember(name,
-                BindingFlags.InvokeMethod |
-                BindingFlags.Public | BindingFlags.Instance);
+                BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance);
 
             if (memberInfos != null && memberInfos.Length > 0)
             {
