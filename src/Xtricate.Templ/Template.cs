@@ -18,7 +18,7 @@ namespace Xtricate.Templ
     public abstract class Template
     {
         protected readonly StringBuilder Content = new StringBuilder();
-        protected string Body;
+        protected string Body { get; set; }
 
         protected Template()
         {
