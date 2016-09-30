@@ -1,4 +1,4 @@
-# Xtricate [![Build status](https://ci.appveyor.com/api/projects/status/8dnddawd6bb3dxn9?svg=true&retina=true)](https://ci.appveyor.com/project/vip32/xtricate-docset)
+# Xtricate [![Build status](https://ci.appveyor.com/api/projects/status/8dnddawd6bb3dxn9?svg=true&retina=true)](https://ci.appveyor.com/project/vip32/xtricate-docset) [![CodeFactor](https://www.codefactor.io/repository/github/vip32/xtricate/badge/master)](https://www.codefactor.io/repository/github/vip32/xtricate/overview/master)
 
 | | |
 |-------|------|
