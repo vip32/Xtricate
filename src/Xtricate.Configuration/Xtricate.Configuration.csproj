@@ -46,6 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\GlobalSuppressions.cs">
+      <Link>Properties\GlobalSuppressions.cs</Link>
+    </Compile>
     <Compile Include="AppSettings.cs" />
     <Compile Include="AppSettingsBase.cs" />
     <Compile Include="AppSettingsStrategy.cs" />

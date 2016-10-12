@@ -54,6 +54,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\GlobalSuppressions.cs">
+      <Link>Properties\GlobalSuppressions.cs</Link>
+    </Compile>
     <Compile Include="DocSetSink.cs" />
     <Compile Include="LogEvent.cs" />
     <Compile Include="LoggerConfigurationExtensions.cs" />
