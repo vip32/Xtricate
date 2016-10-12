@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Serilog.Core;
 using Serilog.Events;
-using Serilog.Sinks.PeriodicBatching;
 
 namespace Xtricate.DocSet.Serilog
 {
-    public class DocSetSink : PeriodicBatchingSink
+    public class DocSetSink : ILogEventSink
     {
         public static readonly TimeSpan DefaultPeriod = TimeSpan.FromSeconds(5);
         private readonly IFormatProvider _formatProvider;
@@ -27,7 +27,6 @@ namespace Xtricate.DocSet.Serilog
         public DocSetSink(IDocStorage<LogEvent> storage, int batchSizeLimit, TimeSpan period,
             IFormatProvider formatProvider, IEnumerable<string>  propertiesAsTags = null,
             IEnumerable<string> propertiesWhiteList = null)
-            : base(batchSizeLimit, period)
         {
             //if (storage == null) throw new ArgumentNullException(nameof(storage));
 
@@ -37,27 +36,24 @@ namespace Xtricate.DocSet.Serilog
             _propertiesWhiteList = propertiesWhiteList;
         }
 
-        protected override void EmitBatch(IEnumerable<global::Serilog.Events.LogEvent> events)
+        public void Emit(global::Serilog.Events.LogEvent logEvent)
         {
             if (_storage == null) return;
-            foreach (var logEvent in events.NullToEmpty())
+            if (logEvent == null) return;
+            var key = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
+
+            //UpdateProperties(logEvent, key);
+            //FilterProperties(logEvent);
+
+            _storage.Upsert(key, new LogEvent
             {
-                if (logEvent == null) continue;
-                var key = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
-
-                //UpdateProperties(logEvent, key);
-                //FilterProperties(logEvent);
-
-                _storage.Upsert(key, new LogEvent
-                {
-                    Key = key,
-                    CorrelationId = GetCorrelationId(logEvent),
-                    Level = logEvent.Level.ToString(),
-                    Message = logEvent.RenderMessage(_formatProvider),
-                    Timestamp = logEvent.Timestamp.DateTime,
-                    Properties = GetProperties(logEvent)
-                }, GetTags(logEvent), forceInsert: true, timestamp: logEvent.Timestamp.DateTime);
-            }
+                Key = key,
+                CorrelationId = GetCorrelationId(logEvent),
+                Level = logEvent.Level.ToString(),
+                Message = logEvent.RenderMessage(_formatProvider),
+                Timestamp = logEvent.Timestamp.DateTime,
+                Properties = GetProperties(logEvent)
+            }, GetTags(logEvent), forceInsert: true, timestamp: logEvent.Timestamp.DateTime);
         }
 
         private static string GetCorrelationId(global::Serilog.Events.LogEvent logEvent)
