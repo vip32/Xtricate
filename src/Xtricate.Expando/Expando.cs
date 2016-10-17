@@ -37,7 +37,7 @@ namespace Xtricate.Dynamic
         ///     stored on this object/instance
         /// </summary>
         /// <remarks>Using PropertyBag to support XML Serialization of the dictionary</remarks>
-        public PropertyBag Properties { get; } = new PropertyBag();
+        public PropertyBag Properties { get; set; } = new PropertyBag();
 
         //public Dictionary<string, object> Properties = new Dictionary<string, object>(); // not xmlserializable
 
