@@ -11,6 +11,76 @@
 
 ## Configuration
 ## DocSet
+#### introduction
+DocSet provides document like storage with basic querying on Microsoft SQLServer. 
+Documents are stored as JSON with keys and tags. The keys and tags are used to retrieve documents.
+By using an optional indexmap basic querying becomes possible. Indexed fields are stored in seperate table columns for performance reasons. 
+All database assets are created automaticly when needed (database/tables/columns/indexes).  
+#### examples
+* setup storage
+```c
+var options = new StorageOptions(new ConnectionStrings().Get(connectionName), databaseName: databaseName, schemaName: schemaName);
+var connectionFactory = new SqlConnectionFactory();
+var indexMap = TestDocumentIndexMap;
+var storage = new DocStorage<TestDocument>(
+     connectionFactory, options, new SqlBuilder(), 
+     new JsonNetSerializer(), new Md5Hasher(), indexMap);
+```
+* create document
+```c
+var document = new Customer
+{
+    FirstName = "John",
+    LastName = "Doe"
+}
+```
+
+* insert or update document value with key and tags
+```c
+storage.Upsert("mykey", document);
+storage.Upsert("mykey", document, new[] {"en-US"});
+```
+
+* insert or update document data with key and tags
+```c
+var stream = File.OpenRead(@".\cat.jpg");
+storage.Upsert("mykey", stream);
+storage.Upsert("mykey", document, stream);
+storage.Upsert("mykey", stream, new[] {"en-US", "cat"});
+```
+
+* query document values
+```c
+var document = storage.LoadValues("mykey");
+var document = storage.LoadValues(new[] {"en-US"});
+var document = storage.LoadValues("mykey", new[] {"en-US"});
+````
+
+* query document data
+```c
+var stream = storage.LoadData("mykey");
+var stream = storage.LoadData(new[] {"en-US"});
+var stream = storage.LoadData("mykey", new[] {"en-US"});
+````
+
+* remove documents
+```c
+storage.Delete("mykey");
+storage.Delete( new[] {"en-US"});
+storage.Delete("mykey", new[] {"en-US"});
+```
+
+#### table structure
+* uid (uniqueidentifier)
+* id (int)
+* key (nvarchar:512)
+* tags (nvarchar:1024)
+* hash (nvarchar:128)
+* timestamp (datetime)
+* value (ntext) contains the JSON document
+* data (varbinary:max) contains the binary data
+* ???_idx (nvarchar:2048)
+
 #### Sqlserver
 #### Sqlite
 #### Serilog
