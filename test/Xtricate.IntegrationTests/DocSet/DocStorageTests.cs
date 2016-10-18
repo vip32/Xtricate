@@ -272,7 +272,7 @@ namespace Xtricate.IntegrationTests
 
             var key1 = DateTime.Now.Epoch() + new Random().Next(10000, 99999);
             var inStream1 = File.OpenRead(@"c:\tmp\cat.jpg");
-            storage.Upsert(key1, inStream1, new[] { "en-US" });
+            storage.Upesrt(key1, inStream1, new[] { "en-US" });
             var outStreams1 = storage.LoadData(key1, new[] {"en-US"});
             Assert.That(outStreams1, Is.Not.Null);
             Assert.That(outStreams1.Any());

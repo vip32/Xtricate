@@ -17,7 +17,7 @@ Documents are stored as JSON with keys and tags. The keys and tags are used to r
 By using an optional indexmap basic querying becomes possible. Indexed fields are stored in seperate table columns for performance reasons. 
 All database assets are created automaticly when needed (database/tables/columns/indexes).  
 #### examples
-* setup storage
+* setup the storage
 ```c
 var options = new StorageOptions(new ConnectionStrings().Get(connectionName), databaseName: databaseName, schemaName: schemaName);
 var connectionFactory = new SqlConnectionFactory();
@@ -26,7 +26,7 @@ var storage = new DocStorage<TestDocument>(
      connectionFactory, options, new SqlBuilder(), 
      new JsonNetSerializer(), new Md5Hasher(), indexMap);
 ```
-* create document
+* instantiate a test document
 ```c
 var document = new Customer
 {
