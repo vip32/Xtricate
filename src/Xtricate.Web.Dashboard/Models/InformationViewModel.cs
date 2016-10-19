@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Xtricate.Dynamic;
 
 namespace Xtricate.Web.Dashboard.Models
 {
-    public class InformationViewModel : Expando
+    public class InformationViewModel
     {
         public InformationViewModel(RouteCollection routes, IEnumerable<string> javascripts = null,
-            IEnumerable<string> stylesheets = null, object instance = null) : base(instance)
+            IEnumerable<string> stylesheets = null, object instance = null) 
         {
             //if (routes == null) throw new ArgumentNullException(nameof(routes));
             //if (routes.Dispatchers == null) throw new ArgumentNullException("routes.Dispatchers");

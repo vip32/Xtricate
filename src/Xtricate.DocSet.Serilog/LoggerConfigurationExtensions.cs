@@ -88,7 +88,6 @@ namespace Xtricate.DocSet.Serilog
                         new[] {/*"CorrelationId",*/ "App", "SourceContext" /*"Message", "DocSetKey"*/}),
                     restrictedToMinimumLevel);
             }
-            return null;
         }
     }
 }

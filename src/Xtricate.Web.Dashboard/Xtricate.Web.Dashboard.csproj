@@ -150,10 +150,6 @@
     <EmbeddedResource Include="Resources\css\dashboard-dark.css" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Xtricate.Expando\Xtricate.Dynamic.csproj">
-      <Project>{9C96D6F2-784A-400C-9306-180D413800BE}</Project>
-      <Name>Xtricate.Dynamic</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Xtricate.Templ\Xtricate.Templ.csproj">
       <Project>{833b19e6-aee1-49d2-b825-659b42756c28}</Project>
       <Name>Xtricate.Templ</Name>

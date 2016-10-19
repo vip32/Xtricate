@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Owin;
+﻿using Microsoft.Owin;
 using Xtricate.Templ;
 
 namespace Xtricate.Web.Dashboard
