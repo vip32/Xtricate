@@ -13,7 +13,8 @@ namespace Xtricate.Web.Dashboard
         private RouteCollection _routes;
 
         public RouteCollectionBuilder(
-            IDictionary<string, IRequestDispatcher> dispatchers = null) : this(new EmbeddedResources(), dispatchers)
+            IDictionary<string, IRequestDispatcher> dispatchers = null) 
+            : this(new EmbeddedResources(), dispatchers)
         {
         }
 
@@ -35,11 +36,12 @@ namespace Xtricate.Web.Dashboard
                 _routes.Add("/", x => new HomeIndex());
                 _routes.Add("/info", x => new InformationIndex
                 {
-                    //Culture = "de-DE",
                     Model = new InformationViewModel(_routes,
                         _resources.JavascriptEmbeddedResources,
-                        _resources.StylesheetEmbeddedResources, new {DynProp = " |dynamic prop test|"})
+                        _resources.StylesheetEmbeddedResources)
                 });
+                _routes.Add("/appstats", new JsonApplicationStats());
+
                 //_routes.Add(@"/ts/(?<ScriptName>\S+)",
                 //    new ResourceRequestDispatcher(x => new ResourceDispatcher(
                 //        "application/typescript",

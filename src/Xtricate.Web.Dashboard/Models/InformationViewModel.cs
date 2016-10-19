@@ -6,8 +6,8 @@ namespace Xtricate.Web.Dashboard.Models
 {
     public class InformationViewModel
     {
-        public InformationViewModel(RouteCollection routes, IEnumerable<string> javascripts = null,
-            IEnumerable<string> stylesheets = null, object instance = null) 
+        public InformationViewModel(
+            RouteCollection routes, IEnumerable<string> javascripts = null, IEnumerable<string> stylesheets = null)
         {
             //if (routes == null) throw new ArgumentNullException(nameof(routes));
             //if (routes.Dispatchers == null) throw new ArgumentNullException("routes.Dispatchers");
