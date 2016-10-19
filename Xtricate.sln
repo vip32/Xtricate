@@ -35,6 +35,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.Playground", "test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.Common", "src\Xtricate.Common\Xtricate.Common.csproj", "{E57D70EC-6FDF-4BFC-9225-AE9037757FB6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{4D5FCAF1-31B3-47AF-820F-F222DBE710F0}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		GlobalSuppressions.cs = GlobalSuppressions.cs
+		README.md = README.md
+		readme.txt = readme.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
