@@ -36,11 +36,12 @@ namespace Xtricate.Web.Dashboard
                 _routes.Add("/", x => new HomeIndex());
                 _routes.Add("/info", x => new InformationIndex
                 {
-                    Model = new InformationViewModel(_routes,
+                    Model = new InformationViewModel(
+                        _routes,
                         _resources.JavascriptEmbeddedResources,
                         _resources.StylesheetEmbeddedResources)
                 });
-                _routes.Add("/appstats", new JsonApplicationStats());
+                _routes.Add("/appstats", new JsonApplicationStats(_routes));
 
                 //_routes.Add(@"/ts/(?<ScriptName>\S+)",
                 //    new ResourceRequestDispatcher(x => new ResourceDispatcher(

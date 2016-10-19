@@ -12,16 +12,26 @@ namespace Xtricate.Web.Dashboard
 {
     public class JsonApplicationStats : IRequestDispatcher
     {
+        private RouteCollection _routes;
+
+        public JsonApplicationStats(RouteCollection routes)
+        {
+            this._routes = routes;
+        }
+
         public Task Dispatch(RequestDispatcherContext context)
         {
             var owinContext = new OwinContext(context.OwinEnvironment);
 
-            var result = new Dictionary<string, string>()
+            var result = new Dictionary<string, object>()
             {
-                {"datetime", DateTime.UtcNow.ToString() },
+                {"datetime", DateTime.UtcNow },
+                {"totalSeconds", DateTime.UtcNow.TimeOfDay.TotalSeconds },
                 {"appdomain", @AppDomain.CurrentDomain.FriendlyName },
-                {"assembly", Assembly.GetExecutingAssembly().FullName },
-                {"culture", Thread.CurrentThread.CurrentCulture.Name },
+                {"assembly", Assembly.GetExecutingAssembly() },
+                {"culture", Thread.CurrentThread.CurrentCulture },
+                {"bool", true },
+                {"routes", _routes?.Dispatchers },
             };
 
             var settings = new JsonSerializerSettings
