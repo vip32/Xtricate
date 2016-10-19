@@ -41,7 +41,7 @@ namespace Xtricate.Web.Dashboard
                         _resources.JavascriptEmbeddedResources,
                         _resources.StylesheetEmbeddedResources)
                 });
-                _routes.Add("/appstats", new JsonApplicationStats(_routes));
+                _routes.Add("/appstats", new JsonApplicationStats());
 
                 //_routes.Add(@"/ts/(?<ScriptName>\S+)",
                 //    new ResourceRequestDispatcher(x => new ResourceDispatcher(

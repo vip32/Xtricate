@@ -12,38 +12,46 @@ namespace Xtricate.Web.Dashboard
 {
     public class JsonApplicationStats : IRequestDispatcher
     {
-        private RouteCollection _routes;
+        private readonly JsonSerializerSettings _settings;
 
-        public JsonApplicationStats(RouteCollection routes)
+        public JsonApplicationStats(JsonSerializerSettings settings = null)
         {
-            this._routes = routes;
+            if (settings != null)
+            {
+                _settings = settings;
+            }
+            else
+            {
+                _settings = new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                    Converters = new JsonConverter[] { new StringEnumConverter { CamelCaseText = true } }
+                };
+            }
         }
 
         public Task Dispatch(RequestDispatcherContext context)
         {
             var owinContext = new OwinContext(context.OwinEnvironment);
 
-            var result = new Dictionary<string, object>()
-            {
-                {"datetime", DateTime.UtcNow },
-                {"totalSeconds", DateTime.UtcNow.TimeOfDay.TotalSeconds },
-                {"appdomain", @AppDomain.CurrentDomain.FriendlyName },
-                {"assembly", Assembly.GetExecutingAssembly() },
-                {"culture", Thread.CurrentThread.CurrentCulture },
-                {"bool", true },
-                {"routes", _routes?.Dispatchers },
-            };
-
-            var settings = new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                Converters = new JsonConverter[] { new StringEnumConverter { CamelCaseText = true } }
-            };
-            var serialized = JsonConvert.SerializeObject(result, settings);
+            var serialized = JsonConvert.SerializeObject(CreateResponseObject(owinContext), _settings);
             owinContext.Response.ContentType = "application/json";
             owinContext.Response.WriteAsync(serialized);
 
             return Task.FromResult(true);
+        }
+
+        public virtual Dictionary<string, object> CreateResponseObject(OwinContext owinContext)
+        {
+            return new Dictionary<string, object>()
+                {
+                    {"datetime", DateTime.UtcNow },
+                    {"totalSeconds", DateTime.UtcNow.TimeOfDay.TotalSeconds },
+                    {"appdomain", @AppDomain.CurrentDomain.FriendlyName },
+                    {"assembly", Assembly.GetExecutingAssembly() },
+                    {"culture", Thread.CurrentThread.CurrentCulture },
+                    {"bool", true },
+                };
         }
     }
 }
