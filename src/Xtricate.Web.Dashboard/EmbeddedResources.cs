@@ -8,9 +8,14 @@ namespace Xtricate.Web.Dashboard
         {
             "jquery.min.js",
             "bootstrap.min.js",
+            "moment.min.js",
+            "moment-with-locales.min.js",
             "lodash.min.js",
             "knockout.min.js",
             "knockout.mapping.js",
+            "d3.min.js",
+            "d3.layout.min.js",
+            "rickshaw.min.js",
             "sprintf.min.js",
             "glyphrefresh.js"
         };
