@@ -110,16 +110,10 @@
     <None Include="Pages\HeaderPartial.cshtml" />
     <None Include="Pages\FooterPartial.cshtml" />
     <None Include="Pages\HomeIndex.cshtml">
-      <!--<Generator>RazorGenerator</Generator>
-      <LastGenOutput>HomePage.generated.cs</LastGenOutput>-->
     </None>
     <None Include="Pages\DefaultLayout.cshtml">
-      <!--<Generator>RazorGenerator</Generator>
-      <LastGenOutput>LayoutPage.generated.cs</LastGenOutput>-->
     </None>
     <None Include="Pages\InformationIndex.cshtml">
-      <!--<Generator>RazorGenerator</Generator>
-      <LastGenOutput>InfoPage.generated.cs</LastGenOutput>-->
     </None>
     <None Include="Xtricate.Web.Dashboard.nuspec">
       <SubType>Designer</SubType>
