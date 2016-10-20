@@ -30,8 +30,6 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Xtricate.Core.Templ", "src\
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Xtricate.Core.Web.Dashboard", "src\Xtricate.Core.Web.Dashboard\Xtricate.Core.Web.Dashboard.xproj", "{034CA5DC-D47C-4FB5-AD21-B16D883031EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtricate.Core.IntegrationTests.Net46", "test\Xtricate.Core.IntegrationTests.Net46\Xtricate.Core.IntegrationTests.Net46.csproj", "{F29099EE-E944-4FD2-904F-1F0A2E7D8B1E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,10 +56,6 @@ Global
 		{034CA5DC-D47C-4FB5-AD21-B16D883031EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{034CA5DC-D47C-4FB5-AD21-B16D883031EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{034CA5DC-D47C-4FB5-AD21-B16D883031EB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F29099EE-E944-4FD2-904F-1F0A2E7D8B1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F29099EE-E944-4FD2-904F-1F0A2E7D8B1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F29099EE-E944-4FD2-904F-1F0A2E7D8B1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F29099EE-E944-4FD2-904F-1F0A2E7D8B1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,6 +66,5 @@ Global
 		{1A89675E-DF8D-4A59-9EC4-CFEBB83B60DF} = {FF441F94-956A-46C5-93B4-52650D4C7B4E}
 		{8A6CF73E-BD69-424A-898C-026CC81B117B} = {D296FD55-6AAD-472B-A725-B0296C3E2DE9}
 		{034CA5DC-D47C-4FB5-AD21-B16D883031EB} = {D296FD55-6AAD-472B-A725-B0296C3E2DE9}
-		{F29099EE-E944-4FD2-904F-1F0A2E7D8B1E} = {FF441F94-956A-46C5-93B4-52650D4C7B4E}
 	EndGlobalSection
 EndGlobal
