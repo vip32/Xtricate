@@ -1,16 +1,22 @@
 {
   "version": "1.1.0-beta-*",
   "buildOptions": {
-    "debugType": "portable"
+    "debugType": "portable",
+    "preserveCompilationContext": true,
+    "allowUnsafe": true,
+    "embed": [
+      "Templ/Templates/*.cshtml"
+    ]
   },
   "dependencies": {
     "System.Runtime.Serialization.Primitives": "4.1.1",
     "xunit": "2.1.0",
     "dotnet-test-xunit": "1.0.0-rc2-build10025",
-    "Xtricate.Core.Common": "1.1.0-beta",
     "Serilog": "2.3.0",
     "Serilog.Sinks.Trace": "2.0.0",
-    "Serilog.Sinks.ColoredConsole": "2.0.0"
+    "Serilog.Sinks.ColoredConsole": "2.0.0",
+    "Xtricate.Core.Common": "1.1.0-beta",
+    "Xtricate.Core.Templ": "1.1.0-beta"
   },
   "testRunner": "xunit",
   "frameworks": {
