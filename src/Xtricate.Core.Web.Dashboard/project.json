@@ -48,8 +48,6 @@
     }
   },
   "dependencies": {
-    "StyleCop.Analyzers": "1.0.0",
-    "SonarLint": "2.0.0",
-    "Xtricate.Core.Templ": "1.1.0-beta-*"
+    "Xtricate.Core.Templ": "1.1.0-beta"
   }
 }
