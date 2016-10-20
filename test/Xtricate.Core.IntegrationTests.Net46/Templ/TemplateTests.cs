@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Globalization;
 using Serilog;
 //using Xunit;
-//using Xtricate.Core.Templ;
+//using Xtricate.Templ;
 
-namespace Xtricate.Core.IntegrationTests
+namespace Xtricate.Core.IntegrationTests.Net46
 {
     public class TemplateTests
     {

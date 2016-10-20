@@ -79,14 +79,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Xtricate.Core.Common\Xtricate.Core.Common.xproj">
-      <Project>{ab7b3943-4e68-4139-a530-23fb80942f57}</Project>
-      <Name>Xtricate.Core.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Xtricate.Core.Templ\Xtricate.Core.Templ.xproj">
-      <Project>{8a6cf73e-bd69-424a-898c-026cc81b117b}</Project>
-      <Name>Xtricate.Core.Templ</Name>
-    </ProjectReference>
+    <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
+    <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
