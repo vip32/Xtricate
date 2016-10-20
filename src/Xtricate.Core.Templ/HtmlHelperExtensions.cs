@@ -1,4 +1,4 @@
-namespace Xtricate.Templ
+namespace Xtricate.Core.Templ
 {
     public static class HtmlHelperExtensions
     {

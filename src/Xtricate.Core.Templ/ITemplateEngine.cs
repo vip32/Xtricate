@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 
-namespace Xtricate.Templ
+namespace Xtricate.Core.Templ
 {
     public interface ITemplateEngine
     {

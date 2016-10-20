@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Xtricate.Templ
+namespace Xtricate.Core.Templ
 {
     public interface ITemplateFactory
     {

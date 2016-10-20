@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Xtricate.Templ
+namespace Xtricate.Core.Templ
 {
     public class TemplateFactory : ITemplateFactory
     {

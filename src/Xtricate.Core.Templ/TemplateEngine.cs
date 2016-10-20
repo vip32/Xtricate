@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 
-namespace Xtricate.Templ
+namespace Xtricate.Core.Templ
 {
     public class TemplateEngine : ITemplateEngine
     {

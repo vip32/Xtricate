@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xtricate.Templ
+namespace Xtricate.Core.Templ
 {
     public class HtmlHelper
     {

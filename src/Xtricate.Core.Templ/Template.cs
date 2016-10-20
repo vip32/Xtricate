@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace Xtricate.Templ
+namespace Xtricate.Core.Templ
 {
     public abstract class Template<TModel> : Template
     {

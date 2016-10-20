@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Xtricate.Templ
+namespace Xtricate.Core.Templ
 {
     public static partial class Extensions
     {
