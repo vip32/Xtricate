@@ -3,7 +3,9 @@ using Xtricate.Templ;
 
 namespace Xtricate.Web.Dashboard
 {
+#pragma warning disable SA1402 // File may only contain a single class
     public abstract class WebTemplate<TModel> : WebTemplate
+#pragma warning restore SA1402 // File may only contain a single class
     {
         public TModel Model { get; set; }
     }
@@ -11,11 +13,17 @@ namespace Xtricate.Web.Dashboard
     public abstract class WebTemplate : Template
     {
         public string[] Scripts { get; set; }
+
         public string[] TypeScripts { get; set; }
+
         public string[] Stylesheets { get; set; }
+
         public DashboardOptions Options { get; set; }
+
         public string AppPath { get; internal set; }
+
         public IOwinRequest Request { get; set; }
+
         public IOwinResponse Response { get; set; }
 
         public string RequestPath => Request.Path.Value;
