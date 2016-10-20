@@ -8,7 +8,8 @@ namespace Xtricate.Web.Dashboard
     {
         public RequestDispatcherContext(
             DashboardOptions options,
-            string name, string appPath,
+            string name,
+            string appPath,
             IDictionary<string, object> owinEnvironment,
             Match uriMatch)
         {

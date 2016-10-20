@@ -84,7 +84,7 @@
     </Compile>
     <Compile Include="AppBuilderExtensions.cs" />
     <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
-    <Compile Include="Dispatchers\JsonApplicationStats.cs" />
+    <Compile Include="Dispatchers\JsonDispatcher.cs" />
     <Compile Include="OwinRequestExtensions.cs" />
     <Compile Include="Dispatchers\ResourceCollectionDispatcher.cs" />
     <Compile Include="DashboardOptions.cs" />

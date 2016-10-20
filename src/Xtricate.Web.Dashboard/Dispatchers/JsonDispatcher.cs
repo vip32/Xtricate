@@ -10,11 +10,11 @@ using Newtonsoft.Json.Serialization;
 
 namespace Xtricate.Web.Dashboard
 {
-    public class JsonApplicationStats : IRequestDispatcher
+    public class JsonDispatcher : IRequestDispatcher
     {
         private readonly JsonSerializerSettings _settings;
 
-        public JsonApplicationStats(JsonSerializerSettings settings = null)
+        public JsonDispatcher(JsonSerializerSettings settings = null)
         {
             if (settings != null)
             {
