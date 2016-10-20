@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using Serilog;
+//using Serilog;
 //using Xunit;
 //using Xtricate.Templ;
 
@@ -12,12 +12,12 @@ namespace Xtricate.Core.IntegrationTests.Net46
     {
         public TemplateTests()
         {
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Verbose()
-                .WriteTo.Trace(outputTemplate: "{Timestamp:u} [{Level}] {SourceContext}:: {CorrelationId} {Message}{NewLine}{Exception}")
-                .WriteTo.ColoredConsole(outputTemplate: "{Timestamp:u} [{Level}] {SourceContext}:: {CorrelationId} {Message}{NewLine}{Exception}")
-                .Enrich.FromLogContext()
-                .CreateLogger();
+            //Log.Logger = new LoggerConfiguration()
+            //    .MinimumLevel.Verbose()
+            //    .WriteTo.Trace(outputTemplate: "{Timestamp:u} [{Level}] {SourceContext}:: {CorrelationId} {Message}{NewLine}{Exception}")
+            //    .WriteTo.ColoredConsole(outputTemplate: "{Timestamp:u} [{Level}] {SourceContext}:: {CorrelationId} {Message}{NewLine}{Exception}")
+            //    .Enrich.FromLogContext()
+            //    .CreateLogger();
         }
 
         //[Fact]
