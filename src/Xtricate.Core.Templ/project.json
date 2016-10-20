@@ -1,0 +1,54 @@
+{
+  "version": "1.1.0-beta-*",
+  "description": "A long description of the package. This shows up in the right pane of the Add Package Dialog as well as in the Package Manager Console when listing packages using the Get-Package command.",
+  "authors": [ "vip32" ],
+  "packOptions": {
+    "tags": [ "xtricate", "xtricate.core", "templ", "razor", "templating" ],
+    "projectUrl": "https://github.com/vip32/Xtricate",
+    "licenseUrl": "https://opensource.org/licenses/MIT",
+    "iconUrl": "https://nuget.org/Content/Images/packageDefaultIcon-50x50.png"
+  },
+  "frameworks": {
+    "net4.5": {
+      "buildOptions": {
+        "define": [ "REMOTING", "HASHTABLE" ]
+      },
+      "dependencies": {
+        "System.Net.Http": "4.0.0"
+      }
+    },
+    "net4.6": {
+      "buildOptions": {
+        "define": [ "ASYNCLOCAL", "HASHTABLE" ]
+      },
+      "dependencies": {
+        "System.Net.Http": "4.0.0"
+      }
+    },
+    "netstandard1.3": {
+      "buildOptions": {
+        "define": [ "ASYNCLOCAL", "HASHTABLE" ]
+      },
+      "dependencies": {
+        "Microsoft.CSharp": "4.0.1",
+        "System.Collections": "4.0.11",
+        "System.Collections.NonGeneric": "4.0.1",
+        "System.Dynamic.Runtime": "4.0.11",
+        "System.Globalization": "4.0.11",
+        "System.Linq": "4.1.0",
+        "System.Reflection": "4.1.0",
+        "System.Reflection.Extensions": "4.0.1",
+        "System.Runtime": "4.1.0",
+        "System.Runtime.Extensions": "4.1.0",
+        "System.Text.RegularExpressions": "4.1.0",
+        "System.Threading": "4.0.11",
+        "System.IO.FileSystem": "4.0.1",
+        "System.Net.Http": "4.1.0"
+      }
+    }
+  },
+  "dependencies": {
+    "StyleCop.Analyzers": "1.0.0",
+    "SonarLint": "2.0.0"
+  }
+}

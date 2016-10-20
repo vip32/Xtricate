@@ -62,5 +62,7 @@ $revision = "{0:D4}" -f [convert]::ToInt32($revision, 10)
 exec { & dotnet test .\test\Xtricate.Core.UnitTests -c Release }
 
 exec { & dotnet pack .\src\Xtricate.Core.Common -c Release -o .\artifacts --version-suffix=$revision }
+exec { & dotnet pack .\src\Xtricate.Core.Templ -c Release -o .\artifacts --version-suffix=$revision }
+exec { & dotnet pack .\src\Xtricate.Core.Web.Dashboard -c Release -o .\artifacts --version-suffix=$revision }
 exec { & dotnet pack .\test\Xtricate.Core.IntegrationTests -c Release -o .\artifacts --version-suffix=$revision }
 exec { & dotnet pack .\test\Xtricate.Core.UnitTests -c Release -o .\artifacts --version-suffix=$revision }

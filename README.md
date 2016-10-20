@@ -9,8 +9,8 @@
 |Xtricate.DocSet.Sqlite|[![NuGet downloads](https://img.shields.io/nuget/v/Xtricate.DocSet.Sqlite.svg)](http://www.nuget.org/packages/Xtricate.DocSet.Sqlite)||
 |Xtricate.DocSet.Serilog|[![NuGet downloads](https://img.shields.io/nuget/v/Xtricate.DocSet.Serilog.svg)](http://www.nuget.org/packages/Xtricate.Serilog.Sqlite)||
 |Xtricate.Dynamic|[![NuGet downloads](https://img.shields.io/nuget/v/Xtricate.Dynamic.svg)](http://www.nuget.org/packages/Xtricate.Dynamic)||
-|Xtricate.Tmpl|[![NuGet downloads](https://img.shields.io/nuget/v/Xtricate.Templ.svg)](http://www.nuget.org/packages/Xtricate.Dynamic)||
-|Xtricate.Web.Dashboard|[![NuGet downloads](https://img.shields.io/nuget/v/Xtricate.Dynamic.svg)](http://www.nuget.org/packages/Xtricate.Dynamic)||
+|Xtricate.Tmpl|[![NuGet downloads](https://img.shields.io/nuget/v/Xtricate.Templ.svg)](http://www.nuget.org/packages/Xtricate.Dynamic)| [![NuGet downloads](https://img.shields.io/nuget/vpre/Xtricate.Core.Templ.svg)](http://www.nuget.org/packages/Xtricate.Core.Templ)|
+|Xtricate.Web.Dashboard|[![NuGet downloads](https://img.shields.io/nuget/v/Xtricate.Dynamic.svg)](http://www.nuget.org/packages/Xtricate.Dynamic)| [![NuGet downloads](https://img.shields.io/nuget/vpre/Xtricate.Core.Web.Dashboard.svg)](http://www.nuget.org/packages/Xtricate.Core.Web.Dashboard)|
 
 ## Configuration (Xtricate.Configuration)
 TODO
