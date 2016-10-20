@@ -2,8 +2,12 @@
   "version": "1.1.0-beta-*",
   "description": "Xtricate.Core.Test",
   "authors": [ "vip32" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+  "packOptions": {
+    "tags": [ "xtricate", "xtricate.core", "tests"  ],
+    "projectUrl": "https://github.com/vip32/Xtricate",
+    "licenseUrl": "https://opensource.org/licenses/MIT",
+    "iconUrl": "https://nuget.org/Content/Images/packageDefaultIcon-50x50.png"
+  },
   "frameworks": {
     "net451": {}
   },
