@@ -59,6 +59,7 @@ Invoke-MSBuild .\Xtricate.Core.sln
 $revision = @{ $true = $env:APPVEYOR_BUILD_NUMBER; $false = 1 }[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];
 $revision = "{0:D4}" -f [convert]::ToInt32($revision, 10)
 
-#exec { & dotnet test .\test\Xtricate.Core.Test -c Release }
+exec { & dotnet test .\test\Xtricate.Core.UnitTests -c Release }
 
-exec { & dotnet pack .\test\Xtricate.Core.Test -c Release -o .\artifacts --version-suffix=$revision }
+exec { & dotnet pack .\test\Xtricate.Core.IntegrationTests -c Release -o .\artifacts --version-suffix=$revision }
+exec { & dotnet pack .\test\Xtricate.Core.UnitTests -c Release -o .\artifacts --version-suffix=$revision }
