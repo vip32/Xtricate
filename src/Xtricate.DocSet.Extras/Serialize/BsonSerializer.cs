@@ -17,6 +17,7 @@ namespace Xtricate.DocSet
                 var serializer = new JsonSerializer();
                 serializer.Serialize(writer, value);
             }
+
             return Convert.ToBase64String(ms.ToArray());
         }
 

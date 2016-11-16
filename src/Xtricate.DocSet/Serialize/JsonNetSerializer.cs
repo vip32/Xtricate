@@ -16,6 +16,7 @@ namespace Xtricate.DocSet
                 new StringEnumConverter(),
                 new IsoDateTimeConverter()
             }
+
             //TypeNameHandling = TypeNameHandling.All,
         };
 

@@ -116,6 +116,7 @@ namespace Xtricate.Dynamic
                     var ser = new XmlSerializer(value.GetType());
                     ser.Serialize(writer, value);
                 }
+
                 writer.WriteEndElement(); // value
                 writer.WriteEndElement(); // item
             }
@@ -243,6 +244,7 @@ namespace Xtricate.Dynamic
                 if (type != null)
                     break;
             }
+
             return type;
         }
 

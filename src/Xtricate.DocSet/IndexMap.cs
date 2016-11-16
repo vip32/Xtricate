@@ -18,8 +18,11 @@ namespace Xtricate.DocSet
         }
 
         public string Name { get; set; }
+
         public string Description { get; set; }
+
         public Func<T, object> Value { get; set; }
+
         public Func<T, IEnumerable<object>> Values { get; set; }
     }
 }

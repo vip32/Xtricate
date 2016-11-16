@@ -16,6 +16,7 @@ namespace Xtricate.DocSet
                 {
                     ms.Write(buffer, 0, read);
                 }
+
                 return ms.ToArray();
             }
         }

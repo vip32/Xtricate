@@ -27,17 +27,29 @@ namespace Xtricate.DocSet
         }
 
         public string ConnectionString { get; set; }
+
         public string DataSource { get; set; }
+
         public string DatabaseName { get; set; }
+
         public string SchemaName { get; set; }
+
         public bool BufferedLoad { get; set; }
+
         public string TableName { get; set; }
+
         public string TableNamePrefix { get; set; }
+
         public string TableNameSuffix { get; set; }
+
         public bool UseTransactions { get; set; }
+
         public int DefaultTakeSize { get; set; }
+
         public int MaxTakeSize { get; set; }
+
         public bool EnableLogging { get; set; }
+
         public SortColumn DefaultSortColumn { get; set; }
 
         public virtual string GetTableName<T>(string suffix = null)

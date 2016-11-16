@@ -51,6 +51,7 @@ namespace Xtricate.Web.Dashboard
                 TypeScripts = webParentPage.TypeScripts;
                 Stylesheets = webParentPage.Stylesheets;
             }
+
             base.Assign(parentTemplate);
         }
 

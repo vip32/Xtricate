@@ -113,6 +113,7 @@ namespace Xtricate.Dynamic
                     throw;
                 }
             }
+
             set
             {
                 if (Properties.ContainsKey(key))
@@ -291,6 +292,7 @@ namespace Xtricate.Dynamic
                     return true;
                 }
             }
+
             return false;
         }
 

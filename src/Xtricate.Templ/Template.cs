@@ -18,6 +18,7 @@ namespace Xtricate.Templ
     public abstract class Template
     {
         protected readonly StringBuilder Content = new StringBuilder();
+
         protected string Body { get; set; }
 
         protected Template()
@@ -32,14 +33,23 @@ namespace Xtricate.Templ
         }
 
         public CultureInfo Culture { get; set; }
+
         public string ContentType { get; set; }
+
         public IDictionary<string, string> Parameters { get; set; }
+
         public IDictionary<string, string> OutProperties { get; set; }
+
         public IDictionary<string, IDictionary<string, string>> Texts { get; set; }
+
         public Stopwatch GenerationTime { get; protected set; }
+
         public HtmlHelper Html { get; protected set; }
+
         public Template Layout { get; set; }
+
         public string Name { get; set; }
+
         public string Title { get; set; }
 
         public string Parameter(string key)

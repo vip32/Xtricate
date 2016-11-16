@@ -67,8 +67,10 @@ namespace Xtricate.Configuration
                 {
                     return default(T);
                 }
+
                 return ParseTextValue<T>(ConfigurationManager.AppSettings[key]);
             }
+
             return defaultValue;
         }
 
@@ -126,6 +128,7 @@ namespace Xtricate.Configuration
                 var keyValuePair = item.Split(KeyValueSeperator);
                 dictionary.Add(keyValuePair[KeyIndex], keyValuePair[ValueIndex]);
             }
+
             return dictionary;
         }
 
@@ -139,6 +142,7 @@ namespace Xtricate.Configuration
             {
                 return typeof (ConfigUtils).GetMethod(parseMethod, BindingFlags.Public | BindingFlags.Static);
             }
+
             var parseMethodInfo = type.GetMethod(parseMethod,
                 BindingFlags.Public | BindingFlags.Static, null,
                 new[] {typeof (string)}, null);
@@ -160,6 +164,7 @@ namespace Xtricate.Configuration
                     return ci;
                 }
             }
+
             return null;
         }
 
@@ -179,9 +184,11 @@ namespace Xtricate.Configuration
                     throw new TypeLoadException(string.Format(ErrorCreatingType, typeof (T).GetOperationName(),
                         textValue));
                 }
+
                 var newT = constructorInfo.Invoke(null, new object[] {textValue});
                 return (T) newT;
             }
+
             var value = parseMethod.Invoke(null, new object[] {textValue});
             return (T) value;
         }

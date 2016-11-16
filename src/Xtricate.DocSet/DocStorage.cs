@@ -394,6 +394,7 @@ namespace Xtricate.DocSet
                 AddNullIndexParameters(parameters);
                 return;
             }
+
             if (IndexMaps.IsNullOrEmpty()) return;
             if (parameters == null) parameters = new DynamicParameters();
             var indexColumnValues = IndexMaps.ToDictionary(i => i.Name,
@@ -544,6 +545,7 @@ namespace Xtricate.DocSet
     END ", SqlBuilder.BuildUseDatabase(databaseName), tableName, i.Name.ToLower(), SqlBuilder.IndexColumnNameSuffix));
                 sql.ForEach(s => conn.Execute(s));
             }
+
             // sqlite check column exists: http://stackoverflow.com/questions/18920136/check-if-a-column-exists-in-sqlite
             // sqlite alter table https://www.sqlite.org/lang_altertable.html
         }

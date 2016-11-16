@@ -30,6 +30,7 @@ namespace Xtricate.DocSet
             {
                 if (action != null) action(value);
             }
+
             return itemsArray;
         }
 
@@ -43,8 +44,10 @@ namespace Xtricate.DocSet
                 {
                     sb.Append(separator);
                 }
+
                 sb.Append(obj);
             }
+
             return sb.ToString();
         }
 

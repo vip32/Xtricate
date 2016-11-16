@@ -41,7 +41,7 @@ namespace Xtricate.DocSet
 
         public virtual string BuildTagSelect(string tag)
         {
-            if (string.IsNullOrEmpty(tag)) return "";
+            if (string.IsNullOrEmpty(tag)) return string.Empty;
             return $" AND [tags] LIKE '%||{Sanatize(tag)}||%'";
         }
 

@@ -366,7 +366,8 @@ namespace Xtricate.Common.Logging
         }
 
         // Avoid the closure allocation, see https://gist.github.com/AArnott/d285feef75c18f6ecd2b
-        private static Func<T> AsFunc<T>(this T value) where T : class
+        private static Func<T> AsFunc<T>(this T value)
+            where T : class
         {
             return value.Return;
         }
@@ -424,6 +425,7 @@ namespace Xtricate.Common.Logging
 #if !LIBLOG_PROVIDERS_ONLY
         private const string NullLogProvider = "Current Log Provider is not set. Call SetCurrentLogProvider " +
                                                "with a non-null value first.";
+
         private static dynamic s_currentLogProvider;
         private static Action<ILogProvider> s_onCurrentLogProviderSet;
 
@@ -649,6 +651,7 @@ namespace Xtricate.Common.Logging
                     typeof(LogProvider).GetAssemblyPortable().FullName,
                     ex);
             }
+
             return null;
         }
 
@@ -690,6 +693,7 @@ namespace Xtricate.Common.Logging
             {
                 return false;
             }
+
             if (messageFunc == null)
             {
                 return _logger(logLevel, null);
@@ -705,6 +709,7 @@ namespace Xtricate.Common.Logging
                 {
                     Log(LogLevel.Error, () => FailedToGenerateLogMessage, ex);
                 }
+
                 return null;
             };
             return _logger(logLevel, wrappedMessageFunc, exception, formatParameters);
@@ -737,6 +742,7 @@ namespace Xtricate.Common.Logging.LogProviders
     internal abstract class LogProviderBase : ILogProvider
     {
         protected delegate IDisposable OpenNdc(string message);
+
         protected delegate IDisposable OpenMdc(string key, string value);
 
         private readonly Lazy<OpenNdc> _lazyOpenNdcMethod;
@@ -787,6 +793,7 @@ namespace Xtricate.Common.Logging.LogProviders
             {
                 throw new InvalidOperationException("NLog.LogManager not found");
             }
+
             _getLoggerByNameDelegate = GetGetLoggerMethodCall();
         }
 
@@ -891,6 +898,7 @@ namespace Xtricate.Common.Logging.LogProviders
                     {
                         throw new InvalidOperationException("Type NLog.LogEventInfo was not found.");
                     }
+
                     MethodInfo createLogEventInfoMethodInfo = logEventInfoType.GetMethodPortable("Create",
                         logEventLevelType, typeof(string), typeof(Exception), typeof(IFormatProvider), typeof(string), typeof(object[]));
                     ParameterExpression loggerNameParam = Expression.Parameter(typeof(string));
@@ -920,6 +928,7 @@ namespace Xtricate.Common.Logging.LogProviders
                 {
                     return IsLogLevelEnable(logLevel);
                 }
+
                 messageFunc = LogMessageFormatter.SimulateStructuredLogging(messageFunc, formatParameters);
 
                 if (_logEventInfoFact != null)
@@ -956,6 +965,7 @@ namespace Xtricate.Common.Logging.LogProviders
                             _logger.Log(_logEventInfoFact(_logger.Name, nlogLevel, messageFunc(), exception));
                         return true;
                     }
+
                     return false;
                 }
 
@@ -963,6 +973,7 @@ namespace Xtricate.Common.Logging.LogProviders
                 {
                     return LogException(logLevel, messageFunc, exception);
                 }
+
                 switch (logLevel)
                 {
                     case LogLevel.Debug:
@@ -971,6 +982,7 @@ namespace Xtricate.Common.Logging.LogProviders
                             _logger.Debug(messageFunc());
                             return true;
                         }
+
                         break;
                     case LogLevel.Info:
                         if (_logger.IsInfoEnabled)
@@ -978,6 +990,7 @@ namespace Xtricate.Common.Logging.LogProviders
                             _logger.Info(messageFunc());
                             return true;
                         }
+
                         break;
                     case LogLevel.Warn:
                         if (_logger.IsWarnEnabled)
@@ -985,6 +998,7 @@ namespace Xtricate.Common.Logging.LogProviders
                             _logger.Warn(messageFunc());
                             return true;
                         }
+
                         break;
                     case LogLevel.Error:
                         if (_logger.IsErrorEnabled)
@@ -992,6 +1006,7 @@ namespace Xtricate.Common.Logging.LogProviders
                             _logger.Error(messageFunc());
                             return true;
                         }
+
                         break;
                     case LogLevel.Fatal:
                         if (_logger.IsFatalEnabled)
@@ -999,6 +1014,7 @@ namespace Xtricate.Common.Logging.LogProviders
                             _logger.Fatal(messageFunc());
                             return true;
                         }
+
                         break;
                     default:
                         if (_logger.IsTraceEnabled)
@@ -1006,8 +1022,10 @@ namespace Xtricate.Common.Logging.LogProviders
                             _logger.Trace(messageFunc());
                             return true;
                         }
+
                         break;
                 }
+
                 return false;
             }
 
@@ -1019,8 +1037,10 @@ namespace Xtricate.Common.Logging.LogProviders
                     {
                         return true;
                     }
+
                     currentType = currentType.GetBaseTypePortable();
                 }
+
                 return false;
             }
 
@@ -1035,6 +1055,7 @@ namespace Xtricate.Common.Logging.LogProviders
                             _logger.DebugException(messageFunc(), exception);
                             return true;
                         }
+
                         break;
                     case LogLevel.Info:
                         if (_logger.IsInfoEnabled)
@@ -1042,6 +1063,7 @@ namespace Xtricate.Common.Logging.LogProviders
                             _logger.InfoException(messageFunc(), exception);
                             return true;
                         }
+
                         break;
                     case LogLevel.Warn:
                         if (_logger.IsWarnEnabled)
@@ -1049,6 +1071,7 @@ namespace Xtricate.Common.Logging.LogProviders
                             _logger.WarnException(messageFunc(), exception);
                             return true;
                         }
+
                         break;
                     case LogLevel.Error:
                         if (_logger.IsErrorEnabled)
@@ -1056,6 +1079,7 @@ namespace Xtricate.Common.Logging.LogProviders
                             _logger.ErrorException(messageFunc(), exception);
                             return true;
                         }
+
                         break;
                     case LogLevel.Fatal:
                         if (_logger.IsFatalEnabled)
@@ -1063,6 +1087,7 @@ namespace Xtricate.Common.Logging.LogProviders
                             _logger.FatalException(messageFunc(), exception);
                             return true;
                         }
+
                         break;
                     default:
                         if (_logger.IsTraceEnabled)
@@ -1070,8 +1095,10 @@ namespace Xtricate.Common.Logging.LogProviders
                             _logger.TraceException(messageFunc(), exception);
                             return true;
                         }
+
                         break;
                 }
+
                 return false;
             }
 
@@ -1129,6 +1156,7 @@ namespace Xtricate.Common.Logging.LogProviders
             {
                 throw new InvalidOperationException("log4net.LogManager not found");
             }
+
             _getLoggerByNameDelegate = GetGetLoggerMethodCall();
         }
 
@@ -1265,6 +1293,7 @@ namespace Xtricate.Common.Logging.LogProviders
                 {
                     throw new InvalidOperationException("Type log4net.Core.ILogger, was not found.");
                 }
+
                 ParameterExpression instanceParam = Expression.Parameter(typeof(object));
                 UnaryExpression instanceCast = Expression.Convert(instanceParam, loggerType);
                 ParameterExpression levelParam = Expression.Parameter(typeof(object));
@@ -1459,8 +1488,10 @@ namespace Xtricate.Common.Logging.LogProviders
                     {
                         return true;
                     }
+
                     currentType = currentType.GetBaseTypePortable();
                 }
+
                 return false;
             }
 
@@ -1514,6 +1545,7 @@ namespace Xtricate.Common.Logging.LogProviders
             {
                 return;
             }
+
             WriteLogEntry = GetWriteLogEntry();
             ShouldLogEntry = GetShouldLogEntry();
         }
@@ -1635,6 +1667,7 @@ namespace Xtricate.Common.Logging.LogProviders
                 {
                     return LogException(logLevel, messageFunc, exception);
                 }
+
                 _writeLog(_loggerName, messageFunc(), severity);
                 return true;
             }
@@ -1678,6 +1711,7 @@ namespace Xtricate.Common.Logging.LogProviders
             {
                 throw new InvalidOperationException("Serilog.Log not found");
             }
+
             _getLoggerByNameDelegate = GetForContextMethodCall();
         }
 
@@ -1786,6 +1820,7 @@ namespace Xtricate.Common.Logging.LogProviders
                 {
                     throw new InvalidOperationException("Type Serilog.Events.LogEventLevel was not found.");
                 }
+
                 DebugLevel = Enum.Parse(logEventLevelType, "Debug", false);
                 ErrorLevel = Enum.Parse(logEventLevelType, "Error", false);
                 FatalLevel = Enum.Parse(logEventLevelType, "Fatal", false);
@@ -1799,6 +1834,7 @@ namespace Xtricate.Common.Logging.LogProviders
                 {
                     throw new InvalidOperationException("Type Serilog.ILogger was not found.");
                 }
+
                 MethodInfo isEnabledMethodInfo = loggerType.GetMethodPortable("IsEnabled", logEventLevelType);
                 ParameterExpression instanceParam = Expression.Parameter(typeof(object));
                 UnaryExpression instanceCast = Expression.Convert(instanceParam, loggerType);
@@ -2060,6 +2096,7 @@ namespace Xtricate.Common.Logging.LogProviders
             {
                 return;
             }
+
             Type = assembly.GetType("System.Diagnostics.TraceEventType");
             if (Type == null) return;
             Verbose = (int)Enum.Parse(Type, "Verbose", false);
@@ -2111,6 +2148,7 @@ namespace Xtricate.Common.Logging.LogProviders
             {
                 return text;
             }
+
             return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
 
@@ -2143,6 +2181,7 @@ namespace Xtricate.Common.Logging.LogProviders
                         "{" + argumentIndex + match.Groups["format"].Value + "}");
                 }
             }
+
             try
             {
                 return string.Format(CultureInfo.InvariantCulture, targetMessage, formatParameters);

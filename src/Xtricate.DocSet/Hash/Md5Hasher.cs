@@ -20,7 +20,8 @@ namespace Xtricate.DocSet
             }
         }
 
-        private static byte[] ToBytes<T>(T obj) where T : class
+        private static byte[] ToBytes<T>(T obj)
+            where T : class
         {
             if (obj == null) return null;
 
@@ -30,6 +31,7 @@ namespace Xtricate.DocSet
                 var serializer = new JsonSerializer();
                 serializer.Serialize(writer, obj);
             }
+
             return ms.ToArray();
         }
     }

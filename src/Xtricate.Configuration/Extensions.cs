@@ -49,6 +49,7 @@ namespace Xtricate.Configuration
             {
                 list.Add(converter(item));
             }
+
             return list;
         }
 
@@ -62,6 +63,7 @@ namespace Xtricate.Configuration
             {
                 list.Add(converter(item));
             }
+
             return list;
         }
 
@@ -92,6 +94,7 @@ namespace Xtricate.Configuration
                 strArray[index2] = str2;
                 return strArray;
             }
+
             var strArray1 = new string[1];
             var index = 0;
             var str = strVal;
@@ -115,6 +118,7 @@ namespace Xtricate.Configuration
                 strArray[index2] = str2;
                 return strArray;
             }
+
             var strArray1 = new string[1];
             var index = 0;
             var str = strVal;
@@ -134,6 +138,7 @@ namespace Xtricate.Configuration
                 if (index.Length != 0 && !index.StartsWith("#"))
                     dictionary[index] = strArray.Length == 2 ? strArray[1].Trim() : null;
             }
+
             return dictionary;
         }
 

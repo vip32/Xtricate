@@ -64,6 +64,7 @@ namespace Xtricate.Web.Dashboard
                     }
                 }
             }
+
             if (!found)
             {
                 throw new ArgumentException(string.Format(

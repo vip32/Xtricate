@@ -52,6 +52,7 @@ namespace Xtricate.Web.Dashboard
                 var value = GetJoinedValue(pair.Value);
                 dictionary.Add(pair.Key, value);
             }
+
             return dictionary;
         }
 
@@ -71,6 +72,7 @@ namespace Xtricate.Web.Dashboard
                 var value = GetJoinedValue(pair.Value);
                 dictionary.Add(pair.Key, value);
             }
+
             return dictionary;
         }
 
@@ -88,6 +90,7 @@ namespace Xtricate.Web.Dashboard
                 var value = GetJoinedValue(pair.Value);
                 dictionary.Add(pair.Key, value);
             }
+
             return dictionary;
         }
 

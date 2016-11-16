@@ -11,7 +11,9 @@ namespace Xtricate.Configuration
     public class AppSettingsBase : IAppSettings, ISettingsWriter
     {
         protected const string ErrorAppsettingNotFound = "Unable to find App Setting: {0}";
+
         protected ISettings Settings { get; set; }
+
         protected ISettingsWriter SettingsWriter { get; set; }
 
         public AppSettingsBase(ISettings settings = null)
@@ -31,6 +33,7 @@ namespace Xtricate.Configuration
             {
                 to[key] = GetNullableString(key);
             }
+
             return to;
         }
 
@@ -121,6 +124,7 @@ namespace Xtricate.Configuration
                 if (value != null)
                     return value;
             }
+
             return Settings.Get(name);
         }
 
@@ -148,6 +152,7 @@ namespace Xtricate.Configuration
             {
                 throw new ConfigurationErrorsException(string.Format(ErrorAppsettingNotFound, name));
             }
+
             return value;
         }
     }

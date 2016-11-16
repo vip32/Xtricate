@@ -10,7 +10,9 @@
         }
 
         public string Name { get; set; }
+
         public CriteriaOperator Operator { get; set; }
+
         public string Value { get; set; }
     }
 }

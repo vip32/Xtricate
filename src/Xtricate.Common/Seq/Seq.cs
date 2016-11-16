@@ -36,6 +36,7 @@ namespace Xtricate.Common
                 });
                 if (_loggingEnabled) Log.Debug($"Seq [{Steps.Count}]: from '{from}' - '{description}'");
             }
+
             _froms.Push(from);
         }
 
@@ -104,6 +105,7 @@ namespace Xtricate.Common
                     sb.Append(s.Render());
                 }
             }
+
             return sb.ToString();
         }
 
@@ -229,6 +231,7 @@ namespace Xtricate.Common
                 throw new Exception("Server reported HTTP error during image fetch: " + response.StatusCode + ": " +
                                     response.StatusDescription);
             }
+
             try
             {
                 var srcStream = response.GetResponseStream();
@@ -241,6 +244,7 @@ namespace Xtricate.Common
                 {
                     name = Path.Combine(path, name) + "." + format;
                 }
+
                 var dstStream = new FileStream(name, FileMode.Create);
 
                 // Copy streams
@@ -250,6 +254,7 @@ namespace Xtricate.Common
                 {
                     dstStream.Write(buffer, 0, read);
                 }
+
                 dstStream.Close();
                 srcStream.Close();
 
