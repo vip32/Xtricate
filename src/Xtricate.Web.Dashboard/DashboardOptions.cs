@@ -11,6 +11,7 @@ namespace Xtricate.Web.Dashboard
             //AuthorizationFilters = new[] { new LocalRequestsOnlyAuthorizationFilter() };
             AuthorizationFilters = new[] {new NoAuthorizationFilter()};
             MenuRoutes = new List<string>();
+            MaxAge = 86400;
         }
 
         public string Name { get; set; }
@@ -20,5 +21,7 @@ namespace Xtricate.Web.Dashboard
         public IEnumerable<IAuthorizationFilter> AuthorizationFilters { get; set; }
 
         public IEnumerable<string> MenuRoutes { get; set; }
+
+        public int MaxAge { get; set; }
     }
 }

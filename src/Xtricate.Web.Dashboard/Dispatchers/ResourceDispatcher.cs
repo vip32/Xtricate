@@ -35,6 +35,12 @@ namespace Xtricate.Web.Dashboard
 
             WriteResponse(owinContext.Response);
 
+            if (context.Options?.MaxAge > 0)
+            {
+                owinContext.Response.Headers.Add("Cache-Control", new[] { context.Options.MaxAge.ToString() });
+                //owinContext.Response.Headers.Add("ETag", new[] { "zxry" });
+            }
+
             return Task.FromResult(true);
         }
 
