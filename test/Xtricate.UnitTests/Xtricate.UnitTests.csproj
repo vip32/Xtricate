@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\AppSettingsTests.cs" />
+    <Compile Include="DocSet\Extensions\ExpandoTests.cs" />
     <Compile Include="Dynamic\ExpandoTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelpers\Extensions.cs" />
@@ -70,6 +71,10 @@
     <ProjectReference Include="..\..\src\Xtricate.Configuration\Xtricate.Configuration.csproj">
       <Project>{0CB26AC0-76E4-4688-8CF9-A1526FEA32B2}</Project>
       <Name>Xtricate.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Xtricate.DocSet\Xtricate.DocSet.csproj">
+      <Project>{22FE1723-6131-49E4-B0F7-847419650B6A}</Project>
+      <Name>Xtricate.DocSet</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Xtricate.Expando\Xtricate.Dynamic.csproj">
       <Project>{9C96D6F2-784A-400C-9306-180D413800BE}</Project>

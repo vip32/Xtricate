@@ -70,6 +70,7 @@
     </Compile>
     <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
     <Compile Include="Extensions\BytesExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="ISqlBuilder.cs" />
     <Compile Include="Criteria\Criteria.cs" />

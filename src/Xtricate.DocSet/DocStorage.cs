@@ -131,9 +131,9 @@ namespace Xtricate.DocSet
 
                 // PARAMS
                 var parameters = new DynamicParameters();
-                parameters.Add("key", key.ToString());
-                parameters.Add("tags", $"||{tags.Join("||")}||");
-                parameters.Add("hash", Hasher?.Compute(document));
+                parameters.Add("key", key.ToString().SafeSubstring(0, 900));
+                parameters.Add("tags", $"||{tags.Join("||")}||".SafeSubstring(0, 900));
+                parameters.Add("hash", Hasher?.Compute(document).SafeSubstring(0, 900));
                 parameters.Add("timestamp", timestamp ?? DateTime.UtcNow);
                 parameters.Add("value", Serializer.ToJson(document));
                 parameters.Add("data", data.ToBytes().Compress(), DbType.Binary);
@@ -158,7 +158,7 @@ namespace Xtricate.DocSet
     {SqlBuilder.BuildUseDatabase(Options.DatabaseName)}
     UPDATE {TableName
                     }
-    SET [hash]=@hash,[timestamp]=@timestamp,{updateColumns
+    SET [tags]=@tags,[hash]=@hash,[timestamp]=@timestamp,{updateColumns
                     }
         {
                     IndexMaps.NullToEmpty()
@@ -407,7 +407,7 @@ namespace Xtricate.DocSet
                 parameters.Add($"{item.Name.ToLower()}{SqlBuilder.IndexColumnNameSuffix}",
                     indexColumnValues.FirstOrDefault(
                         i => i.Key.Equals(item.Name, StringComparison.OrdinalIgnoreCase))
-                        .ValueOrDefault(i => i.Value));
+                        .ValueOrDefault(i => i.Value).SafeSubstring(0, 900)); // prevent index 900 chars overflow
             }
         }
 
