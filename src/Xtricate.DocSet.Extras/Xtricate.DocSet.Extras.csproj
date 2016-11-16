@@ -39,8 +39,8 @@
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ServiceStack.Text, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ServiceStack.Text.4.5.0\lib\net45\ServiceStack.Text.dll</HintPath>
+    <Reference Include="ServiceStack.Text, Version=4.5.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ServiceStack.Text.4.5.4\lib\net45\ServiceStack.Text.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Sigil, Version=4.7.0.0, Culture=neutral, PublicKeyToken=2d06c3494341c8ab, processorArchitecture=MSIL">

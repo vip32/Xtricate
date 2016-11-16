@@ -53,12 +53,12 @@
       <HintPath>..\..\packages\MiniProfiler.3.2.0.157\lib\net40\MiniProfiler.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Moq, Version=4.5.23.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Moq.4.5.23\lib\net45\Moq.dll</HintPath>
+    <Reference Include="Moq, Version=4.5.28.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Moq.4.5.28\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Ploeh.AutoFixture, Version=3.50.2.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
@@ -74,11 +74,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Serilog.Sinks.Trace, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Serilog.Sinks.Trace.2.0.0\lib\net45\Serilog.Sinks.Trace.dll</HintPath>
+      <HintPath>..\..\packages\Serilog.Sinks.Trace.2.1.0\lib\net45\Serilog.Sinks.Trace.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ServiceStack.Text, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ServiceStack.Text.4.5.0\lib\net45\ServiceStack.Text.dll</HintPath>
+    <Reference Include="ServiceStack.Text, Version=4.5.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ServiceStack.Text.4.5.4\lib\net45\ServiceStack.Text.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Sigil, Version=4.7.0.0, Culture=neutral, PublicKeyToken=2d06c3494341c8ab, processorArchitecture=MSIL">
