@@ -25,7 +25,7 @@ namespace Xtricate.DocSet.Serilog
         /// <param name="propertiesWhiteList">The properties filer.</param>
         /// <exception cref="System.ArgumentNullException"></exception>
         public DocSetSink(IDocStorage<LogEvent> storage, int batchSizeLimit, TimeSpan period,
-            IFormatProvider formatProvider, IEnumerable<string>  propertiesAsTags = null,
+            IFormatProvider formatProvider, IEnumerable<string> propertiesAsTags = null,
             IEnumerable<string> propertiesWhiteList = null)
         {
             //if (storage == null) throw new ArgumentNullException(nameof(storage));
@@ -40,7 +40,7 @@ namespace Xtricate.DocSet.Serilog
         {
             if (_storage == null) return;
             if (logEvent == null) return;
-            var key = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
+            var key = Guid.NewGuid().ToString().Replace("-", string.Empty).ToUpper();
 
             //UpdateProperties(logEvent, key);
             //FilterProperties(logEvent);
@@ -79,7 +79,7 @@ namespace Xtricate.DocSet.Serilog
             if (logEvent.Properties.IsNullOrEmpty() || _propertiesAsTags.IsNullOrEmpty()) return null;
             return
                 logEvent.Properties.Where(p => _propertiesAsTags.Contains(p.Key))
-                    .Select(p => p.Value != null ? p.Value.ToString().Trim('"') : "");
+                    .Select(p => p.Value != null ? p.Value.ToString().Trim('"') : string.Empty);
         }
 
         //private void FilterProperties(global::Serilog.Events.LogEvent logEvent)
@@ -95,10 +95,10 @@ namespace Xtricate.DocSet.Serilog
         {
             if (logEvent.Properties.IsNullOrEmpty()) return null;
             if(_propertiesWhiteList == null || !_propertiesWhiteList.Any())
-                return logEvent.Properties.ToDictionary(p => p.Key, p => p.Value != null ? p.Value.ToString().Trim('"') : "");
+                return logEvent.Properties.ToDictionary(p => p.Key, p => p.Value != null ? p.Value.ToString().Trim('"') : string.Empty);
 
             return logEvent.Properties.Where(prop => _propertiesWhiteList.Contains(prop.Key))
-                .ToDictionary(prop => prop.Key, p => p.Value != null ? p.Value.ToString().Trim('"') : "");
+                .ToDictionary(prop => prop.Key, p => p.Value != null ? p.Value.ToString().Trim('"') : string.Empty);
         }
     }
 }

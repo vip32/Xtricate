@@ -16,7 +16,7 @@ namespace Xtricate.DocSet
             {
                 var hash = provider.ComputeHash(ToBytes(value));
                 var hex = BitConverter.ToString(hash);
-                return hex.Replace("-", "");
+                return hex.Replace("-", string.Empty);
             }
         }
 

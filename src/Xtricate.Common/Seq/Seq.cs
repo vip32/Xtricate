@@ -42,12 +42,6 @@ namespace Xtricate.Common
 
         public static List<SeqStep> Steps { get; set; } = new List<SeqStep>();
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
         public static bool IsEnabled() => _enabled;
 
         public static Seq Call(string from, string description = null, string returnDescription = null,
@@ -107,6 +101,12 @@ namespace Xtricate.Common
             }
 
             return sb.ToString();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)

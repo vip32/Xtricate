@@ -13,7 +13,7 @@ namespace Xtricate.Web.Dashboard
         private RouteCollection _routes;
 
         public RouteCollectionBuilder(
-            IDictionary<string, IRequestDispatcher> dispatchers = null) 
+            IDictionary<string, IRequestDispatcher> dispatchers = null)
             : this(new EmbeddedResources(), dispatchers)
         {
         }

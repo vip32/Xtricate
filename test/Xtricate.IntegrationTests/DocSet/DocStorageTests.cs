@@ -34,7 +34,7 @@ namespace Xtricate.IntegrationTests
             }
         }
 
-        [TestFixtureSetUp]
+        [OneTimeSetUpAttribute]
         public void Setup()
         {
             Log.Logger = new LoggerConfiguration()

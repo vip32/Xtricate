@@ -75,8 +75,9 @@ namespace Xtricate.DocSet.Serilog
                         new[] {/*"CorrelationId",*/ "App", "SourceContext" /*"Message", "DocSetKey"*/}),
                     restrictedToMinimumLevel);
             }
-            catch (DbException) // could not connect to the db, use a null docstorage instead
+            catch (DbException)
             {
+                // could not connect to the db, use a null docstorage instead
                 return loggerConfiguration.Sink(
                     new DocSetSink(
                         null,

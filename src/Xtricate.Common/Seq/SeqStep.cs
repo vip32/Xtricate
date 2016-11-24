@@ -23,7 +23,7 @@
             if (Type == SeqStepType.Return)
                 return $"{From} -->- {To} : {Description}\n";
 
-            return "";
+            return string.Empty;
         }
     }
 }

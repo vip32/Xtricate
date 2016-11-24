@@ -11,7 +11,7 @@ namespace Xtricate.IntegrationTests
 {
     public class SerializerTests
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUpAttribute]
         public void Setup()
         {
             MiniProfiler.Settings.Storage = new MiniPofilerInMemoryStorage();
