@@ -13,6 +13,8 @@ namespace Xtricate.Web.Dashboard
             "lodash.min.js",
             "knockout.min.js",
             "knockout.mapping.js",
+            "vue.min.js",
+            "vuex.min.js",
             "d3.min.js",
             "d3.layout.min.js",
             "rickshaw.min.js",
