@@ -14,7 +14,7 @@
     <div class="col-lg-12">
         <div class="alert alert-dismissable alert-success">
             <button data-dismiss="alert" class="close" type="button">×</button>
-            Welcome to the dashboard! @Html.LoremIpsum()
+            Welcome to the dashboard!
         </div>
     </div>
 </div>
@@ -22,7 +22,66 @@
     <div class="col-lg-12">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i>
+                <h3 class="panel-title">Development
+                </h3>
+            </div>
+            <div class="panel-body">
+                <p>The following js libs are available:</p>
+                <ul>
+                    <li><a href="https://jquery.com/" target="_blank">jquery</a>, <a href="https://getbootstrap.com/docs/3.3/" target="_blank">bootstrap 3</a>, <a href="http://momentjs.com/" target="_blank">moment</a>, <a href="https://lodash.com/docs" target="_blank">lodash</a></li>
+                    <li><a href="http://knockoutjs.com/" target="_blank">knockout</a> + <a href="http://knockoutjs.com/documentation/plugins-mapping.html" target="_blank">mapping</a></li>
+                    <li><a href="https://vuejs.org/v2/guide/" target="_blank">vue</a>, <a href="https://vuex.vuejs.org/en/intro.html" target="_blank">vuex</a></li>
+                    <li><a href="https://d3js.org/" target="_blank">d3</a>, <a href="https://gist.github.com/davo/4186300" target="_blank">d3.layout</a></li>
+                    <li><a href="http://code.shutterstock.com/rickshaw/" target="_blank">rickshaw</a></li>
+                    <li><a href="https://www.npmjs.com/package/sprintf-js" target="_blank">sprintf</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Scripting
+                </h3>
+            </div>
+            <div class="panel-body">
+                <p>Javascript can be used inline:</p>
+                <textarea readonly cols="80" rows="5">
+                    <script type="text/javascript">
+                        $(document).ready(function () {
+                            console.log('hello from javascript');
+                        });
+                    </script>
+                </textarea>
+
+                <p>Typescript can be used inline:</p>
+                <textarea readonly cols="80" rows="4">
+                    <script type="text/typescript">
+                        setTimeout(()=>console.log('hello from typescript'));
+                    </script>
+                </textarea>
+
+                <p>Or in a seperate .ts file:</p>
+                <textarea readonly cols="80" rows="5">
+                    inherits Xtricate.Web.Dashboard.WebTemplate
+                    {
+                        ...
+                        TypeScripts = new[] { Url.To("/_ts/" + GetType().Name) };
+                    }
+                </textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Dummy
                 </h3>
             </div>
             <div class="panel-body">
@@ -36,3 +95,5 @@
 <script type="text/javascript">
     console.log("@RequestFullPath");
 </script>
+
+
