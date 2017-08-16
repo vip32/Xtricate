@@ -1,0 +1,49 @@
+﻿@* Generator: Template TypeVisibility: Internal GeneratePrettyNames: True *@
+
+@using Xtricate.Web.Dashboard.Pages
+@inherits Xtricate.Web.Dashboard.WebTemplate
+@{
+    Layout = new DefaultLayout();
+    //Scripts = new[] { Url.To("/js-extras") };
+    //Stylesheets = new[] { Url.To("/css-extras") };
+    Title = "VueJsPoc";
+}
+
+<style type="text/css">
+</style>
+
+<div id="app">
+    <p>
+        <ul>
+            <li><a href="https://vuejs.org/v2/guide/" target="_blank">Vue.js guide</a></li>
+            <li><a href="https://jsfiddle.net/44cgwu4h/" target="_blank">Vue.js fiddle</a></li>
+        </ul>
+    </p>
+    <div>vuex state: {{ $store.state.count }}</div>
+    <button v-on:click="buttonClick">Click Me</button>
+</div>
+
+<script type="text/javascript">
+     new Vue(
+         {
+             'el': '#app',
+             'store': new Vuex.Store(
+                 {
+                     state: {
+                         count: 0
+                     },
+                     mutations: {
+                         increment(state) {
+                             state.count++
+                         }
+                     }
+                 }
+             ),
+             'methods': {
+                 'buttonClick': function () {
+                     this.$store.commit('increment')
+                 }
+             }
+         }
+     )
+</script>

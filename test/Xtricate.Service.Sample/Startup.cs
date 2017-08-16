@@ -36,7 +36,7 @@ namespace Xtricate.Service.Sample
             app.UseDashboard(
                 options: new DashboardOptions
                 {
-                    MenuRoutes = new[] {"/products"}
+                    MenuRoutes = new[] { "/products", "/vuejspoc" }
                 },
                 routes: new RouteCollectionBuilder(
                     new Dictionary<string, IRequestDispatcher>
@@ -56,6 +56,11 @@ namespace Xtricate.Service.Sample
                                     {"id", x.Groups["PageId"].Value}
                                 }
                             })
+                        },
+                        {
+                            "/vuejspoc",
+                            new TemplateRequestDispatcher(
+                                x => new VueJsPoc())
                         },
                         {
                             @"/_ts/(?<ScriptName>\S+)",
